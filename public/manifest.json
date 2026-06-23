@@ -1,0 +1,12 @@
+{
+  "name": "Goa Social",
+  "short_name": "Goa Social",
+  "description": "Goa's own social network — by Goans, for Goans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#1877f2",
+  "icons": [
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
