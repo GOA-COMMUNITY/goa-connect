@@ -1,0 +1,164 @@
+[
+  {
+    "name": "🚀 TEST EVENT - Goa Social Launch",
+    "date": "2026-03-14",
+    "icon": "fa-rocket",
+    "description": "Testing the event banner system!"
+  },
+  {
+    "name": "Gudi Padwa",
+    "date": "2025-03-30",
+    "icon": "fa-calendar-alt",
+    "description": "Maharashtrian New Year"
+  },
+  {
+    "name": "Good Friday",
+    "date": "2025-04-18",
+    "icon": "fa-cross",
+    "description": "Christian holiday"
+  },
+  {
+    "name": "Easter",
+    "date": "2025-04-20",
+    "icon": "fa-egg",
+    "description": "Easter Sunday"
+  },
+  {
+    "name": "Id-ul-Fitr",
+    "date": "2025-04-21",
+    "icon": "fa-moon",
+    "description": "Ramadan ending"
+  },
+  {
+    "name": "Labours Day",
+    "date": "2025-05-01",
+    "icon": "fa-briefcase",
+    "description": "International Workers' Day"
+  },
+  {
+    "name": "Buddha Purnima",
+    "date": "2025-05-12",
+    "icon": "fa-pagoda",
+    "description": "Buddha's birth"
+  },
+  {
+    "name": "Id-ul-Zuha",
+    "date": "2025-06-28",
+    "icon": "fa-moon",
+    "description": "Bakrid"
+  },
+  {
+    "name": "Muharram",
+    "date": "2025-07-18",
+    "icon": "fa-moon",
+    "description": "Islamic New Year"
+  },
+  {
+    "name": "Independence Day",
+    "date": "2025-08-15",
+    "icon": "fa-flag-india",
+    "description": "India's Independence Day"
+  },
+  {
+    "name": "Parsi New Year",
+    "date": "2025-08-16",
+    "icon": "fa-fire",
+    "description": "Navroz"
+  },
+  {
+    "name": "Ganesh Chaturthi",
+    "date": "2025-08-27",
+    "icon": "fa-elephant",
+    "description": "10-day festival starts"
+  },
+  {
+    "name": "Milad-un-Nabi",
+    "date": "2025-09-16",
+    "icon": "fa-mosque",
+    "description": "Prophet's birthday"
+  },
+  {
+    "name": "Gandhi Jayanti",
+    "date": "2025-10-02",
+    "icon": "fa-dove",
+    "description": "Mahatma Gandhi's birthday"
+  },
+  {
+    "name": "Dussehra",
+    "date": "2025-10-02",
+    "icon": "fa-bow-arrow",
+    "description": "Victory of good over evil"
+  },
+  {
+    "name": "Diwali",
+    "date": "2025-10-20",
+    "icon": "fa-diya",
+    "description": "Festival of Lights"
+  },
+  {
+    "name": "Govardhan Puja",
+    "date": "2025-10-22",
+    "icon": "fa-mountain",
+    "description": "Annakut"
+  },
+  {
+    "name": "Bhai Dooj",
+    "date": "2025-10-23",
+    "icon": "fa-hand-holding-heart",
+    "description": "Brother-sister bond"
+  },
+  {
+    "name": "Guru Nanak Jayanti",
+    "date": "2025-11-05",
+    "icon": "fa-pray",
+    "description": "Guru Nanak's birthday"
+  },
+  {
+    "name": "Christmas",
+    "date": "2025-12-25",
+    "icon": "fa-candy-cane",
+    "description": "Christmas Day"
+  },
+  {
+    "name": "New Year's Eve",
+    "date": "2025-12-31",
+    "icon": "fa-champagne-glasses",
+    "description": "New Year's Eve"
+  },
+  {
+    "name": "New Year's Day",
+    "date": "2026-01-01",
+    "icon": "fa-party-horn",
+    "description": "New Year's Day"
+  },
+  {
+    "name": "Republic Day",
+    "date": "2026-01-26",
+    "icon": "fa-flag-india",
+    "description": "India's Republic Day"
+  },
+  {
+    "name": "Vasant Panchami",
+    "date": "2026-01-23",
+    "icon": "fa-leaf",
+    "description": "Saraswati Puja"
+  },
+  {
+    "name": "Maha Shivratri",
+    "date": "2026-02-15",
+    "icon": "fa-om",
+    "description": "Night of Shiva"
+  },
+  {
+    "name": "Goa Carnival",
+    "date": "2026-02-14",
+    "icon": "fa-mask",
+    "description": "Goa's biggest festival"
+  },
+  {
+    "name": "Holi",
+    "date": "2026-03-03",
+    "icon": "fa-paint-brush",
+    "description": "Festival of Colors"
+  }
+]
