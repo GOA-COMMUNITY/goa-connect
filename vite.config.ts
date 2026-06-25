@@ -6,18 +6,11 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
-    // Static SPA output for GitHub Pages — produces an index.html shell that hydrates client-side.
+    // Static SPA output for GitHub Pages — single index.html shell that
+    // hydrates client-side. The deploy workflow copies index.html → 404.html
+    // so deep links (/explore, /business, ...) resolve via the SPA fallback.
     spa: {
       enabled: true,
     },
-    // Prerender every route file to a static HTML file so deep links (/explore, /business, ...)
-    // resolve on GitHub Pages without a server.
-    pages: [
-      { path: "/" },
-      { path: "/explore" },
-      { path: "/business" },
-      { path: "/chats" },
-      { path: "/profile" },
-    ],
   },
 });
