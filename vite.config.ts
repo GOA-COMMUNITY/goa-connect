@@ -11,6 +11,7 @@ export default defineConfig({
     // so deep links (/explore, /business, ...) resolve via the SPA fallback.
     spa: {
       enabled: true,
+      prerender: { enabled: false, outputPath: "index.html", crawlLinks: false, retryCount: 0 },
     },
   },
 });
