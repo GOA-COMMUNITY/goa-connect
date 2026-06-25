@@ -33,7 +33,9 @@ jobs:
       - name: Locate static output
         id: out
         run: |
-          if [ -d "dist" ]; then
+          if [ -d "dist/client" ]; then
+            echo "dir=dist/client" >> "$GITHUB_OUTPUT"
+          elif [ -d "dist" ] && [ -f "dist/index.html" ]; then
             echo "dir=dist" >> "$GITHUB_OUTPUT"
           elif [ -d ".output/public" ]; then
             echo "dir=.output/public" >> "$GITHUB_OUTPUT"

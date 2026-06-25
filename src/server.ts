@@ -4,16 +4,20 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
 type ServerEntry = {
-  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
+  fetch: (request: Request, ...args: Array<unknown>) => Promise<Response> | Response;
 };
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
-    serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (m) => (m.default ?? m) as ServerEntry,
-    );
+    serverEntryPromise = import("@tanstack/react-start/server").then((m) => ({
+      // The stock server entry streams SSR HTML. During TanStack Start's SPA shell
+      // prerender, Node 22 can resolve React's Worker/Bun stream renderer and crash
+      // on ReadableStream internals before a page is written. Rendering to a string
+      // keeps the output static and avoids the broken prerender stream path.
+      fetch: m.createStartHandler(m.defaultRenderHandler) as ServerEntry["fetch"],
+    }));
   }
   return serverEntryPromise;
 }

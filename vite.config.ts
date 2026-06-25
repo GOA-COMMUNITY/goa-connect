@@ -4,6 +4,11 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  // This app deploys as a static SPA to GitHub Pages, so do not build a server
+  // worker. Keeping Nitro enabled in the sandbox makes the SPA shell prerender
+  // preview look for dist/server/server.js after Nitro has emitted index.mjs,
+  // which fails the build before index.html can be written.
+  nitro: false,
   tanstackStart: {
     server: { entry: "server" },
     // Static SPA output for GitHub Pages — single index.html shell that
