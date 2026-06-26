@@ -1,32 +1,105 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Search, CheckCircle2, MapPin, MessageCircle, UserPlus } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Search, CheckCircle2, MapPin, MessageCircle, UserPlus, UserCheck, Loader2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
     meta: [
       { title: "Explore Goans — Goa Social" },
       { name: "description", content: "Discover and connect with verified Goans across North and South Goa." },
-      { property: "og:title", content: "Explore Goans — Goa Social" },
-      { property: "og:description", content: "Discover and connect with verified Goans across North and South Goa." },
     ],
   }),
   component: Explore,
 });
 
-const chips = ["All Goans", "North Goa", "South Goa", "Artists", "Foodies", "Surfers", "Musicians"];
+const chips = ["All Goans", "Panjim", "Mapusa", "Margao", "Anjuna", "Assagao"];
 
-const people = [
-  { name: "Rohan Pereira", handle: "@rohan_p", area: "Panjim", bio: "Surfer · Foodie · Sunset chaser 🌊", color: "from-primary to-primary-glow" },
-  { name: "Anjali Naik", handle: "@anjali.art", area: "Mapusa", bio: "Artist · Carnival costumes · Goan stories 🎨", color: "from-pink-500 to-rose-500" },
-  { name: "Vikas Gaonkar", handle: "@vikascafe", area: "Assagao", bio: "Cafe Alchemia owner · Coffee nerd ☕", color: "from-emerald-500 to-teal-600" },
-  { name: "Maria D'Souza", handle: "@maria.tales", area: "Margao", bio: "Writer · History buff · Sao Joao lover 📚", color: "from-amber-500 to-orange-600" },
-  { name: "Kabir Shenoy", handle: "@kabir.beats", area: "Anjuna", bio: "DJ · Trance · Producing in Goa 🎧", color: "from-violet-500 to-fuchsia-600" },
-];
+type Profile = {
+  id: string;
+  display_name: string;
+  area: string | null;
+  bio: string | null;
+  avatar_emoji: string | null;
+  username: string | null;
+};
 
 function Explore() {
   const [active, setActive] = useState("All Goans");
+  const [q, setQ] = useState("");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const { data: profiles = [], isLoading } = useQuery({
+    queryKey: ["profiles", active, q],
+    queryFn: async () => {
+      let query = supabase.from("profiles").select("*").order("created_at", { ascending: false }).limit(50);
+      if (active !== "All Goans") query = query.eq("area", active);
+      if (q) query = query.ilike("display_name", `%${q}%`);
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []).filter((p) => p.id !== user?.id) as Profile[];
+    },
+  });
+
+  const { data: followingIds = [] } = useQuery({
+    queryKey: ["following", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", user!.id);
+      if (error) throw error;
+      return data.map((d) => d.following_id);
+    },
+  });
+  const followSet = new Set(followingIds);
+
+  async function toggleFollow(targetId: string) {
+    if (!user) return navigate({ to: "/auth" });
+    if (followSet.has(targetId)) {
+      const { error } = await supabase
+        .from("follows")
+        .delete()
+        .eq("follower_id", user.id)
+        .eq("following_id", targetId);
+      if (error) return toast.error(error.message);
+    } else {
+      const { error } = await supabase
+        .from("follows")
+        .insert({ follower_id: user.id, following_id: targetId });
+      if (error) return toast.error(error.message);
+    }
+    qc.invalidateQueries({ queryKey: ["following", user.id] });
+  }
+
+  async function startChat(targetId: string) {
+    if (!user) return navigate({ to: "/auth" });
+    const [user_a, user_b] = [user.id, targetId].sort();
+    const existing = await supabase
+      .from("conversations")
+      .select("id")
+      .eq("user_a", user_a)
+      .eq("user_b", user_b)
+      .maybeSingle();
+    if (existing.data) {
+      navigate({ to: "/chats/$id", params: { id: existing.data.id } });
+      return;
+    }
+    const { data, error } = await supabase
+      .from("conversations")
+      .insert({ user_a, user_b })
+      .select("id")
+      .single();
+    if (error) return toast.error(error.message);
+    navigate({ to: "/chats/$id", params: { id: data.id } });
+  }
 
   return (
     <AppLayout>
@@ -34,6 +107,8 @@ function Explore() {
         <div className="flex items-center gap-3 rounded-full border border-border bg-card px-5 py-3 shadow-soft">
           <Search className="h-5 w-5 text-primary" />
           <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
             placeholder="Search Goans, places, vibes…"
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
@@ -45,9 +120,6 @@ function Explore() {
             <p className="text-sm font-bold">Only Goans Community</p>
             <p className="text-xs opacity-90">Verified Goan profiles only</p>
           </div>
-          <span className="rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-semibold backdrop-blur">
-            2 free msgs
-          </span>
         </div>
 
         <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4">
@@ -66,35 +138,61 @@ function Explore() {
           ))}
         </div>
 
+        {isLoading && (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
+
+        {!isLoading && profiles.length === 0 && (
+          <div className="rounded-3xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+            No Goans here yet. Be the first — sign up and complete your profile.
+          </div>
+        )}
+
         <div className="space-y-3">
-          {people.map((p) => (
-            <div key={p.handle} className="rounded-3xl border border-border bg-card p-4 shadow-soft">
-              <div className="flex gap-4">
-                <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${p.color} text-2xl font-bold text-white`}>
-                  {p.name[0]}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <h3 className="font-semibold text-foreground">{p.name}</h3>
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">Goan</span>
+          {profiles.map((p) => {
+            const following = followSet.has(p.id);
+            return (
+              <div key={p.id} className="rounded-3xl border border-border bg-card p-4 shadow-soft">
+                <div className="flex gap-4">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-primary text-3xl">
+                    {p.avatar_emoji ?? "🌴"}
                   </div>
-                  <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3" /> {p.area} · {p.handle}
-                  </p>
-                  <p className="mt-1.5 text-sm text-foreground">{p.bio}</p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <h3 className="font-semibold text-foreground">{p.display_name}</h3>
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">Goan</span>
+                    </div>
+                    {(p.area || p.username) && (
+                      <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" /> {p.area ?? "Goa"}{p.username ? ` · @${p.username}` : ""}
+                      </p>
+                    )}
+                    {p.bio && <p className="mt-1.5 text-sm text-foreground">{p.bio}</p>}
+                  </div>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    onClick={() => startChat(p.id)}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Message
+                  </button>
+                  <button
+                    onClick={() => toggleFollow(p.id)}
+                    className={`flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold ${
+                      following ? "bg-primary/10 text-primary" : "bg-secondary text-foreground"
+                    }`}
+                  >
+                    {following ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
+                    {following ? "Following" : "Follow"}
+                  </button>
                 </div>
               </div>
-              <div className="mt-3 flex gap-2">
-                <button className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground">
-                  <MessageCircle className="h-4 w-4" /> Message
-                </button>
-                <button className="flex items-center justify-center gap-2 rounded-full bg-secondary px-4 py-2.5 text-sm font-semibold text-foreground">
-                  <UserPlus className="h-4 w-4" /> Follow
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </AppLayout>
