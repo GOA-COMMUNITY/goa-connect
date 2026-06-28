@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Compass, Store, MessageCircle, User, Bell, Search } from "lucide-react";
+import { Home, Compass, Store, MessageCircle, User, Bell, Search, Shield } from "lucide-react";
 import { EventBanner } from "./EventBanner";
+import { useAuth } from "@/hooks/use-auth";
 import type { ReactNode } from "react";
 
 const navItems = [
@@ -13,6 +14,7 @@ const navItems = [
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { isAdmin } = useAuth();
 
   return (
     <div className="min-h-screen bg-background pb-20">
