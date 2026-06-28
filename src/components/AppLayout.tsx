@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Compass, Store, MessageCircle, User, Bell, Search } from "lucide-react";
+import { Home, Compass, Store, MessageCircle, User, Bell, Search, Shield } from "lucide-react";
 import { EventBanner } from "./EventBanner";
+import { useAuth } from "@/hooks/use-auth";
 import type { ReactNode } from "react";
 
 const navItems = [
@@ -13,6 +14,7 @@ const navItems = [
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { isAdmin } = useAuth();
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -24,7 +26,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </div>
             <span className="text-xl font-bold tracking-tight text-primary">Goa Social</span>
           </Link>
-          <div className="flex items-center gap-5 text-muted-foreground">
+          <div className="flex items-center gap-4 text-muted-foreground">
+            {isAdmin && (
+              <Link to="/admin" className="rounded-full bg-primary/10 p-1.5 text-primary" title="Admin">
+                <Shield className="h-5 w-5" />
+              </Link>
+            )}
             <Search className="h-5 w-5" />
             <Bell className="h-5 w-5" />
           </div>
