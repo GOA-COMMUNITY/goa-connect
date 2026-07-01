@@ -8,27 +8,44 @@ export type Short = {
 };
 
 /**
- * Vertical, snap-scrolling reels feed.
- * - IntersectionObserver picks the SINGLE most-visible card and plays only that one.
- *   Fixes the bug where scrolling down played the previous (upper) short.
- * - First short is rendered eagerly with a muted autoplay iframe so it warms
- *   up under the splash and is ready by the time the splash fades.
- * - Other shorts mount their iframe lazily once they come close to viewport.
+ * Vertical, snap-scrolling reels feed — optimised for weak networks.
+ *
+ * Key optimisations:
+ * 1. Iframes mount ONCE and stay mounted. We NEVER remount on scroll.
+ *    Play / pause is controlled purely via YouTube's postMessage API
+ *    (`playVideo` / `pauseVideo`). This is why previously every scroll
+ *    triggered a full reload / black screen.
+ * 2. Preload window = ±2. Once you're on a short, the next 2 and previous
+ *    2 iframes are already mounted and buffered, so scrolling either
+ *    direction plays instantly.
+ * 3. IntersectionObserver picks the single most-visible card. Scrolling
+ *    down plays the card BELOW (not above) and vice-versa.
+ * 4. Thumbnails render behind every card for instant paint even on 2G.
  */
 export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
-  // Indices that have been mounted (iframe rendered). Always include 0 for fast first paint.
-  const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1]));
+  // Which indices have their iframe mounted. Preload first 3 for fast start.
+  const [mounted, setMounted] = useState<Set<number>>(
+    () => new Set([0, 1, 2])
+  );
+
+  // Send a YouTube iframe-API command via postMessage.
+  const cmd = (iframe: HTMLIFrameElement | null, func: "playVideo" | "pauseVideo") => {
+    if (!iframe?.contentWindow) return;
+    iframe.contentWindow.postMessage(
+      JSON.stringify({ event: "command", func, args: [] }),
+      "*"
+    );
+  };
 
   useEffect(() => {
     const root = containerRef.current;
     if (!root) return;
-
     const io = new IntersectionObserver(
       (entries) => {
-        // Pick the entry with the highest intersection ratio that is currently visible.
         let bestIdx = activeIdx;
         let bestRatio = 0;
         for (const e of entries) {
@@ -38,24 +55,34 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             bestIdx = idx;
           }
         }
-        if (bestRatio >= 0.6) {
+        if (bestRatio >= 0.6 && bestIdx !== activeIdx) {
           setActiveIdx(bestIdx);
-          // Preload neighbours (next & prev) so scroll feels instant
+          // Expand mount window ±2 around the active card
           setMounted((prev) => {
             const next = new Set(prev);
-            next.add(bestIdx);
-            if (bestIdx + 1 < shorts.length) next.add(bestIdx + 1);
-            if (bestIdx - 1 >= 0) next.add(bestIdx - 1);
+            for (let d = -2; d <= 2; d++) {
+              const i = bestIdx + d;
+              if (i >= 0 && i < shorts.length) next.add(i);
+            }
             return next;
           });
         }
       },
       { root, threshold: [0, 0.25, 0.5, 0.6, 0.75, 1] }
     );
-
     itemRefs.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
   }, [shorts.length, activeIdx]);
+
+  // Play the active iframe, pause all others. Runs after mount / active change.
+  useEffect(() => {
+    iframeRefs.current.forEach((f, i) => {
+      if (!f) return;
+      // Give the iframe a beat to be ready before commanding.
+      if (i === activeIdx) cmd(f, "playVideo");
+      else cmd(f, "pauseVideo");
+    });
+  }, [activeIdx, mounted]);
 
   if (shorts.length === 0) return null;
 
@@ -65,7 +92,6 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       className="snap-y snap-mandatory overflow-y-auto h-[80vh] max-h-[700px] rounded-3xl border border-border bg-black scrollbar-hide"
     >
       {shorts.map((s, i) => {
-        const isActive = i === activeIdx;
         const shouldMount = mounted.has(i);
         return (
           <div
@@ -76,24 +102,36 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             }}
             className="snap-start relative h-[80vh] max-h-[700px] w-full bg-black flex items-center justify-center"
           >
-            {/* Thumbnail always shown for instant paint */}
+            {/* Low-res thumbnail — paints in a few KB even on 2G */}
             <img
-              src={`https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg`}
+              src={`https://i.ytimg.com/vi/${s.videoId}/mqdefault.jpg`}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover opacity-90"
+              className="absolute inset-0 h-full w-full object-cover"
               loading={i === 0 ? "eager" : "lazy"}
               fetchPriority={i === 0 ? "high" : "auto"}
+              decoding="async"
             />
             {shouldMount && (
               <iframe
-                key={isActive ? "play" : "pause"}
-                src={`https://www.youtube.com/embed/${s.videoId}?autoplay=${
-                  isActive ? 1 : 0
-                }&mute=1&controls=0&loop=1&playlist=${s.videoId}&playsinline=1&modestbranding=1&rel=0`}
+                ref={(el) => {
+                  iframeRefs.current[i] = el;
+                }}
+                // Start the first short muted-autoplay so it warms up under
+                // the splash; others start paused, we play them via postMessage
+                // when they scroll into view.
+                src={
+                  `https://www.youtube.com/embed/${s.videoId}` +
+                  `?enablejsapi=1&mute=1&controls=0&loop=1&playlist=${s.videoId}` +
+                  `&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3` +
+                  `&autoplay=${i === 0 ? 1 : 0}&origin=${
+                    typeof window !== "undefined" ? window.location.origin : ""
+                  }`
+                }
                 title={s.channelName}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 className="absolute inset-0 h-full w-full"
                 style={{ border: 0 }}
+                loading="lazy"
               />
             )}
 
