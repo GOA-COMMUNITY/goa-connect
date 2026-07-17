@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Sparkles, Users, Waves } from "lucide-react";
+import { Coffee, Music, Palmtree, Shell, Sparkles, Sun, Users, Utensils, Waves } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
@@ -45,13 +45,13 @@ export const Route = createFileRoute("/")({
 });
 
 const stories = [
-  { name: "Beaches", emoji: "🏖️" },
-  { name: "Food", emoji: "🦐" },
-  { name: "Festivals", emoji: "🎭" },
-  { name: "Music", emoji: "🎵" },
-  { name: "Surf", emoji: "🏄" },
-  { name: "Cafes", emoji: "☕" },
-  { name: "Sunsets", emoji: "🌅" },
+  { name: "Beaches", icon: Shell },
+  { name: "Food", icon: Utensils },
+  { name: "Festivals", icon: Sparkles },
+  { name: "Music", icon: Music },
+  { name: "Surf", icon: Waves },
+  { name: "Cafes", icon: Coffee },
+  { name: "Sunsets", icon: Sun },
 ];
 
 const chips = ["For You", "North Goa", "South Goa", "Trending", "Food", "Events", "Music", "Beaches"];
@@ -78,7 +78,10 @@ function Home() {
 
         {/* Welcome hero */}
         <section className="mx-3 mt-4 overflow-hidden rounded-3xl bg-gradient-primary p-6 text-primary-foreground shadow-card">
-          <h1 className="text-3xl font-bold leading-tight">Susegad,<br />welcome home 🌴</h1>
+          <h1 className="flex items-end gap-2 text-3xl font-bold leading-tight">
+            <span>Susegad,<br />welcome home</span>
+            <Palmtree className="mb-1 h-7 w-7" />
+          </h1>
           <p className="mt-2 text-sm opacity-90">Goa's own social network — by Goans, for Goans.</p>
           <div className="mt-5 grid grid-cols-3 gap-3">
             {[
@@ -101,14 +104,16 @@ function Home() {
             <Link to="/explore" className="text-sm font-medium text-primary">See all</Link>
           </div>
           <div className="scrollbar-hide flex gap-4 overflow-x-auto px-4">
-            {stories.map((s) => (
+            {stories.map((s) => {
+              const Icon = s.icon;
+              return (
               <div key={s.name} className="shrink-0 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-primary bg-secondary text-2xl">
-                  {s.emoji}
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-primary bg-secondary text-primary">
+                  <Icon className="h-7 w-7" />
                 </div>
                 <p className="mt-1.5 text-[11px] text-muted-foreground">{s.name}</p>
               </div>
-            ))}
+            )})}
           </div>
         </section>
 
