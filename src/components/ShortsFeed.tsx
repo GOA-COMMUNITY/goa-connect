@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Heart, Loader2, MessageCircle, Share2, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 
@@ -249,7 +249,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     });
   }
 
-  function handleFeedClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleFeedClick(event: MouseEvent<HTMLDivElement>) {
     const target = event.target as HTMLElement;
     if (target.closest("button,a")) return;
     enableSound();
