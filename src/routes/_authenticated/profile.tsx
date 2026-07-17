@@ -20,14 +20,24 @@ function Profile() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [dark, setDark] = useState(() => typeof document !== "undefined" && document.documentElement.classList.contains("dark"));
+  const [themeReady, setThemeReady] = useState(false);
+  const [dark, setDark] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ display_name: "", area: "", bio: "", avatar_emoji: "🌴" });
 
   useEffect(() => {
+    const saved = localStorage.getItem("gs_theme");
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+    setDark(saved ? saved === "dark" : document.documentElement.classList.contains("dark") || prefersDark);
+    setThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!themeReady) return;
     document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+    localStorage.setItem("gs_theme", dark ? "dark" : "light");
+  }, [dark, themeReady]);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", user?.id],

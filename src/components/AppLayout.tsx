@@ -3,6 +3,7 @@ import { Home, Compass, Store, MessageCircle, User, Bell, Search, Shield } from 
 import { EventBanner } from "./EventBanner";
 import { useAuth } from "@/hooks/use-auth";
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
@@ -17,7 +18,7 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
   const { isAdmin } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))]">
       <header className="sticky top-0 z-50 border-b border-border bg-card/90 backdrop-blur-md shadow-soft">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-3">
@@ -32,8 +33,17 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
                 <Shield className="h-5 w-5" />
               </Link>
             )}
-            <Search className="h-5 w-5" />
-            <Bell className="h-5 w-5" />
+            <Link to="/explore" className="rounded-full p-1.5" aria-label="Search people">
+              <Search className="h-5 w-5" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => toast.info("Notifications are coming soon")}
+              className="rounded-full p-1.5"
+              aria-label="Notifications"
+            >
+              <Bell className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </header>
@@ -50,7 +60,7 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
               <Link
                 key={to}
                 to={to}
-                className={`flex flex-col items-center gap-0.5 rounded-2xl px-4 py-1.5 text-[11px] font-medium transition-colors ${
+                className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-2xl px-2 py-1.5 text-[11px] font-medium transition-colors ${
                   active ? "text-primary" : "text-muted-foreground"
                 }`}
               >

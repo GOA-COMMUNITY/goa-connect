@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Sparkles, Users, Waves } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
       ...initialVideos.slice(0, 3).map((video, index) => ({
         rel: "preload",
         as: "image",
-        href: `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`,
+        href: `https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`,
         fetchPriority: (index === 0 ? "high" : "low") as "high" | "low",
       })),
     ],
@@ -98,7 +98,7 @@ function Home() {
         <section className="mt-4 bg-card py-4">
           <div className="mb-3 flex items-center justify-between px-4">
             <h2 className="text-base font-semibold text-foreground">Live Stories</h2>
-            <a className="text-sm font-medium text-primary">See all</a>
+            <Link to="/explore" className="text-sm font-medium text-primary">See all</Link>
           </div>
           <div className="scrollbar-hide flex gap-4 overflow-x-auto px-4">
             {stories.map((s) => (

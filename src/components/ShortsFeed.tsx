@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Heart, Loader2, MessageCircle, Share2, Volume2, VolumeX } from "lucide-react";
+import { toast } from "sonner";
 
 export type Short = {
   videoId: string;
@@ -55,7 +56,8 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   });
   const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1, 2, 3, 4]));
   const [ready, setReady] = useState<Set<number>>(() => new Set());
-  const frameStyle = useMemo(() => ({ height: "min(760px, calc(100dvh - 124px))" }), []);
+  const [liked, setLiked] = useState<Set<number>>(() => new Set());
+  const frameStyle = useMemo(() => ({ height: "clamp(420px, calc(100dvh - 158px), 760px)" }), []);
 
   useEffect(() => {
     activeIdxRef.current = activeIdx;
@@ -86,7 +88,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       window.setTimeout(() => {
         if (activeIdxRef.current !== index) player.pauseVideo?.();
         if (!mutedRef.current) player.unMute?.();
-      }, 350);
+      }, 900);
     } catch {}
   }, []);
 
@@ -105,7 +107,6 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           player.playVideo();
         } else if (Math.abs(i - index) <= 2) {
           warmPlayer(i);
-          player.pauseVideo?.();
         } else {
           player.pauseVideo?.();
         }
@@ -125,6 +126,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           videoId: short.videoId,
           width: "100%",
           height: "100%",
+          host: "https://www.youtube-nocookie.com",
           playerVars: {
             autoplay: i === activeIdx ? 1 : 0,
             mute: 1,
@@ -191,10 +193,12 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     };
     detect();
     root.addEventListener("scroll", onScroll, { passive: true });
+    root.addEventListener("scrollend", onScroll);
     window.addEventListener("resize", onScroll);
     return () => {
       if (raf) window.cancelAnimationFrame(raf);
       root.removeEventListener("scroll", onScroll);
+      root.removeEventListener("scrollend", onScroll);
       window.removeEventListener("resize", onScroll);
     };
   }, [mountAround]);
@@ -228,18 +232,50 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     } catch {}
   }
 
+  function toggleSound() {
+    setMuted((current) => {
+      const next = !current;
+      mutedRef.current = next;
+      sessionStorage.setItem("gs_shorts_sound", next ? "off" : "on");
+      const active = players.current[activeIdxRef.current];
+      try {
+        if (next) active?.mute?.();
+        else {
+          active?.unMute?.();
+          active?.playVideo?.();
+        }
+      } catch {}
+      return next;
+    });
+  }
+
+  function handleFeedClick(event: React.MouseEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement;
+    if (target.closest("button,a")) return;
+    enableSound();
+  }
+
+  function toggleLike(index: number) {
+    setLiked((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  }
+
   if (shorts.length === 0) return null;
 
   return (
     <div
       ref={containerRef}
-      onPointerDownCapture={enableSound}
+      onClick={handleFeedClick}
       className="relative snap-y snap-mandatory overflow-y-auto rounded-[1.7rem] border border-border bg-black shadow-card scrollbar-hide"
       style={frameStyle}
     >
       {/* Sound toggle */}
       <button
-        onClick={() => setMuted((m) => !m)}
+        onClick={toggleSound}
         className="absolute right-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white backdrop-blur"
         aria-label={muted ? "Unmute" : "Mute"}
       >
@@ -260,7 +296,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           >
             {/* Thumbnail beneath — instant paint */}
             <img
-              src={`https://i.ytimg.com/vi/${s.videoId}/mqdefault.jpg`}
+              src={`https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg`}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
               loading={i === 0 ? "eager" : "lazy"}
@@ -294,7 +330,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             )}
 
             {/* Overlay UI */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-4 pb-5 pt-24 text-white">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-4 pb-7 pt-24 text-white">
               <div className="pointer-events-auto min-w-0 max-w-[68%]">
                 <div className="flex items-center gap-2">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 backdrop-blur text-base">
@@ -305,15 +341,30 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
                 <p className="mt-2 text-xs opacity-90">#goa #susegad</p>
               </div>
               <div className="pointer-events-auto flex shrink-0 flex-col items-center gap-4 pb-1">
-                <button className="flex flex-col items-center text-xs font-semibold">
-                  <Heart className="h-7 w-7 drop-shadow" />
+                <button
+                  onClick={() => toggleLike(i)}
+                  className="flex flex-col items-center text-xs font-semibold"
+                  aria-label={liked.has(i) ? "Unlike short" : "Like short"}
+                >
+                  <Heart className={`h-7 w-7 drop-shadow ${liked.has(i) ? "fill-red-500 text-red-500" : ""}`} />
                   <span>{((i * 7 + 12) % 90) + 10}k</span>
                 </button>
-                <button className="flex flex-col items-center text-xs font-semibold">
+                <button
+                  onClick={() => toast.info("Comments are coming soon")}
+                  className="flex flex-col items-center text-xs font-semibold"
+                  aria-label="Open comments"
+                >
                   <MessageCircle className="h-7 w-7 drop-shadow" />
                   <span>{((i * 3 + 5) % 50) + 5}</span>
                 </button>
-                <button className="flex flex-col items-center text-xs font-semibold">
+                <button
+                  onClick={() => {
+                    navigator.clipboard?.writeText(window.location.href);
+                    toast.success("Link copied");
+                  }}
+                  className="flex flex-col items-center text-xs font-semibold"
+                  aria-label="Share short"
+                >
                   <Share2 className="h-7 w-7 drop-shadow" />
                   <span>Share</span>
                 </button>

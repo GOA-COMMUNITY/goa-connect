@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Search, CheckCircle2, MapPin, MessageCircle, UserPlus, UserCheck, Loader2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -35,12 +35,18 @@ type Profile = {
 function Explore() {
   const [active, setActive] = useState("All Goans");
   const [q, setQ] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
 
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedQ(q.trim()), 300);
+    return () => window.clearTimeout(timeout);
+  }, [q]);
+
   const { data: profiles = [], isLoading } = useQuery({
-    queryKey: ["profiles", active, q],
+    queryKey: ["profiles", active, debouncedQ],
     queryFn: async () => {
       let query = supabase
         .from("profiles")
@@ -49,7 +55,7 @@ function Explore() {
         .order("created_at", { ascending: false })
         .limit(50);
       if (active !== "All Goans") query = query.eq("area", active);
-      if (q) query = query.ilike("display_name", `%${q}%`);
+      if (debouncedQ) query = query.ilike("display_name", `%${debouncedQ}%`);
       const { data, error } = await query;
       if (error) throw error;
       return (data ?? []).filter((p) => p.id !== user?.id) as Profile[];
@@ -155,7 +161,13 @@ function Explore() {
 
         {!isLoading && profiles.length === 0 && (
           <div className="rounded-3xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-            No Goans here yet. Be the first — sign up and complete your profile.
+            <p>No Goans here yet. Be the first — sign up and complete your profile.</p>
+            <Link
+              to={user ? "/profile" : "/auth"}
+              className="mt-4 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+            >
+              {user ? "Complete profile" : "Sign up"}
+            </Link>
           </div>
         )}
 
