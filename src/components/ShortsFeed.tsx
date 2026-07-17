@@ -70,11 +70,15 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const mountAround = useCallback((center: number) => {
     setMounted((prev) => {
       const next = new Set(prev);
+      let changed = false;
       for (let d = -3; d <= 3; d++) {
         const i = center + d;
-        if (i >= 0 && i < shorts.length) next.add(i);
+        if (i >= 0 && i < shorts.length && !next.has(i)) {
+          next.add(i);
+          changed = true;
+        }
       }
-      return next;
+      return changed ? next : prev;
     });
   }, [shorts.length]);
 
