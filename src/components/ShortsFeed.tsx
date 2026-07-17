@@ -130,7 +130,6 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           videoId: short.videoId,
           width: "100%",
           height: "100%",
-          host: "https://www.youtube-nocookie.com",
           playerVars: {
             autoplay: i === activeIdx ? 1 : 0,
             mute: 1,
@@ -143,6 +142,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             iv_load_policy: 3,
             disablekb: 1,
             fs: 0,
+            origin: window.location.origin,
           },
           events: {
             onReady: (e: any) => {
@@ -322,13 +322,13 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               </div>
             )}
 
-            {/* Tap-to-unmute hint on first short while muted */}
             {muted && i === activeIdx && (
               <button
                 onClick={enableSound}
-                className="absolute left-1/2 top-4 z-20 -translate-x-1/2 rounded-full bg-white/92 px-4 py-1.5 text-xs font-semibold text-black shadow-lg"
+                className="absolute inset-0 z-20 flex items-start justify-center bg-transparent pt-4 text-xs font-semibold text-black"
+                aria-label="Turn on sound"
               >
-                Tap anywhere for sound
+                <span className="rounded-full bg-white/92 px-4 py-1.5 shadow-lg">Tap anywhere for sound</span>
               </button>
             )}
 
