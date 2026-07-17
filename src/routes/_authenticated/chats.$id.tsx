@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/chats/$id")({
@@ -49,7 +50,7 @@ function ChatRoom() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("display_name, avatar_emoji, area")
+        .select("display_name, avatar_emoji, avatar_url, area")
         .eq("id", otherId!)
         .maybeSingle();
       if (error) throw error;
@@ -120,9 +121,7 @@ function ChatRoom() {
         <button onClick={() => navigate({ to: "/chats" })} className="rounded-full p-2 hover:bg-secondary">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-primary text-lg">
-          {other?.avatar_emoji ?? "🌴"}
-        </div>
+        <ProfileAvatar url={other?.avatar_url} emoji={other?.avatar_emoji} name={other?.display_name} className="h-10 w-10" fallbackClassName="text-lg" />
         <div className="min-w-0">
           <p className="truncate font-semibold text-foreground">{other?.display_name ?? "Goan"}</p>
           {other?.area && <p className="truncate text-xs text-muted-foreground">{other.area}</p>}

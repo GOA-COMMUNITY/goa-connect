@@ -5,6 +5,19 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
 import { useEffect, useState } from "react";
 
+const initialVideos: Short[] = [
+  { videoId: "vsTOfkinlCc", channelName: "Goa Social", channelIcon: "🌴" },
+  { videoId: "XjaqknGJ538", channelName: "Goa Vibes", channelIcon: "🏖️" },
+  { videoId: "nB6TZ3RvJz4", channelName: "Susegad Shorts", channelIcon: "🌊" },
+  { videoId: "TKBcv3WngNM", channelName: "Goa Nights", channelIcon: "🎵" },
+  { videoId: "5d8NIJDA3pA", channelName: "Local Goa", channelIcon: "🥥" },
+  { videoId: "TAI7TjBE6_s", channelName: "Beach Feed", channelIcon: "🌅" },
+  { videoId: "Phx53r74bIU", channelName: "Goa Social", channelIcon: "🦐" },
+  { videoId: "aSp-Va-OBX8", channelName: "Goa Vibes", channelIcon: "🏄" },
+  { videoId: "RVoH_7lZAoE", channelName: "Susegad Shorts", channelIcon: "☕" },
+  { videoId: "in1QNb1YCb8", channelName: "Local Goa", channelIcon: "🎭" },
+];
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -13,6 +26,19 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Goa Social — Community of Goa" },
       { property: "og:description", content: "Connect with Goans, discover local businesses, events, and stories." },
       { property: "og:type", content: "website" },
+    ],
+    links: [
+      { rel: "preconnect", href: "https://www.youtube.com" },
+      { rel: "preconnect", href: "https://www.youtube-nocookie.com" },
+      { rel: "preconnect", href: "https://i.ytimg.com" },
+      { rel: "preconnect", href: "https://s.ytimg.com" },
+      { rel: "dns-prefetch", href: "https://www.google.com" },
+      ...initialVideos.slice(0, 3).map((video, index) => ({
+        rel: "preload",
+        as: "image",
+        href: `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`,
+        fetchPriority: index === 0 ? "high" : "low",
+      })),
     ],
   }),
   component: Home,
@@ -31,7 +57,7 @@ const stories = [
 const chips = ["For You", "North Goa", "South Goa", "Trending", "Food", "Events", "Music", "Beaches"];
 
 function Home() {
-  const [videos, setVideos] = useState<Short[]>([]);
+  const [videos, setVideos] = useState<Short[]>(initialVideos);
   const [activeChip, setActiveChip] = useState("For You");
 
   useEffect(() => {
@@ -44,9 +70,9 @@ function Home() {
 
   return (
     <SplashScreen duration={7500}>
-      <AppLayout>
+      <AppLayout showEventBanner={false}>
         {/* Shorts feed FIRST so it warms up during splash */}
-        <section className="px-3 pt-3">
+        <section className="px-2 pt-2 sm:px-3">
           <ShortsFeed shorts={videos} />
         </section>
 

@@ -5,7 +5,7 @@ type GoaEvent = { name: string; date: string; description?: string };
 
 export function EventBanner() {
   const [event, setEvent] = useState<{ event: GoaEvent; days: number } | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(() => typeof window !== "undefined" && sessionStorage.getItem("gs_event_dismissed") === "1");
 
   useEffect(() => {
     fetch("/events.json")
@@ -43,6 +43,7 @@ export function EventBanner() {
         </div>
         <button
           onClick={() => setDismissed(true)}
+          onPointerDown={() => sessionStorage.setItem("gs_event_dismissed", "1")}
           className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 hover:bg-white/25"
           aria-label="Dismiss"
         >

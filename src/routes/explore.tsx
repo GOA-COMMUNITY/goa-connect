@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/explore")({
@@ -25,7 +26,10 @@ type Profile = {
   area: string | null;
   bio: string | null;
   avatar_emoji: string | null;
+  avatar_url: string | null;
   username: string | null;
+  is_goan: boolean | null;
+  is_tourist: boolean | null;
 };
 
 function Explore() {
@@ -38,7 +42,12 @@ function Explore() {
   const { data: profiles = [], isLoading } = useQuery({
     queryKey: ["profiles", active, q],
     queryFn: async () => {
-      let query = supabase.from("profiles").select("*").order("created_at", { ascending: false }).limit(50);
+      let query = supabase
+        .from("profiles")
+        .select("id, display_name, area, bio, avatar_emoji, avatar_url, username, is_goan, is_tourist, is_active")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(50);
       if (active !== "All Goans") query = query.eq("area", active);
       if (q) query = query.ilike("display_name", `%${q}%`);
       const { data, error } = await query;
@@ -156,14 +165,16 @@ function Explore() {
             return (
               <div key={p.id} className="rounded-3xl border border-border bg-card p-4 shadow-soft">
                 <div className="flex gap-4">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-primary text-3xl">
-                    {p.avatar_emoji ?? "🌴"}
-                  </div>
+                  <ProfileAvatar url={p.avatar_url} emoji={p.avatar_emoji} name={p.display_name} className="h-16 w-16" fallbackClassName="text-3xl" />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <h3 className="font-semibold text-foreground">{p.display_name}</h3>
-                      <CheckCircle2 className="h-4 w-4 text-primary" />
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">Goan</span>
+                      {p.is_goan && <CheckCircle2 className="h-4 w-4 text-primary" />}
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                        p.is_tourist ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary"
+                      }`}>
+                        {p.is_tourist ? "Tourist" : "Goan"}
+                      </span>
                     </div>
                     {(p.area || p.username) && (
                       <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">

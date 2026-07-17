@@ -12,7 +12,7 @@ const navItems = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
-export function AppLayout({ children }: { children: ReactNode }) {
+export function AppLayout({ children, showEventBanner = true }: { children: ReactNode; showEventBanner?: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { isAdmin } = useAuth();
 
@@ -38,7 +38,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <EventBanner />
+      {showEventBanner && <EventBanner />}
 
       <main className="mx-auto max-w-2xl">{children}</main>
 
