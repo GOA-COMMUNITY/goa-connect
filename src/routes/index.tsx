@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
         rel: "preload",
         as: "image",
         href: `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`,
-        fetchPriority: index === 0 ? "high" : "low",
+        fetchPriority: (index === 0 ? "high" : "low") as "high" | "low",
       })),
     ],
   }),
