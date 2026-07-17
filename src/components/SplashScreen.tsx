@@ -45,8 +45,8 @@ export function SplashScreen({
           <div className="relative">
             <div className="absolute -inset-12 animate-ping rounded-full bg-white/20" />
             <div className="absolute -inset-6 animate-pulse rounded-full bg-white/30" />
-            <div className="relative flex h-32 w-32 items-center justify-center rounded-3xl bg-white text-7xl shadow-2xl animate-bounce">
-              🌴
+            <div className="relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl animate-bounce">
+              <img src="/logo.png" alt="Goa Social" className="h-full w-full object-cover" />
             </div>
           </div>
           <h1 className="mt-10 text-5xl font-extrabold tracking-tight animate-fade-in">

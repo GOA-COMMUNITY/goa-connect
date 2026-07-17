@@ -1,6 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Bookmark, History, Settings, HelpCircle, ChevronRight, LogOut, Moon, Sun, Loader2 } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { FileText, HelpCircle, ChevronRight, LogOut, Moon, Sun, Loader2, ShieldCheck } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,14 +20,24 @@ function Profile() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [dark, setDark] = useState(() => typeof document !== "undefined" && document.documentElement.classList.contains("dark"));
+  const [themeReady, setThemeReady] = useState(false);
+  const [dark, setDark] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ display_name: "", area: "", bio: "", avatar_emoji: "🌴" });
 
   useEffect(() => {
+    const saved = localStorage.getItem("gs_theme");
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+    setDark(saved ? saved === "dark" : document.documentElement.classList.contains("dark") || prefersDark);
+    setThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!themeReady) return;
     document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+    localStorage.setItem("gs_theme", dark ? "dark" : "light");
+  }, [dark, themeReady]);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
@@ -91,18 +102,17 @@ function Profile() {
   ];
 
   const menu = [
-    { icon: Bookmark, label: "Saved Videos" },
-    { icon: History, label: "Watch History" },
-    { icon: Settings, label: "Settings" },
-    { icon: HelpCircle, label: "Help & Support" },
+    { icon: ShieldCheck, label: "Privacy Policy", to: "/privacy" as const },
+    { icon: FileText, label: "Terms & Conditions", to: "/terms" as const },
+    { icon: FileText, label: "Refund Policy", to: "/refunds" as const },
   ];
 
   return (
     <AppLayout>
       <div className="space-y-4 p-4">
         <div className="rounded-3xl border border-border bg-card p-6 text-center shadow-card">
-          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-primary text-4xl shadow-card">
-            {profile?.avatar_emoji ?? "🌴"}
+          <div className="mx-auto w-fit rounded-full shadow-card">
+            <ProfileAvatar url={profile?.avatar_url} emoji={profile?.avatar_emoji} name={profile?.display_name} className="h-24 w-24" fallbackClassName="text-4xl" />
           </div>
           <h2 className="mt-3 text-xl font-bold text-foreground">
             {isLoading ? "…" : profile?.display_name ?? "Goan"}
@@ -200,8 +210,9 @@ function Profile() {
 
         <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
           {menu.map((m, i) => (
-            <button
+            <Link
               key={m.label}
+              to={m.to}
               className={`flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-secondary/60 ${
                 i < menu.length - 1 ? "border-b border-border" : ""
               }`}
@@ -209,8 +220,16 @@ function Profile() {
               <m.icon className="h-5 w-5 text-primary" />
               <span className="flex-1 text-sm font-medium text-foreground">{m.label}</span>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            </button>
+            </Link>
           ))}
+          <a
+            href="mailto:support@goasocial.in"
+            className="flex w-full items-center gap-3 border-t border-border px-5 py-4 text-left transition-colors hover:bg-secondary/60"
+          >
+            <HelpCircle className="h-5 w-5 text-primary" />
+            <span className="flex-1 text-sm font-medium text-foreground">Help & Support</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </a>
         </div>
 
         <button

@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, Edit3 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { formatDistanceToNowStrict } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/chats")({
@@ -23,6 +25,7 @@ type Conv = {
 
 function Chats() {
   const { user } = useAuth();
+  const [q, setQ] = useState("");
 
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ["conversations", user?.id],
@@ -47,13 +50,19 @@ function Chats() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, avatar_emoji, area")
+        .select("id, display_name, avatar_emoji, avatar_url, area")
         .in("id", otherIds);
       if (error) throw error;
       return data;
     },
   });
   const pmap = new Map(profiles.map((p) => [p.id, p]));
+  const filteredConversations = conversations.filter((c) => {
+    const otherId = c.user_a === user?.id ? c.user_b : c.user_a;
+    const p = pmap.get(otherId);
+    const haystack = `${p?.display_name ?? ""} ${p?.area ?? ""} ${c.last_message ?? ""}`.toLowerCase();
+    return !q || haystack.includes(q.toLowerCase());
+  });
 
   return (
     <AppLayout>
@@ -72,6 +81,8 @@ function Chats() {
         <div className="flex items-center gap-3 rounded-full border border-border bg-card px-5 py-3 shadow-soft">
           <Search className="h-5 w-5 text-primary" />
           <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
             placeholder="Search chats…"
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
@@ -95,9 +106,15 @@ function Chats() {
           </div>
         )}
 
-        {conversations.length > 0 && (
+        {!isLoading && conversations.length > 0 && filteredConversations.length === 0 && (
+          <div className="rounded-3xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+            No chats match your search.
+          </div>
+        )}
+
+        {filteredConversations.length > 0 && (
           <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
-            {conversations.map((c, i) => {
+            {filteredConversations.map((c, i) => {
               const otherId = c.user_a === user?.id ? c.user_b : c.user_a;
               const p = pmap.get(otherId);
               return (
@@ -106,12 +123,10 @@ function Chats() {
                   to="/chats/$id"
                   params={{ id: c.id }}
                   className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-secondary/60 ${
-                    i < conversations.length - 1 ? "border-b border-border" : ""
+                    i < filteredConversations.length - 1 ? "border-b border-border" : ""
                   }`}
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-primary text-xl">
-                    {p?.avatar_emoji ?? "🌴"}
-                  </div>
+                  <ProfileAvatar url={p?.avatar_url} emoji={p?.avatar_emoji} name={p?.display_name} className="h-12 w-12" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                       <span className="truncate font-semibold text-foreground">

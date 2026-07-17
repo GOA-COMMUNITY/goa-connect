@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Star, MapPin, Phone, Plus, Loader2, X } from "lucide-react";
+import { Star, MapPin, Phone, Plus, Loader2, X, ExternalLink } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -29,6 +29,17 @@ type Biz = {
 };
 
 const CATEGORIES = ["Cafe", "Restaurant", "Bar", "Surf School", "Hotel", "Shop", "Art", "Service", "Other"];
+const CATEGORY_EMOJI: Record<string, string> = {
+  Cafe: "☕",
+  Restaurant: "🦐",
+  Bar: "🍹",
+  "Surf School": "🏄",
+  Hotel: "🏨",
+  Shop: "🛍️",
+  Art: "🎨",
+  Service: "🛠️",
+  Other: "🌴",
+};
 
 function Business() {
   const { user } = useAuth();
@@ -87,6 +98,9 @@ function Business() {
         {businesses.map((b) => (
           <article key={b.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
             <div className="relative h-32 bg-gradient-primary">
+              <div className="absolute right-4 top-4 text-5xl opacity-90 drop-shadow-sm">
+                {CATEGORY_EMOJI[b.category ?? "Other"] ?? "🌴"}
+              </div>
               <div className="absolute bottom-3 left-4 right-4 text-white">
                 <h3 className="text-xl font-bold drop-shadow">{b.name}</h3>
                 {b.rating != null && b.rating > 0 && (
@@ -126,8 +140,9 @@ function Business() {
                       target="_blank"
                       rel="noreferrer"
                       className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground"
+                      aria-label={`Open ${b.name} on Google Maps`}
                     >
-                      <MapPin className="h-4 w-4" />
+                      <ExternalLink className="h-4 w-4" />
                     </a>
                   )}
                 </div>

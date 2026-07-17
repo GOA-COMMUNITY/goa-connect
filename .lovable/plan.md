@@ -1,49 +1,61 @@
-# Goa Social — make it functional
+## Goal
 
-Static SPA on GitHub Pages, so **all backend calls go straight from the browser to Lovable Cloud** (no `createServerFn`; those don't ship to Pages). Auth gating is client-side.
+Review Goa Social apart from the demo/fake-profile topic, fix obvious product/UX issues, and improve YouTube Shorts speed as much as embedded YouTube allows, plus use extra tricks to increase the speed.
 
-## 1. Database (one migration)
+## Important reality about YouTube Shorts
 
-Tables in `public`, each with `GRANT` + RLS + policies:
+Embedded YouTube videos cannot load exactly as fast as YouTube’s own app/site because YouTube controls the iframe player, network buffering, autoplay rules, and sound policy. Browsers also block autoplay with audio until the user taps once. I can still make it feel much faster by preloading earlier, keeping players mounted, improving the viewport, and making the first tap enable sound cleanly, what I will do is any tap on the screen enables sound rather than a fixed button to tap.
 
-- **profiles** — `id (uuid PK = auth.users.id)`, `username`, `display_name`, `area`, `bio`, `avatar_emoji`, `is_goan bool`, `created_at`. Auto-created on signup via `handle_new_user()` trigger on `auth.users`.
-- **follows** — `(follower_id, following_id)` composite PK.
-- **businesses** — `id`, `owner_id`, `name`, `description`, `category`, `area`, `phone`, `rating`, `created_at`. Public read, owner write.
-- **conversations** — `id`, `user_a`, `user_b` (sorted), `last_message_at`. Unique on the pair.
-- **messages** — `id`, `conversation_id`, `sender_id`, `body`, `created_at`. Realtime publication enabled. Policies via a `is_conversation_member()` security-definer fn (no recursive RLS).
+## What I found from the current code
 
-## 2. Auth
+- The home page fetches `/videos.json` after React mounts, then mounts only the first few YouTube iframe players.
+- The Shorts feed currently creates YouTube iframe players lazily through the iframe API and keeps a preload window around the active short.
+- Audio starts muted by design, which is required for browser autoplay; it needs a user gesture to unmute.
+- The Shorts area is inside the normal app layout, below the sticky header and event banner, which can make the feed feel less like a native full-screen Shorts experience.
+- Several pages are functional but still have rough edges: search fields that do not filter chats, profile menu items that are visual-only, business cards without real image handling, and image/avatar usage that can be improved.
 
-- New route `/auth` — email/password sign-in + sign-up + **Google** (via `lovable.auth.signInWithOAuth`). Configured the same turn with `supabase--configure_social_auth`.
-- Integration-managed `_authenticated/route.tsx` gate (auto-shipped, `ssr:false`).
-- Move `/chats`, `/chats/$id`, `/profile` under `_authenticated/`. Keep `/`, `/explore`, `/business` public; show "Sign in to message / follow / list" CTAs when signed out.
-- Root: `onAuthStateChange` invalidates queries on `SIGNED_IN`/`SIGNED_OUT`/`USER_UPDATED`.
+## Plan
 
-## 3. Routes (rewritten to use Supabase + TanStack Query)
+### 1. Full-site audit pass
 
-- **`/` (home)** — keep current `videos.json` feed; add "like" only if signed in.
-- **`/explore`** — list real profiles from `profiles` (filter by area chip), Follow/Message buttons gated on auth.
-- **`/business`** — list real businesses; "+ List" opens a dialog (auth required) that inserts into `businesses`.
-- **`/_authenticated/chats`** — conversations the user is in, sorted by `last_message_at`; "Compose" picks a profile to start a thread.
-- **`/_authenticated/chats/$id`** — realtime message thread (subscribe to `messages` filtered by `conversation_id`, cleanup on unmount).
-- **`/_authenticated/profile`** — real profile, edit form (display name / area / bio / emoji), sign out with proper cache teardown.
+- Check the main public and signed-in routes: `/`, `/explore`, `/business`, `/auth`, `/chats`, `/profile`, and legal pages.
+- Look for layout overlap, broken images, dead buttons, slow network calls, missing loading states, and mobile viewport issues.
+- Fix only the issues that are visible and useful for the current site; avoid adding unrelated features.
+- Make sure latest shorts video are Fetched from channel
 
-## 4. Cleanup
+### 2. Make Shorts feel much faster
 
-Files to delete (confirmed unused after rewrite):
-- `src/routes/README.md` — boilerplate notes.
-- Unused shadcn primitives in `src/components/ui/` not referenced anywhere after the rewrite (carousel, chart, sidebar, menubar, navigation-menu, resizable, pagination, breadcrumb, command, context-menu, hover-card, input-otp, calendar, table, accordion, collapsible, drawer, alert-dialog, aspect-ratio) — I'll `rg` each to confirm zero refs before deleting.
+- Move video loading earlier by adding YouTube/thumbnail preconnects and DNS hints in the route head.
+- Preload the first few thumbnails immediately instead of waiting for normal image discovery.
+- Mount/warm the first 5 shorts during the splash screen, not only after the user sees the feed.
+- Keep iframe/player instances stable so scrolling does not recreate them.
+- Track player readiness and only show the thumbnail/spinner overlay until the active video is actually ready.
+- Improve active-video detection so scrolling down activates the lower short and scrolling up activates the upper short correctly.
+- Pause far-away players to reduce memory/network pressure, while keeping nearby players warm.
+- Persist the user’s sound choice for the session after the first tap, then apply it immediately to the active and nearby players.
+- Add a clear “Tap for sound” behavior that works reliably, while respecting browser autoplay restrictions.
 
-Keeping: `public/videos.json`, `public/events.json`, `server.ts`, `start.ts`, `vite.config.ts` (needed by the build even on Pages).
+### 3. Fix Shorts visual layout
 
-## 5. Verify
+- Rework the Shorts feed to use a cleaner phone-like full-screen frame that fits between the header and bottom nav on mobile.
+- Ensure controls do not cover each other: sound button, tap-for-sound pill, channel area, like/comment/share stack, and bottom nav.
+- Use a consistent aspect ratio and object-fit behavior so thumbnails and iframes do not show awkward black gaps more than necessary.
+- Add a lightweight loading state for the active short instead of a plain black screen.
 
-- `bun run build:dev` to confirm the static SPA still builds.
-- Quick Playwright smoke run on `localhost:8080`: load `/`, `/explore`, `/business`, hit `/auth`, confirm the gate bounces `/chats`.
+### 4. Improve core app polish
 
-## Out of scope (call out explicitly)
+- Make chat search actually filter conversations on the screen.
+- Improve profile avatars/images where supported by existing data, falling back cleanly to emoji.
+- Improve business listing cards so they do not look empty when no image exists.
+- Make visual-only profile menu actions either functional or clearly remove/replace them with useful actions.
+- Add better empty/error states for Explore, Business, Chats, and Profile.
 
-- Stories, video uploads, push notifications, payments / "free messages" paywall, business booking flow, search index — all visible in the UI but mocked. I'll leave the existing chip UI and copy in place so nothing looks broken.
-- Server functions / webhooks — incompatible with GitHub Pages static hosting; everything is browser → Cloud.
+### 5. Performance and reliability checks
 
-Confirm and I'll execute end-to-end in one pass.
+- Run a build check after implementation.
+- Use the live preview to smoke-test home scrolling, sound toggle, route navigation, auth page rendering, and legal pages.
+- Check console/network signals for obvious errors after the changes.
+
+## Recommendation for the future
+
+For true TikTok/YouTube-level instant playback, the best long-term setup is to store short videos as optimized MP4/HLS files in your app storage/CDN and play them with the native HTML video element. Embedded YouTube will always be slower and less controllable than self-hosted optimized video.
