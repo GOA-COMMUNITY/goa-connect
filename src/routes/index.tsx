@@ -107,13 +107,14 @@ function Home() {
             {stories.map((s) => {
               const Icon = s.icon;
               return (
-              <div key={s.name} className="shrink-0 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-primary bg-secondary text-primary">
-                  <Icon className="h-7 w-7" />
+                <div key={s.name} className="shrink-0 text-center">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-primary bg-secondary text-primary">
+                    <Icon className="h-7 w-7" />
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-muted-foreground">{s.name}</p>
                 </div>
-                <p className="mt-1.5 text-[11px] text-muted-foreground">{s.name}</p>
-              </div>
-            )})}
+              );
+            })}
           </div>
         </section>
 
