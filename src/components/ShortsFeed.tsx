@@ -153,7 +153,6 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               if (i === activeIdxRef.current) e.target.playVideo();
               else warmPlayer(i);
             },
-            onStateChange: () => setReady(new Set(readyPlayers.current)),
           },
         });
       });
@@ -161,7 +160,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     return () => {
       cancelled = true;
     };
-  }, [mounted, shorts, activeIdx, warmPlayer]);
+  }, [mounted, shorts, warmPlayer]);
 
   // Pick the slide closest to the frame center. This is more reliable than only
   // trusting IntersectionObserver entries during fast up/down snap scrolling.
