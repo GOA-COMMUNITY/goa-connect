@@ -324,15 +324,8 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               </div>
             )}
 
-            {muted && i === activeIdx && (
-              <button
-                onClick={enableSound}
-                className="absolute inset-0 z-20 flex items-start justify-center bg-transparent pt-4 text-xs font-semibold text-black"
-                aria-label="Turn on sound"
-              >
-                <span className="rounded-full bg-white/92 px-4 py-1.5 shadow-lg">Tap anywhere for sound</span>
-              </button>
-            )}
+            {/* Sound unlock is handled by the splash — no pill overlay here */}
+
 
             {/* Overlay UI */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-4 pb-7 pt-24 text-white">
