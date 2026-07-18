@@ -90,9 +90,13 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       player.mute?.();
       player.playVideo?.();
       window.setTimeout(() => {
-        if (activeIdxRef.current !== index) player.pauseVideo?.();
-        if (!mutedRef.current) player.unMute?.();
-      }, 900);
+        try {
+          if (activeIdxRef.current !== index) {
+            player.pauseVideo?.();
+            player.mute?.();
+          }
+        } catch {}
+      }, 700);
     } catch {}
   }, []);
 
@@ -101,22 +105,20 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       const i = Number(key);
       if (!player || typeof player.playVideo !== "function") return;
       try {
-        if (Math.abs(i - index) > 3) {
-          player.pauseVideo();
-          return;
-        }
         if (i === index) {
           if (mutedRef.current) player.mute?.();
           else player.unMute?.();
           player.playVideo();
-        } else if (Math.abs(i - index) <= 2) {
-          warmPlayer(i);
         } else {
+          // ALWAYS pause + mute non-active so audio never bleeds after scroll
           player.pauseVideo?.();
+          player.mute?.();
+          if (Math.abs(i - index) <= 2) warmPlayer(i);
         }
       } catch {}
     });
   }, [warmPlayer]);
+
 
   // Instantiate a YT player for each mounted index
   useEffect(() => {
