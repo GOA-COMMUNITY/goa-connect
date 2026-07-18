@@ -41,34 +41,66 @@ function AuthPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (busy) return;
     setBusy(true);
     try {
-      const email = isPhone(identifier) ? phoneToEmail(identifier) : identifier.trim();
+      const raw = identifier.trim();
+      const email = isPhone(raw) ? phoneToEmail(raw) : raw.toLowerCase();
+
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              full_name: name || (isPhone(identifier) ? `Goan ${identifier.slice(-4)}` : email.split("@")[0]),
+              full_name:
+                name.trim() ||
+                (isPhone(raw) ? `Goan ${raw.slice(-4)}` : email.split("@")[0]),
               is_tourist: userType === "tourist",
             },
             emailRedirectTo: window.location.origin,
           },
         });
-        if (error) throw error;
-        // Set tourist flag on profile (handle_new_user trigger creates it)
+        if (error) {
+          // Common: "User already registered" -> guide them to sign in
+          if (/already/i.test(error.message)) {
+            toast.error("Account exists — try signing in instead.");
+            setMode("signin");
+          } else {
+            toast.error(error.message);
+          }
+          return;
+        }
+
+        // Try to sign in immediately (works when email confirmation is off)
+        const { data: signInData, error: signInErr } =
+          await supabase.auth.signInWithPassword({ email, password });
+
+        if (signInErr || !signInData.session) {
+          toast.success("Account created! Please check your email to confirm, then sign in.");
+          setMode("signin");
+          return;
+        }
+
+        // Best-effort profile flags — ignore RLS errors, trigger already created row
         if (data.user) {
-          await supabase
+          supabase
             .from("profiles")
             .update({ is_tourist: userType === "tourist", is_goan: userType === "goan" })
-            .eq("id", data.user.id);
+            .eq("id", data.user.id)
+            .then(() => {});
         }
         toast.success("Welcome to Goa Social!");
         navigate({ to: "/" });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          toast.error(error.message === "Invalid login credentials"
+            ? "Wrong email/phone or password."
+            : error.message);
+          return;
+        }
+        toast.success("Welcome back!");
         navigate({ to: "/" });
       }
     } catch (err) {
@@ -77,6 +109,7 @@ function AuthPage() {
       setBusy(false);
     }
   }
+
 
   async function handleGoogle() {
     setBusy(true);

@@ -68,15 +68,20 @@ function Home() {
       .catch(() => {});
   }, []);
 
+  // Split feed into interleaved chunks: 1 short → dashboard → 2 shorts → stories → rest → ad
+  const firstShort = videos.slice(0, 1);
+  const nextTwoShorts = videos.slice(1, 3);
+  const restShorts = videos.slice(3);
+
   return (
     <SplashScreen duration={7500}>
       <AppLayout showEventBanner={false}>
-        {/* Shorts feed FIRST so it warms up during splash */}
+        {/* 1️⃣ First short on top — instant hook */}
         <section className="px-2 pt-2 sm:px-3">
-          <ShortsFeed shorts={videos} />
+          <ShortsFeed shorts={firstShort} />
         </section>
 
-        {/* Welcome hero */}
+        {/* 📋 Dashboard / welcome hero */}
         <section className="mx-3 mt-4 overflow-hidden rounded-3xl bg-gradient-primary p-6 text-primary-foreground shadow-card">
           <h1 className="flex items-end gap-2 text-3xl font-bold leading-tight">
             <span>Susegad,<br />welcome home</span>
@@ -97,7 +102,14 @@ function Home() {
           </div>
         </section>
 
-        {/* Stories */}
+        {/* 2️⃣ Two more shorts */}
+        {nextTwoShorts.length > 0 && (
+          <section className="mt-4 px-2 sm:px-3">
+            <ShortsFeed shorts={nextTwoShorts} />
+          </section>
+        )}
+
+        {/* 📖 Stories */}
         <section className="mt-4 bg-card py-4">
           <div className="mb-3 flex items-center justify-between px-4">
             <h2 className="text-base font-semibold text-foreground">Live Stories</h2>
@@ -118,7 +130,7 @@ function Home() {
           </div>
         </section>
 
-        {/* Category chips */}
+        {/* 🏷️ Category chips */}
         <section className="bg-card pb-3 pt-1">
           <div className="scrollbar-hide flex gap-2 overflow-x-auto px-4">
             {chips.map((c) => (
@@ -136,7 +148,30 @@ function Home() {
             ))}
           </div>
         </section>
+
+        {/* 3️⃣ Rest of shorts — the meat (40-60% of feed) */}
+        {restShorts.length > 0 && (
+          <section className="mt-4 px-2 sm:px-3">
+            <ShortsFeed shorts={restShorts} />
+          </section>
+        )}
+
+        {/* 📢 Ad / business slot */}
+        <section className="mx-3 mt-4 mb-6 overflow-hidden rounded-3xl border-2 border-dashed border-primary/40 bg-gradient-to-br from-primary/5 via-background to-blue-50 p-5 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-primary/70">Sponsored</p>
+          <h3 className="mt-1 text-lg font-bold text-foreground">Grow your Goan business 🌴</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Reach thousands of locals & tourists. Your ad here.
+          </p>
+          <Link
+            to="/business"
+            className="mt-3 inline-block rounded-full bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow"
+          >
+            Advertise with us
+          </Link>
+        </section>
       </AppLayout>
     </SplashScreen>
   );
 }
+

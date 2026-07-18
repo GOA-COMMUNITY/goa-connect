@@ -90,9 +90,13 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       player.mute?.();
       player.playVideo?.();
       window.setTimeout(() => {
-        if (activeIdxRef.current !== index) player.pauseVideo?.();
-        if (!mutedRef.current) player.unMute?.();
-      }, 900);
+        try {
+          if (activeIdxRef.current !== index) {
+            player.pauseVideo?.();
+            player.mute?.();
+          }
+        } catch {}
+      }, 700);
     } catch {}
   }, []);
 
@@ -101,22 +105,20 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       const i = Number(key);
       if (!player || typeof player.playVideo !== "function") return;
       try {
-        if (Math.abs(i - index) > 3) {
-          player.pauseVideo();
-          return;
-        }
         if (i === index) {
           if (mutedRef.current) player.mute?.();
           else player.unMute?.();
           player.playVideo();
-        } else if (Math.abs(i - index) <= 2) {
-          warmPlayer(i);
         } else {
+          // ALWAYS pause + mute non-active so audio never bleeds after scroll
           player.pauseVideo?.();
+          player.mute?.();
+          if (Math.abs(i - index) <= 2) warmPlayer(i);
         }
       } catch {}
     });
   }, [warmPlayer]);
+
 
   // Instantiate a YT player for each mounted index
   useEffect(() => {
@@ -322,15 +324,8 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               </div>
             )}
 
-            {muted && i === activeIdx && (
-              <button
-                onClick={enableSound}
-                className="absolute inset-0 z-20 flex items-start justify-center bg-transparent pt-4 text-xs font-semibold text-black"
-                aria-label="Turn on sound"
-              >
-                <span className="rounded-full bg-white/92 px-4 py-1.5 shadow-lg">Tap anywhere for sound</span>
-              </button>
-            )}
+            {/* Sound unlock is handled by the splash — no pill overlay here */}
+
 
             {/* Overlay UI */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-4 pb-7 pt-24 text-white">
