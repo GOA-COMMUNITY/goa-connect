@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Refresh latest YouTube Shorts list
+        run: bun run videos:update || echo "Keeping existing videos.json"
+
       - name: Build (static SPA)
         run: bun run build
 
