@@ -13,6 +13,7 @@ declare global {
     YT?: any;
     onYouTubeIframeAPIReady?: () => void;
     __ytReadyPromise?: Promise<any>;
+    __gsShortsPlayers?: Map<string, any>;
   }
 }
 
@@ -39,6 +40,22 @@ function requestLowQuality(player: any) {
     player.setPlaybackQuality?.("tiny");
     player.setPlaybackQualityRange?.("tiny", "small");
   } catch {}
+}
+
+function globalPlayers() {
+  if (!window.__gsShortsPlayers) window.__gsShortsPlayers = new Map<string, any>();
+  return window.__gsShortsPlayers;
+}
+
+function pauseEveryPlayerExcept(activeKey?: string) {
+  if (typeof window === "undefined") return;
+  globalPlayers().forEach((player, key) => {
+    if (key === activeKey) return;
+    try {
+      player.pauseVideo?.();
+      player.mute?.();
+    } catch {}
+  });
 }
 
 function isFocusedFeed(root: HTMLDivElement | null) {
@@ -123,6 +140,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     }
     setCanLoadPlayers(true);
     window.dispatchEvent(new CustomEvent("gs-shorts-active-feed", { detail: feedId.current }));
+    pauseEveryPlayerExcept(`${feedId.current}:${index}`);
     Object.entries(players.current).forEach(([key, player]) => {
       const i = Number(key);
       if (!player || typeof player.playVideo !== "function") return;
@@ -178,6 +196,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         players.current[i]?.mute?.();
         players.current[i]?.destroy?.();
       } catch {}
+      globalPlayers().delete(`${feedId.current}:${i}`);
       delete players.current[i];
       readyPlayers.current.delete(i);
       setReady(new Set(readyPlayers.current));
@@ -210,6 +229,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           },
           events: {
             onReady: (e: any) => {
+              globalPlayers().set(`${feedId.current}:${i}`, e.target);
               readyPlayers.current.add(i);
               setReady(new Set(readyPlayers.current));
               requestLowQuality(e.target);
@@ -223,6 +243,9 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     });
     return () => {
       cancelled = true;
+      Object.keys(players.current).forEach((key) => {
+        globalPlayers().delete(`${feedId.current}:${key}`);
+      });
     };
   }, [mounted, shorts, syncPlayback, canLoadPlayers]);
 
