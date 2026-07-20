@@ -41,6 +41,26 @@ function requestLowQuality(player: any) {
   } catch {}
 }
 
+function isFocusedFeed(root: HTMLDivElement | null) {
+  if (!root || typeof document === "undefined") return false;
+  const feeds = Array.from(document.querySelectorAll<HTMLDivElement>("[data-shorts-feed]"));
+  const viewportCenter = window.innerHeight / 2;
+  let best: HTMLDivElement | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  feeds.forEach((feed) => {
+    const rect = feed.getBoundingClientRect();
+    const visible = rect.bottom > 72 && rect.top < window.innerHeight - 72;
+    if (!visible) return;
+    const center = rect.top + rect.height / 2;
+    const distance = Math.abs(center - viewportCenter);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = feed;
+    }
+  });
+  return best === root;
+}
+
 export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const feedId = useRef(`feed-${Math.random().toString(36).slice(2)}`);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,7 +120,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   }, []);
 
   const syncPlayback = useCallback((index: number) => {
-    if (!inViewportRef.current) {
+    if (!inViewportRef.current || !isFocusedFeed(containerRef.current)) {
       pauseAll();
       return;
     }
@@ -135,12 +155,12 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     if (!root) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.55;
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.2;
         inViewportRef.current = visible;
         if (visible) syncPlayback(activeIdxRef.current);
         else pauseAll();
       },
-      { threshold: [0, 0.35, 0.55, 0.75] }
+      { threshold: [0, 0.2, 0.45, 0.75] }
     );
     observer.observe(root);
     return () => observer.disconnect();
@@ -240,11 +260,15 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     root.addEventListener("scroll", onScroll, { passive: true });
     root.addEventListener("scrollend", detect);
     window.addEventListener("resize", detect);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("gs-shorts-recheck", detect);
     return () => {
       if (raf) window.cancelAnimationFrame(raf);
       root.removeEventListener("scroll", onScroll);
       root.removeEventListener("scrollend", detect);
       window.removeEventListener("resize", detect);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("gs-shorts-recheck", detect);
     };
   }, [mountAround, pauseAll, syncPlayback]);
 
@@ -296,6 +320,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   return (
     <div
       ref={containerRef}
+      data-shorts-feed={feedId.current}
       onPointerDown={enableSound}
       onClick={handleFeedClick}
       className="relative snap-y snap-mandatory overflow-y-auto rounded-[1.45rem] border border-border bg-black shadow-card scrollbar-hide overscroll-contain"
