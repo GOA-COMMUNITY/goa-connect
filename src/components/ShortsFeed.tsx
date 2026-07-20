@@ -69,6 +69,12 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     mutedRef.current = muted;
   }, [muted]);
 
+  useEffect(() => {
+    const onSoundUnlocked = () => enableSound();
+    window.addEventListener("gs-enable-shorts-sound", onSoundUnlocked);
+    return () => window.removeEventListener("gs-enable-shorts-sound", onSoundUnlocked);
+  }, []);
+
   const mountAround = useCallback((center: number) => {
     setMounted((prev) => {
       const next = new Set<number>();
