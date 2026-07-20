@@ -6,16 +6,16 @@ import { ShortsFeed, type Short } from "@/components/ShortsFeed";
 import { useEffect, useState } from "react";
 
 const initialVideos: Short[] = [
-  { videoId: "vsTOfkinlCc", channelName: "Goa Social", channelIcon: "🌴" },
-  { videoId: "XjaqknGJ538", channelName: "Goa Vibes", channelIcon: "🏖️" },
-  { videoId: "nB6TZ3RvJz4", channelName: "Susegad Shorts", channelIcon: "🌊" },
-  { videoId: "TKBcv3WngNM", channelName: "Goa Nights", channelIcon: "🎵" },
-  { videoId: "5d8NIJDA3pA", channelName: "Local Goa", channelIcon: "🥥" },
-  { videoId: "TAI7TjBE6_s", channelName: "Beach Feed", channelIcon: "🌅" },
-  { videoId: "Phx53r74bIU", channelName: "Goa Social", channelIcon: "🦐" },
-  { videoId: "aSp-Va-OBX8", channelName: "Goa Vibes", channelIcon: "🏄" },
-  { videoId: "RVoH_7lZAoE", channelName: "Susegad Shorts", channelIcon: "☕" },
-  { videoId: "in1QNb1YCb8", channelName: "Local Goa", channelIcon: "🎭" },
+  { videoId: "CNiJy7Hsqbg", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "cf2iERWZlN8", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "Dr4oT3py-JM", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "Th1uHSz852U", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "09y1GEuqfu8", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "l8oM3p6QUpI", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "M8bQEtHUEF8", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "qioLzSJ0iqI", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "oXVstGTHpRs", channelName: "Adventure Goa DK", channelIcon: "🌴" },
+  { videoId: "TZMLSP66eOw", channelName: "Adventure Goa DK", channelIcon: "🌴" },
 ];
 
 export const Route = createFileRoute("/")({
@@ -62,9 +62,9 @@ function Home() {
 
   useEffect(() => {
     // Fetch early so the first short can preload under the splash
-    fetch("/videos.json")
+    fetch(`/videos.json?v=${Math.floor(Date.now() / 900000)}`, { cache: "no-store" })
       .then((r) => r.json())
-      .then((v: Short[]) => setVideos(v.slice(0, 10)))
+      .then((v: Short[]) => setVideos(v.slice(0, 36)))
       .catch(() => {});
   }, []);
 
@@ -74,7 +74,7 @@ function Home() {
   const restShorts = videos.slice(3);
 
   return (
-    <SplashScreen duration={7500}>
+    <SplashScreen duration={5200}>
       <AppLayout showEventBanner={false}>
         {/* 1️⃣ First short on top — instant hook */}
         <section className="px-2 pt-2 sm:px-3">
