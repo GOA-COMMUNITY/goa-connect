@@ -75,6 +75,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1]));
   const [ready, setReady] = useState<Set<number>>(() => new Set());
   const [liked, setLiked] = useState<Set<number>>(() => new Set());
+  const [canLoadPlayers, setCanLoadPlayers] = useState(false);
   const frameStyle = useMemo(() => ({ height: "clamp(430px, calc(100svh - 150px), 760px)" }), []);
 
   useEffect(() => {
@@ -120,6 +121,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       pauseAll();
       return;
     }
+    setCanLoadPlayers(true);
     window.dispatchEvent(new CustomEvent("gs-shorts-active-feed", { detail: feedId.current }));
     Object.entries(players.current).forEach(([key, player]) => {
       const i = Number(key);
@@ -153,7 +155,10 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       ([entry]) => {
         const visible = entry.isIntersecting && entry.intersectionRatio >= 0.2;
         inViewportRef.current = visible;
-        if (visible) syncPlayback(activeIdxRef.current);
+        if (visible && isFocusedFeed(root)) {
+          setCanLoadPlayers(true);
+          syncPlayback(activeIdxRef.current);
+        }
         else pauseAll();
       },
       { threshold: [0, 0.2, 0.45, 0.75] }
@@ -163,6 +168,8 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   }, [pauseAll, syncPlayback]);
 
   useEffect(() => {
+    if (!canLoadPlayers) return;
+
     Object.keys(players.current).forEach((key) => {
       const i = Number(key);
       if (mounted.has(i)) return;
@@ -217,7 +224,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     return () => {
       cancelled = true;
     };
-  }, [mounted, shorts, syncPlayback]);
+  }, [mounted, shorts, syncPlayback, canLoadPlayers]);
 
   useEffect(() => {
     const root = containerRef.current;
@@ -246,6 +253,12 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         activeIdxRef.current = best;
         setActiveIdx(best);
         mountAround(best);
+        if (isFocusedFeed(root)) {
+          setCanLoadPlayers(true);
+          syncPlayback(best);
+        } else pauseAll();
+      } else if (isFocusedFeed(root)) {
+        setCanLoadPlayers(true);
         syncPlayback(best);
       }
     };
