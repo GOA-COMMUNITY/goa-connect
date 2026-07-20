@@ -8,12 +8,12 @@ export type Short = {
   channelIcon: string;
 };
 
-// Lazy-load YouTube IFrame API once
 declare global {
   interface Window {
     YT?: any;
     onYouTubeIframeAPIReady?: () => void;
     __ytReadyPromise?: Promise<any>;
+    __gsShortsPlayers?: Map<string, any>;
   }
 }
 
@@ -21,9 +21,10 @@ function loadYT(): Promise<any> {
   if (typeof window === "undefined") return Promise.reject();
   if (window.__ytReadyPromise) return window.__ytReadyPromise;
   window.__ytReadyPromise = new Promise((resolve) => {
-    if (window.YT && window.YT.Player) return resolve(window.YT);
+    if (window.YT?.Player) return resolve(window.YT);
     const tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
+    tag.async = true;
     document.head.appendChild(tag);
     const prev = window.onYouTubeIframeAPIReady;
     window.onYouTubeIframeAPIReady = () => {
@@ -34,30 +35,65 @@ function loadYT(): Promise<any> {
   return window.__ytReadyPromise;
 }
 
-/**
- * Vertical snap-scroll shorts feed.
- * - iframes mount once, controlled via YT IFrame API (never remount)
- * - preload ±2 window, first 3 mounted eagerly
- * - starts muted for autoplay; tap unmutes globally
- */
+function requestLowQuality(player: any) {
+  try {
+    player.setPlaybackQuality?.("tiny");
+    player.setPlaybackQualityRange?.("tiny", "small");
+  } catch {}
+}
+
+function globalPlayers() {
+  if (!window.__gsShortsPlayers) window.__gsShortsPlayers = new Map<string, any>();
+  return window.__gsShortsPlayers;
+}
+
+function pauseEveryPlayerExcept(activeKey?: string) {
+  if (typeof window === "undefined") return;
+  globalPlayers().forEach((player, key) => {
+    if (key === activeKey) return;
+    try {
+      player.pauseVideo?.();
+      player.mute?.();
+    } catch {}
+  });
+}
+
+function isFocusedFeed(root: HTMLDivElement | null) {
+  if (!root || typeof document === "undefined") return false;
+  const feeds = Array.from(document.querySelectorAll<HTMLDivElement>("[data-shorts-feed]"));
+  let best: HTMLDivElement | null = null;
+  let bestVisible = 0;
+  feeds.forEach((feed) => {
+    const rect = feed.getBoundingClientRect();
+    const visible = Math.max(0, Math.min(rect.bottom, window.innerHeight - 72) - Math.max(rect.top, 72));
+    if (visible > bestVisible) {
+      bestVisible = visible;
+      best = feed;
+    }
+  });
+  return best === root;
+}
+
 export function ShortsFeed({ shorts }: { shorts: Short[] }) {
+  const feedId = useRef(`feed-${Math.random().toString(36).slice(2)}`);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const playerHostRefs = useRef<(HTMLDivElement | null)[]>([]);
   const players = useRef<Record<number, any>>({});
   const readyPlayers = useRef<Set<number>>(new Set());
-  const warmedPlayers = useRef<Set<number>>(new Set());
   const activeIdxRef = useRef(0);
   const mutedRef = useRef(true);
+  const inViewportRef = useRef(false);
   const [activeIdx, setActiveIdx] = useState(0);
   const [muted, setMuted] = useState(() => {
     if (typeof window === "undefined") return true;
     return sessionStorage.getItem("gs_shorts_sound") !== "on";
   });
-  const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1, 2, 3, 4]));
+  const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1]));
   const [ready, setReady] = useState<Set<number>>(() => new Set());
   const [liked, setLiked] = useState<Set<number>>(() => new Set());
-  const frameStyle = useMemo(() => ({ height: "clamp(420px, calc(100dvh - 158px), 760px)" }), []);
+  const [canLoadPlayers, setCanLoadPlayers] = useState(false);
+  const frameStyle = useMemo(() => ({ height: "clamp(430px, calc(100svh - 150px), 760px)" }), []);
 
   useEffect(() => {
     activeIdxRef.current = activeIdx;
@@ -67,61 +103,105 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     mutedRef.current = muted;
   }, [muted]);
 
+  useEffect(() => {
+    const onSoundUnlocked = () => enableSound();
+    window.addEventListener("gs-enable-shorts-sound", onSoundUnlocked);
+    return () => window.removeEventListener("gs-enable-shorts-sound", onSoundUnlocked);
+  }, []);
+
   const mountAround = useCallback((center: number) => {
     setMounted((prev) => {
-      const next = new Set(prev);
-      let changed = false;
-      for (let d = -3; d <= 3; d++) {
+      const next = new Set<number>();
+      for (let d = -1; d <= 1; d++) {
         const i = center + d;
-        if (i >= 0 && i < shorts.length && !next.has(i)) {
-          next.add(i);
-          changed = true;
-        }
+        if (i >= 0 && i < shorts.length) next.add(i);
       }
+      // keep already-created first player alive for instant top replay
+      if (shorts.length > 0) next.add(0);
+      let changed = next.size !== prev.size;
+      if (!changed) next.forEach((i) => { if (!prev.has(i)) changed = true; });
       return changed ? next : prev;
     });
   }, [shorts.length]);
 
-  const warmPlayer = useCallback((index: number) => {
-    const player = players.current[index];
-    if (!player || warmedPlayers.current.has(index)) return;
-    warmedPlayers.current.add(index);
-    try {
-      player.mute?.();
-      player.playVideo?.();
-      window.setTimeout(() => {
-        try {
-          if (activeIdxRef.current !== index) {
-            player.pauseVideo?.();
-            player.mute?.();
-          }
-        } catch {}
-      }, 700);
-    } catch {}
+  const pauseAll = useCallback(() => {
+    Object.values(players.current).forEach((player) => {
+      try {
+        player.pauseVideo?.();
+        player.mute?.();
+      } catch {}
+    });
   }, []);
 
   const syncPlayback = useCallback((index: number) => {
+    if (!inViewportRef.current || !isFocusedFeed(containerRef.current)) {
+      pauseAll();
+      return;
+    }
+    setCanLoadPlayers(true);
+    window.dispatchEvent(new CustomEvent("gs-shorts-active-feed", { detail: feedId.current }));
+    pauseEveryPlayerExcept(`${feedId.current}:${index}`);
     Object.entries(players.current).forEach(([key, player]) => {
       const i = Number(key);
       if (!player || typeof player.playVideo !== "function") return;
       try {
+        requestLowQuality(player);
         if (i === index) {
           if (mutedRef.current) player.mute?.();
           else player.unMute?.();
-          player.playVideo();
+          player.playVideo?.();
         } else {
-          // ALWAYS pause + mute non-active so audio never bleeds after scroll
           player.pauseVideo?.();
           player.mute?.();
-          if (Math.abs(i - index) <= 2) warmPlayer(i);
         }
       } catch {}
     });
-  }, [warmPlayer]);
+  }, [pauseAll]);
 
-
-  // Instantiate a YT player for each mounted index
   useEffect(() => {
+    const onOtherFeed = (event: Event) => {
+      if ((event as CustomEvent<string>).detail !== feedId.current) pauseAll();
+    };
+    window.addEventListener("gs-shorts-active-feed", onOtherFeed);
+    return () => window.removeEventListener("gs-shorts-active-feed", onOtherFeed);
+  }, [pauseAll]);
+
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+        inViewportRef.current = visible;
+        if (visible && isFocusedFeed(root)) {
+          setCanLoadPlayers(true);
+          syncPlayback(activeIdxRef.current);
+        }
+        else pauseAll();
+      },
+      { threshold: [0, 0.2, 0.45, 0.75] }
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [pauseAll, syncPlayback]);
+
+  useEffect(() => {
+    if (!canLoadPlayers) return;
+
+    Object.keys(players.current).forEach((key) => {
+      const i = Number(key);
+      if (mounted.has(i)) return;
+      try {
+        players.current[i]?.pauseVideo?.();
+        players.current[i]?.mute?.();
+        players.current[i]?.destroy?.();
+      } catch {}
+      globalPlayers().delete(`${feedId.current}:${i}`);
+      delete players.current[i];
+      readyPlayers.current.delete(i);
+      setReady(new Set(readyPlayers.current));
+    });
+
     let cancelled = false;
     loadYT().then((YT) => {
       if (cancelled) return;
@@ -133,7 +213,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           width: "100%",
           height: "100%",
           playerVars: {
-            autoplay: i === activeIdx ? 1 : 0,
+            autoplay: i === activeIdxRef.current && inViewportRef.current ? 1 : 0,
             mute: 1,
             controls: 0,
             loop: 1,
@@ -144,32 +224,36 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             iv_load_policy: 3,
             disablekb: 1,
             fs: 0,
+            vq: "tiny",
             origin: window.location.origin,
           },
           events: {
             onReady: (e: any) => {
+              globalPlayers().set(`${feedId.current}:${i}`, e.target);
               readyPlayers.current.add(i);
               setReady(new Set(readyPlayers.current));
-              if (mutedRef.current) e.target.mute();
-              else e.target.unMute();
-              if (i === activeIdxRef.current) e.target.playVideo();
-              else warmPlayer(i);
+              requestLowQuality(e.target);
+              e.target.mute?.();
+              if (i === activeIdxRef.current && inViewportRef.current) syncPlayback(i);
             },
+            onStateChange: (e: any) => requestLowQuality(e.target),
           },
         });
       });
     });
     return () => {
       cancelled = true;
+      Object.keys(players.current).forEach((key) => {
+        globalPlayers().delete(`${feedId.current}:${key}`);
+      });
     };
-  }, [mounted, shorts, warmPlayer]);
+  }, [mounted, shorts, syncPlayback, canLoadPlayers]);
 
-  // Pick the slide closest to the frame center. This is more reliable than only
-  // trusting IntersectionObserver entries during fast up/down snap scrolling.
   useEffect(() => {
     const root = containerRef.current;
     if (!root) return;
     let raf = 0;
+    let resumeTimer = 0;
     const detect = () => {
       raf = 0;
       const rootRect = root.getBoundingClientRect();
@@ -179,8 +263,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       itemRefs.current.forEach((el, i) => {
         if (!el) return;
         const rect = el.getBoundingClientRect();
-        const visible = rect.bottom > rootRect.top && rect.top < rootRect.bottom;
-        if (!visible) return;
+        if (rect.bottom <= rootRect.top || rect.top >= rootRect.bottom) return;
         const distance = Math.abs(rect.top + rect.height / 2 - center);
         if (distance < bestDistance) {
           bestDistance = distance;
@@ -188,45 +271,54 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         }
       });
       if (best !== activeIdxRef.current) {
+        players.current[activeIdxRef.current]?.pauseVideo?.();
+        players.current[activeIdxRef.current]?.mute?.();
         activeIdxRef.current = best;
         setActiveIdx(best);
         mountAround(best);
+        if (isFocusedFeed(root)) {
+          setCanLoadPlayers(true);
+          syncPlayback(best);
+        } else pauseAll();
+      } else if (isFocusedFeed(root)) {
+        setCanLoadPlayers(true);
+        syncPlayback(best);
       }
     };
     const onScroll = () => {
+      pauseAll();
+      window.clearTimeout(resumeTimer);
       if (!raf) raf = window.requestAnimationFrame(detect);
+      resumeTimer = window.setTimeout(detect, 120);
     };
     detect();
     root.addEventListener("scroll", onScroll, { passive: true });
-    root.addEventListener("scrollend", onScroll);
-    window.addEventListener("resize", onScroll);
+    root.addEventListener("scrollend", detect);
+    window.addEventListener("resize", detect);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("gs-shorts-recheck", detect);
     return () => {
       if (raf) window.cancelAnimationFrame(raf);
+      window.clearTimeout(resumeTimer);
       root.removeEventListener("scroll", onScroll);
-      root.removeEventListener("scrollend", onScroll);
-      window.removeEventListener("resize", onScroll);
+      root.removeEventListener("scrollend", detect);
+      window.removeEventListener("resize", detect);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("gs-shorts-recheck", detect);
     };
-  }, [mountAround]);
+  }, [mountAround, pauseAll, syncPlayback]);
 
-  // Play/pause on active change
   useEffect(() => {
     mountAround(activeIdx);
     syncPlayback(activeIdx);
-  }, [activeIdx, mounted, mountAround, syncPlayback]);
+  }, [activeIdx, mountAround, syncPlayback]);
 
-  // Mute state sync
   useEffect(() => {
-    Object.values(players.current).forEach((p: any) => {
-      if (!p) return;
-      try {
-        if (muted) p.mute?.();
-        else p.unMute?.();
-      } catch {}
-    });
-  }, [muted]);
+    mutedRef.current = muted;
+    syncPlayback(activeIdxRef.current);
+  }, [muted, syncPlayback]);
 
   function enableSound() {
-    if (!muted) return;
     sessionStorage.setItem("gs_shorts_sound", "on");
     mutedRef.current = false;
     setMuted(false);
@@ -238,20 +330,10 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   }
 
   function toggleSound() {
-    setMuted((current) => {
-      const next = !current;
-      mutedRef.current = next;
-      sessionStorage.setItem("gs_shorts_sound", next ? "off" : "on");
-      const active = players.current[activeIdxRef.current];
-      try {
-        if (next) active?.mute?.();
-        else {
-          active?.unMute?.();
-          active?.playVideo?.();
-        }
-      } catch {}
-      return next;
-    });
+    const next = !mutedRef.current;
+    sessionStorage.setItem("gs_shorts_sound", next ? "off" : "on");
+    mutedRef.current = next;
+    setMuted(next);
   }
 
   function handleFeedClick(event: MouseEvent<HTMLDivElement>) {
@@ -274,11 +356,12 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   return (
     <div
       ref={containerRef}
+      data-shorts-feed={feedId.current}
+      onPointerDown={enableSound}
       onClick={handleFeedClick}
-      className="relative snap-y snap-mandatory overflow-y-auto rounded-[1.7rem] border border-border bg-black shadow-card scrollbar-hide"
+      className="relative snap-y snap-mandatory overflow-y-auto rounded-[1.45rem] border border-border bg-black shadow-card scrollbar-hide overscroll-contain"
       style={frameStyle}
     >
-      {/* Sound toggle */}
       <button
         onClick={toggleSound}
         className="absolute right-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white backdrop-blur"
@@ -292,18 +375,16 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         return (
           <div
             key={s.videoId + i}
-            data-idx={i}
             ref={(el) => {
               itemRefs.current[i] = el;
             }}
-            className="snap-start relative w-full bg-black flex items-center justify-center overflow-hidden"
+            className="snap-start relative flex w-full items-center justify-center overflow-hidden bg-black"
             style={frameStyle}
           >
-            {/* Thumbnail beneath — instant paint */}
             <img
               src={`https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg`}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover blur-[1px] scale-105 opacity-75"
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"
             />
@@ -324,14 +405,10 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               </div>
             )}
 
-            {/* Sound unlock is handled by the splash — no pill overlay here */}
-
-
-            {/* Overlay UI */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-4 pb-7 pt-24 text-white">
               <div className="pointer-events-auto min-w-0 max-w-[68%]">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 backdrop-blur text-base">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-base backdrop-blur">
                     {s.channelIcon}
                   </div>
                   <p className="truncate text-sm font-semibold drop-shadow">{s.channelName}</p>
