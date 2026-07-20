@@ -44,17 +44,13 @@ function requestLowQuality(player: any) {
 function isFocusedFeed(root: HTMLDivElement | null) {
   if (!root || typeof document === "undefined") return false;
   const feeds = Array.from(document.querySelectorAll<HTMLDivElement>("[data-shorts-feed]"));
-  const viewportCenter = window.innerHeight / 2;
   let best: HTMLDivElement | null = null;
-  let bestDistance = Number.POSITIVE_INFINITY;
+  let bestVisible = 0;
   feeds.forEach((feed) => {
     const rect = feed.getBoundingClientRect();
-    const visible = rect.bottom > 72 && rect.top < window.innerHeight - 72;
-    if (!visible) return;
-    const center = rect.top + rect.height / 2;
-    const distance = Math.abs(center - viewportCenter);
-    if (distance < bestDistance) {
-      bestDistance = distance;
+    const visible = Math.max(0, Math.min(rect.bottom, window.innerHeight - 72) - Math.max(rect.top, 72));
+    if (visible > bestVisible) {
+      bestVisible = visible;
       best = feed;
     }
   });
@@ -227,6 +223,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     const root = containerRef.current;
     if (!root) return;
     let raf = 0;
+    let resumeTimer = 0;
     const detect = () => {
       raf = 0;
       const rootRect = root.getBoundingClientRect();
@@ -254,7 +251,9 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     };
     const onScroll = () => {
       pauseAll();
+      window.clearTimeout(resumeTimer);
       if (!raf) raf = window.requestAnimationFrame(detect);
+      resumeTimer = window.setTimeout(detect, 120);
     };
     detect();
     root.addEventListener("scroll", onScroll, { passive: true });
@@ -264,6 +263,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     document.addEventListener("gs-shorts-recheck", detect);
     return () => {
       if (raf) window.cancelAnimationFrame(raf);
+      window.clearTimeout(resumeTimer);
       root.removeEventListener("scroll", onScroll);
       root.removeEventListener("scrollend", detect);
       window.removeEventListener("resize", detect);
