@@ -147,6 +147,19 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   }, [pauseAll, syncPlayback]);
 
   useEffect(() => {
+    Object.keys(players.current).forEach((key) => {
+      const i = Number(key);
+      if (mounted.has(i)) return;
+      try {
+        players.current[i]?.pauseVideo?.();
+        players.current[i]?.mute?.();
+        players.current[i]?.destroy?.();
+      } catch {}
+      delete players.current[i];
+      readyPlayers.current.delete(i);
+      setReady(new Set(readyPlayers.current));
+    });
+
     let cancelled = false;
     loadYT().then((YT) => {
       if (cancelled) return;
