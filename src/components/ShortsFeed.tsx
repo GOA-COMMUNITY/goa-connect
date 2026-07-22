@@ -67,7 +67,7 @@ function pauseEveryPlayerExcept(activeKey?: string) {
 export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const feedId = useRef(`feed-${Math.random().toString(36).slice(2)}`);
   const containerRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const hostRefs = useRef<(HTMLDivElement | null)[]>([]);
   const players = useRef<Record<number, any>>({});
   const readyRef = useRef<Set<number>>(new Set());
