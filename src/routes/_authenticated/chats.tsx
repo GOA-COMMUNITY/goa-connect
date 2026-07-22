@@ -10,7 +10,14 @@ import { formatDistanceToNowStrict } from "date-fns";
 
 export const Route = createFileRoute("/_authenticated/chats")({
   head: () => ({
-    meta: [{ title: "Messages — Goa Social" }],
+    meta: [
+      { title: "Messages — Goa Social" },
+      { name: "description", content: "Private Goa Social conversations and local connections." },
+      { property: "og:title", content: "Messages — Goa Social" },
+      { property: "og:description", content: "Private Goa Social conversations and local connections." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
   component: Chats,
 });

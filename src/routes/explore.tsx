@@ -13,6 +13,10 @@ export const Route = createFileRoute("/explore")({
     meta: [
       { title: "Explore Goans — Goa Social" },
       { name: "description", content: "Discover and connect with verified Goans across North and South Goa." },
+      { property: "og:title", content: "Explore Goans — Goa Social" },
+      { property: "og:description", content: "Discover and connect with verified Goans across North and South Goa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Explore,

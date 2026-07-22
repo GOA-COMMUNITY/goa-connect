@@ -9,7 +9,16 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin — Goa Social" }] }),
+  head: () => ({
+    meta: [
+      { title: "Admin — Goa Social" },
+      { name: "description", content: "Goa Social admin controls for profiles, bots, businesses, and content." },
+      { property: "og:title", content: "Admin — Goa Social" },
+      { property: "og:description", content: "Goa Social admin controls for profiles, bots, businesses, and content." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: AdminDashboard,
 });
 

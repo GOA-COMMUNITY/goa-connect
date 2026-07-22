@@ -9,7 +9,16 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "Profile — Goa Social" }] }),
+  head: () => ({
+    meta: [
+      { title: "Profile — Goa Social" },
+      { name: "description", content: "Manage your Goa Social profile, settings, and legal links." },
+      { property: "og:title", content: "Profile — Goa Social" },
+      { property: "og:description", content: "Manage your Goa Social profile, settings, and legal links." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: Profile,
 });
 

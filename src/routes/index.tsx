@@ -26,6 +26,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Goa Social — Community of Goa" },
       { property: "og:description", content: "Connect with Goans, discover local businesses, events, and stories." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "preconnect", href: "https://www.youtube.com" },
@@ -61,10 +62,18 @@ function Home() {
   const [activeChip, setActiveChip] = useState("For You");
 
   useEffect(() => {
+    const sharedShort = new URLSearchParams(window.location.search).get("short");
+    const prioritizeSharedShort = (items: Short[]) => {
+      if (!sharedShort) return items;
+      const match = items.find((video) => video.videoId === sharedShort);
+      return match ? [match, ...items.filter((video) => video.videoId !== sharedShort)] : items;
+    };
+
+    setVideos((current) => prioritizeSharedShort(current));
     // Fetch early so the first short can preload under the splash
     fetch(`/videos.json?v=${Math.floor(Date.now() / 900000)}`, { cache: "no-store" })
       .then((r) => r.json())
-      .then((v: Short[]) => setVideos(v.slice(0, 36)))
+      .then((v: Short[]) => setVideos(prioritizeSharedShort(v.slice(0, 36))))
       .catch(() => {});
   }, []);
 
@@ -74,7 +83,7 @@ function Home() {
   const restShorts = videos.slice(3);
 
   return (
-    <SplashScreen duration={5200}>
+    <SplashScreen duration={6000}>
       <AppLayout showEventBanner={false}>
         {/* 1️⃣ First short on top — instant hook */}
         <section className="px-2 pt-2 sm:px-3">

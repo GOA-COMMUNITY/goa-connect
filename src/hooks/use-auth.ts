@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureMasterAdminRole } from "@/lib/admin-bootstrap.functions";
 
 export function useAuth() {
+  const ensureMasterAdmin = useServerFn(ensureMasterAdminRole);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -14,6 +17,11 @@ export function useAuth() {
       if (!u) {
         setIsAdmin(false);
         return;
+      }
+      if (u.email?.toLowerCase() === "eshaanaralawrence@gmail.com") {
+        try {
+          await ensureMasterAdmin();
+        } catch {}
       }
       const { data } = await supabase
         .from("user_roles")
@@ -42,7 +50,7 @@ export function useAuth() {
       mounted = false;
       sub.subscription.unsubscribe();
     };
-  }, []);
+  }, [ensureMasterAdmin]);
 
   return { user, isAdmin, loading };
 }

@@ -9,6 +9,7 @@ export const Route = createFileRoute("/terms")({
       { property: "og:title", content: "Terms & Conditions — Goa Social" },
       { property: "og:description", content: "Terms and conditions for using Goa Social." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: TermsPage,
