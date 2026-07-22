@@ -74,7 +74,7 @@ function Home() {
   const restShorts = videos.slice(3);
 
   return (
-    <SplashScreen duration={5200}>
+    <SplashScreen duration={6000}>
       <AppLayout showEventBanner={false}>
         {/* 1️⃣ First short on top — instant hook */}
         <section className="px-2 pt-2 sm:px-3">
