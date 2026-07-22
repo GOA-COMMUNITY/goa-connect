@@ -9,6 +9,7 @@ export const Route = createFileRoute("/refunds")({
       { property: "og:title", content: "Refund & Cancellation Policy — Goa Social" },
       { property: "og:description", content: "Refund and cancellation terms for Goa Social purchases." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: RefundsPage,

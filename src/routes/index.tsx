@@ -26,6 +26,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Goa Social — Community of Goa" },
       { property: "og:description", content: "Connect with Goans, discover local businesses, events, and stories." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "preconnect", href: "https://www.youtube.com" },
