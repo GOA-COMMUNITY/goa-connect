@@ -83,6 +83,8 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     return sessionStorage.getItem(SHORT_SOUND_KEY) !== "on";
   });
 
+  const videoIdsKey = useMemo(() => shorts.map((short) => short.videoId).join("|"), [shorts]);
+
   const frameStyle = useMemo(
     () => ({ minHeight: "clamp(440px, calc(100svh - 152px), 760px)" }),
     [],
@@ -111,6 +113,17 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   }, []);
 
   const syncPlayback = useCallback((index: number) => {
+    const activeElement = itemRefs.current[index];
+    if (activeElement) {
+      const rect = activeElement.getBoundingClientRect();
+      const screenCenter = window.innerHeight / 2;
+      const elementCenter = rect.top + rect.height / 2;
+      const centeredEnough = Math.abs(elementCenter - screenCenter) < rect.height * 0.58;
+      if (!centeredEnough) {
+        pauseLocal();
+        return;
+      }
+    }
     const activeKey = `${feedId.current}:${index}`;
     pauseEveryPlayerExcept(activeKey);
     Object.entries(players.current).forEach(([rawIndex, player]) => {
@@ -127,7 +140,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         }
       } catch {}
     });
-  }, []);
+  }, [pauseLocal]);
 
   const setActive = useCallback((index: number) => {
     if (index < 0 || index >= shorts.length) return;
@@ -169,14 +182,23 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       raf = 0;
       let bestIndex = activeIdxRef.current;
       let bestRatio = 0;
+      let bestDistance = Number.POSITIVE_INFINITY;
+      const viewportCenter = window.innerHeight / 2;
       Object.entries(visibleRatios.current).forEach(([rawIndex, ratio]) => {
-        if (ratio > bestRatio) {
+        const index = Number(rawIndex);
+        const element = itemRefs.current[index];
+        if (!element) return;
+        const rect = element.getBoundingClientRect();
+        const distance = Math.abs(rect.top + rect.height / 2 - viewportCenter);
+        if (ratio > 0.35 && (distance < bestDistance || (distance === bestDistance && ratio > bestRatio))) {
           bestRatio = ratio;
-          bestIndex = Number(rawIndex);
+          bestDistance = distance;
+          bestIndex = index;
         }
       });
-      if (bestRatio >= 0.55 && bestIndex !== activeIdxRef.current) setActive(bestIndex);
-      else if (bestRatio >= 0.55) syncPlayback(bestIndex);
+      if (bestRatio >= 0.42 && bestDistance < window.innerHeight * 0.42 && bestIndex !== activeIdxRef.current) setActive(bestIndex);
+      else if (bestRatio >= 0.42 && bestDistance < window.innerHeight * 0.42) syncPlayback(bestIndex);
+      else pauseLocal();
     };
 
     const observer = new IntersectionObserver(
@@ -198,7 +220,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
       if (raf) window.cancelAnimationFrame(raf);
       observer.disconnect();
     };
-  }, [keepWarmAround, setActive, shorts.length, syncPlayback]);
+  }, [keepWarmAround, pauseLocal, setActive, shorts.length, syncPlayback]);
 
   useEffect(() => {
     if (shorts.length === 0) return;
@@ -262,7 +284,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     return () => {
       cancelled = true;
     };
-  }, [mounted, shorts, syncPlayback]);
+  }, [mounted, videoIdsKey, shorts, syncPlayback]);
 
   useEffect(() => {
     return () => {
