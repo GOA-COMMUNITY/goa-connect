@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import splashForest from "@/assets/goa-splash-forest.jpg";
 
 export function SplashScreen({
-  duration = 5200,
+  duration = 6000,
   children,
 }: {
   duration?: number;
@@ -12,13 +12,15 @@ export function SplashScreen({
   const [fading, setFading] = useState(false);
   const [bloomed, setBloomed] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const startedAtRef = useRef<number>(Date.now());
 
   useEffect(() => {
     if (typeof window !== "undefined" && sessionStorage.getItem("gs_splash")) {
       setDone(true);
       return;
     }
-    const fadeAt = window.setTimeout(() => setFading(true), Math.max(1200, duration - 650));
+    startedAtRef.current = Date.now();
+    const fadeAt = window.setTimeout(() => setFading(true), Math.max(3000, duration - 650));
     const finishAt = window.setTimeout(() => finish(), duration);
     return () => {
       window.clearTimeout(fadeAt);
@@ -45,8 +47,10 @@ export function SplashScreen({
       sessionStorage.setItem("gs_shorts_sound", "on");
       window.dispatchEvent(new Event("gs-enable-shorts-sound"));
     } catch {}
-    window.setTimeout(() => setFading(true), 520);
-    window.setTimeout(finish, 980);
+    const elapsed = Date.now() - startedAtRef.current;
+    const waitForFirstShort = Math.max(3000 - elapsed, 0);
+    window.setTimeout(() => setFading(true), waitForFirstShort + 520);
+    window.setTimeout(finish, waitForFirstShort + 980);
   }
 
   return (
