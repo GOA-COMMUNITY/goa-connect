@@ -62,10 +62,18 @@ function Home() {
   const [activeChip, setActiveChip] = useState("For You");
 
   useEffect(() => {
+    const sharedShort = new URLSearchParams(window.location.search).get("short");
+    const prioritizeSharedShort = (items: Short[]) => {
+      if (!sharedShort) return items;
+      const match = items.find((video) => video.videoId === sharedShort);
+      return match ? [match, ...items.filter((video) => video.videoId !== sharedShort)] : items;
+    };
+
+    setVideos((current) => prioritizeSharedShort(current));
     // Fetch early so the first short can preload under the splash
     fetch(`/videos.json?v=${Math.floor(Date.now() / 900000)}`, { cache: "no-store" })
       .then((r) => r.json())
-      .then((v: Short[]) => setVideos(v.slice(0, 36)))
+      .then((v: Short[]) => setVideos(prioritizeSharedShort(v.slice(0, 36))))
       .catch(() => {});
   }, []);
 

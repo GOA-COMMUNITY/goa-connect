@@ -85,6 +85,19 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   const videoIdsKey = useMemo(() => shorts.map((short) => short.videoId).join("|"), [shorts]);
 
+  useEffect(() => {
+    Object.entries(players.current).forEach(([rawIndex, player]) => {
+      try { player.destroy?.(); } catch {}
+      allPlayers().delete(`${feedId.current}:${rawIndex}`);
+    });
+    players.current = {};
+    readyRef.current.clear();
+    setReady(new Set());
+    activeIdxRef.current = 0;
+    setActiveIdx(0);
+    setMounted(new Set([0, 1, 2].filter((index) => index < shorts.length)));
+  }, [videoIdsKey, shorts.length]);
+
   const frameStyle = useMemo(
     () => ({ minHeight: "clamp(440px, calc(100svh - 152px), 760px)" }),
     [],
@@ -284,7 +297,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     return () => {
       cancelled = true;
     };
-  }, [mounted, videoIdsKey, shorts, syncPlayback]);
+  }, [mounted, videoIdsKey, syncPlayback]);
 
   useEffect(() => {
     return () => {
