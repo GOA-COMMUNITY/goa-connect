@@ -12,6 +12,10 @@ export const Route = createFileRoute("/business")({
     meta: [
       { title: "Goa Business Directory — Goa Social" },
       { name: "description", content: "Discover the best restaurants, cafes, surf schools, and local businesses in Goa." },
+      { property: "og:title", content: "Goa Business Directory — Goa Social" },
+      { property: "og:description", content: "Discover the best restaurants, cafes, surf schools, and local businesses in Goa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Business,
