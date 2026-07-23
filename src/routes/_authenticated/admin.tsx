@@ -417,3 +417,125 @@ function ContentPanel() {
     </div>
   );
 }
+
+type Channel = {
+  id: string; name: string; url: string; icon: string | null;
+  priority: number; active: boolean;
+};
+
+function ChannelsPanel() {
+  const [rows, setRows] = useState<Channel[]>([]);
+  const [draft, setDraft] = useState({ name: "", url: "", icon: "🌴", priority: 100 });
+  const [busy, setBusy] = useState(false);
+
+  async function reload() {
+    const { data } = await supabase
+      .from("youtube_channels")
+      .select("*")
+      .order("priority", { ascending: true });
+    setRows((data as Channel[]) ?? []);
+  }
+  useEffect(() => { reload(); }, []);
+
+  async function add() {
+    if (!draft.name.trim() || !draft.url.trim()) return toast.error("Name and URL required");
+    setBusy(true);
+    const { error } = await supabase.from("youtube_channels").insert({
+      name: draft.name.trim(), url: draft.url.trim(),
+      icon: draft.icon || "🌴", priority: Number(draft.priority) || 100,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Channel added — refresh runs every 30 min via GitHub Action");
+    setDraft({ name: "", url: "", icon: "🌴", priority: 100 });
+    reload();
+  }
+
+  async function updateRow(id: string, patch: Partial<Channel>) {
+    const { error } = await supabase.from("youtube_channels").update(patch).eq("id", id);
+    if (error) return toast.error(error.message);
+    reload();
+  }
+
+  async function remove(id: string) {
+    if (!confirm("Remove this channel from the scraper?")) return;
+    const { error } = await supabase.from("youtube_channels").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Removed");
+    reload();
+  }
+
+  const field = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-1 text-lg font-bold">YouTube channels</h2>
+        <p className="mb-4 text-xs text-muted-foreground">
+          Latest Shorts from these channels are pulled automatically every 30 minutes.
+          Lower priority number = shows first in the feed.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-[1fr_1fr_80px_100px_auto]">
+          <input className={field} placeholder="Channel name" value={draft.name}
+            onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+          <input className={field} placeholder="https://youtube.com/@handle/shorts" value={draft.url}
+            onChange={(e) => setDraft({ ...draft, url: e.target.value })} />
+          <input className={field} placeholder="Icon" value={draft.icon}
+            onChange={(e) => setDraft({ ...draft, icon: e.target.value })} />
+          <input className={field} type="number" placeholder="Priority" value={draft.priority}
+            onChange={(e) => setDraft({ ...draft, priority: Number(e.target.value) })} />
+          <button onClick={add} disabled={busy}
+            className="flex items-center justify-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+            <Plus className="h-4 w-4" /> Add
+          </button>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary text-xs uppercase text-muted-foreground">
+            <tr>
+              <th className="p-3 text-left">Channel</th>
+              <th className="p-3 text-left">URL</th>
+              <th className="p-3 text-left">Priority</th>
+              <th className="p-3 text-left">Active</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((c) => (
+              <tr key={c.id} className="border-t border-border">
+                <td className="p-3">
+                  <span className="mr-2 text-lg">{c.icon ?? "🌴"}</span>
+                  <span className="font-semibold">{c.name}</span>
+                </td>
+                <td className="max-w-[280px] truncate p-3 text-xs text-muted-foreground" title={c.url}>{c.url}</td>
+                <td className="p-3">
+                  <input type="number" defaultValue={c.priority}
+                    onBlur={(e) => updateRow(c.id, { priority: Number(e.target.value) })}
+                    className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm" />
+                </td>
+                <td className="p-3">
+                  <button onClick={() => updateRow(c.id, { active: !c.active })}>
+                    {c.active
+                      ? <ToggleRight className="h-5 w-5 text-primary" />
+                      : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
+                  </button>
+                </td>
+                <td className="p-3 text-right">
+                  <button onClick={() => remove(c.id)}
+                    className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 && (
+              <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No channels yet</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
