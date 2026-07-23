@@ -397,7 +397,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
                   aria-label={isLiked ? "Unlike short" : "Like short"}
                 >
                   <Heart className={`h-7 w-7 drop-shadow ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
-                  <span>{((index * 7 + 12) % 90) + 10}k</span>
+                  <span>{100 + ((index * 37 + 11) % 900) + (isLiked ? 1 : 0)}</span>
                 </button>
                 <button
                   type="button"
@@ -406,7 +406,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
                   aria-label="Open Goa Social comments"
                 >
                   <MessageCircle className="h-7 w-7 drop-shadow" />
-                  <span>{((index * 3 + 5) % 50) + 5}</span>
+                  <span>{12 + ((index * 7 + 3) % 88)}</span>
                 </button>
                 <button
                   type="button"

@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import {
   Shield, Users, Store, MessageCircle, Bot, Settings, Trash2,
-  ToggleLeft, ToggleRight, ArrowLeft, Search,
+  ToggleLeft, ToggleRight, ArrowLeft, Search, Youtube, Plus,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminDashboard,
 });
 
-type Tab = "overview" | "users" | "bots" | "businesses" | "content";
+type Tab = "overview" | "users" | "bots" | "businesses" | "content" | "channels";
 
 type Profile = {
   id: string;
@@ -86,6 +86,7 @@ function AdminDashboard() {
             ["users", "Real Users", Users],
             ["bots", "Demo Profiles", Bot],
             ["businesses", "Businesses", Store],
+            ["channels", "YouTube", Youtube],
             ["content", "Site Content", MessageCircle],
           ] as const).map(([k, label, Icon]) => (
             <button
@@ -106,6 +107,7 @@ function AdminDashboard() {
         {tab === "users" && <ProfilesPanel onlyFake={false} />}
         {tab === "bots" && <ProfilesPanel onlyFake={true} />}
         {tab === "businesses" && <BusinessesPanel />}
+        {tab === "channels" && <ChannelsPanel />}
         {tab === "content" && <ContentPanel />}
       </main>
     </div>
