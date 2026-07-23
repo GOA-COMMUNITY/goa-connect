@@ -248,6 +248,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
           videoId: short.videoId,
           width: "100%",
           height: "100%",
+          host: "https://www.youtube-nocookie.com",
           playerVars: {
             autoplay: index === activeIdxRef.current ? 1 : 0,
             mute: 1,
@@ -261,6 +262,8 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             disablekb: 1,
             fs: 0,
             cc_load_policy: 0,
+            showinfo: 0,
+            enablejsapi: 1,
             vq: "tiny",
             origin: window.location.origin,
           },
