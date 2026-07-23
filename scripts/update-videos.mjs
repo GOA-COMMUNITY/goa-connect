@@ -1,9 +1,21 @@
-import { writeFile } from "node:fs/promises";
+import { writeFile, readFile } from "node:fs/promises";
 
 const FALLBACK_CHANNELS = [
   { name: "Adventure Goa DK", url: "https://www.youtube.com/@adventuregoadk/shorts", icon: "🌴", priority: 1 },
   { name: "RDXGOA GOA NEWS", url: "https://www.youtube.com/@RDXGOA/shorts", icon: "🎥", priority: 2 },
 ];
+
+// Load .env values so the GitHub Action doesn't need extra secrets configured.
+async function loadEnv() {
+  try {
+    const txt = await readFile(".env", "utf8");
+    for (const line of txt.split("\n")) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*"?([^"\n]*)"?\s*$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+    }
+  } catch {}
+}
+await loadEnv();
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
