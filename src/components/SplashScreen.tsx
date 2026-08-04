@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import splashForest from "@/assets/goa-splash-forest.jpg";
 
+/**
+ * Cinematic Goa Social intro.
+ * Pure CSS transform/opacity animation (GPU only) — no heavy images, no layout thrash.
+ * Tapping anywhere unlocks browser audio for the shorts feed.
+ */
 export function SplashScreen({
   duration = 6000,
   children,
@@ -20,7 +24,7 @@ export function SplashScreen({
       return;
     }
     startedAtRef.current = Date.now();
-    const fadeAt = window.setTimeout(() => setFading(true), Math.max(3000, duration - 650));
+    const fadeAt = window.setTimeout(() => setFading(true), Math.max(3000, duration - 700));
     const finishAt = window.setTimeout(() => finish(), duration);
     return () => {
       window.clearTimeout(fadeAt);
@@ -48,9 +52,9 @@ export function SplashScreen({
       window.dispatchEvent(new Event("gs-enable-shorts-sound"));
     } catch {}
     const elapsed = Date.now() - startedAtRef.current;
-    const waitForFirstShort = Math.max(3000 - elapsed, 0);
-    window.setTimeout(() => setFading(true), waitForFirstShort + 520);
-    window.setTimeout(finish, waitForFirstShort + 980);
+    const wait = Math.max(3000 - elapsed, 0);
+    window.setTimeout(() => setFading(true), wait + 420);
+    window.setTimeout(finish, wait + 900);
   }
 
   return (
@@ -60,9 +64,9 @@ export function SplashScreen({
         <button
           type="button"
           onPointerDown={handleEnter}
-          className={`fixed inset-0 z-[100] block overflow-hidden bg-black text-left transition-opacity duration-700 ${
-            fading ? "opacity-0" : "opacity-100"
-          }`}
+          className={`gs-splash fixed inset-0 z-[100] block overflow-hidden text-left ${
+            fading ? "gs-splash--out" : ""
+          } ${bloomed ? "gs-splash--bloom" : ""}`}
           aria-label="Enter Goa Social"
         >
           <audio
@@ -72,100 +76,168 @@ export function SplashScreen({
             muted
           />
 
-          <img
-            src={splashForest}
-            alt=""
-            width={1024}
-            height={1536}
-            className={`absolute inset-0 h-full w-full object-cover transition duration-[1600ms] ${
-              bloomed ? "scale-110 brightness-125 saturate-125" : "scale-105 brightness-75 saturate-110"
-            }`}
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,transparent_0%,rgba(0,0,0,.18)_28%,rgba(0,0,0,.72)_78%)]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+          {/* sky */}
+          <div className="gs-sky absolute inset-0" />
+          {/* sun */}
+          <div className="gs-sun absolute left-1/2 top-[46%] h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          {/* haze bands */}
+          <div className="gs-haze absolute inset-x-0 top-[38%] h-64" />
+          {/* sea */}
+          <div className="gs-sea absolute inset-x-0 bottom-0 h-[42%]">
+            <span className="gs-shimmer absolute inset-x-0 top-0 h-full" />
+          </div>
 
-          <div className="absolute inset-0 opacity-70 mix-blend-screen">
-            {Array.from({ length: 42 }).map((_, i) => (
+          {/* horizon silhouettes */}
+          <svg
+            className="gs-ridge absolute inset-x-0 bottom-[34%] w-full"
+            viewBox="0 0 1440 220"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <path
+              d="M0 190 L120 150 L230 178 L340 120 L470 172 L600 138 L740 182 L880 130 L1010 176 L1140 142 L1280 184 L1440 152 L1440 220 L0 220 Z"
+              fill="rgba(2,20,16,.92)"
+            />
+          </svg>
+
+          {/* palms */}
+          <div className="gs-palms pointer-events-none absolute inset-x-0 bottom-[26%] h-[46%]">
+            {[
+              { left: "6%", scale: 1.15, delay: "0s", flip: false },
+              { left: "24%", scale: 0.78, delay: ".35s", flip: true },
+              { left: "76%", scale: 0.9, delay: ".18s", flip: false },
+              { left: "92%", scale: 1.25, delay: ".5s", flip: true },
+            ].map((p, i) => (
+              <svg
+                key={i}
+                className="gs-palm absolute bottom-0"
+                style={{
+                  left: p.left,
+                  transform: `translateX(-50%) scale(${p.scale}) ${p.flip ? "scaleX(-1)" : ""}`,
+                  animationDelay: p.delay,
+                }}
+                width="220"
+                height="320"
+                viewBox="0 0 220 320"
+                aria-hidden
+              >
+                <g fill="rgba(1,14,11,.95)">
+                  <path d="M104 320 C104 240 100 180 92 120 L108 118 C118 180 120 244 120 320 Z" />
+                  <path d="M100 122 C60 96 30 92 4 104 C34 74 74 74 102 106 Z" />
+                  <path d="M104 116 C86 74 58 48 26 40 C70 36 102 66 114 108 Z" />
+                  <path d="M110 112 C118 66 146 34 188 22 C158 48 138 82 124 116 Z" />
+                  <path d="M112 122 C150 92 186 88 216 100 C184 74 142 76 110 108 Z" />
+                  <path d="M106 118 C104 78 112 44 128 16 C124 56 122 90 120 120 Z" />
+                </g>
+              </svg>
+            ))}
+          </div>
+
+          {/* drifting embers */}
+          <div className="pointer-events-none absolute inset-0">
+            {Array.from({ length: 18 }).map((_, i) => (
               <span
                 key={i}
-                className="absolute rounded-full bg-amber-200"
+                className="gs-ember absolute rounded-full"
                 style={{
-                  left: `${(i * 23 + 11) % 100}%`,
-                  top: `${(i * 37 + 7) % 100}%`,
-                  width: `${2 + (i % 3)}px`,
-                  height: `${2 + (i % 3)}px`,
-                  boxShadow: "0 0 18px rgba(252, 211, 77, .95)",
-                  animation: `gsFirefly ${5 + (i % 6)}s ease-in-out ${i * 0.17}s infinite`,
+                  left: `${(i * 53 + 9) % 100}%`,
+                  bottom: `${(i * 31 + 12) % 55}%`,
+                  width: `${1.5 + (i % 3) * 0.8}px`,
+                  height: `${1.5 + (i % 3) * 0.8}px`,
+                  animationDuration: `${7 + (i % 5) * 1.6}s`,
+                  animationDelay: `${i * 0.4}s`,
                 }}
               />
             ))}
           </div>
 
-          <div className="absolute inset-x-0 top-[9%] flex flex-col items-center px-8 text-center text-white">
-            <div className="h-20 w-20 overflow-hidden rounded-[1.35rem] border border-white/40 bg-white/90 shadow-2xl shadow-black/40">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_46%,transparent_28%,rgba(0,0,0,.55)_82%)]" />
+
+          {/* wordmark */}
+          <div className="absolute inset-x-0 top-[16%] flex flex-col items-center px-8 text-center text-white">
+            <div className="gs-mark h-16 w-16 overflow-hidden rounded-[1.15rem] ring-1 ring-white/25 shadow-[0_18px_50px_-12px_rgba(0,0,0,.8)]">
               <img src="/logo.png" alt="Goa Social" className="h-full w-full object-cover" />
             </div>
-            <h1 className="mt-5 text-4xl font-extrabold tracking-tight drop-shadow-2xl">Goa Social</h1>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.45em] text-emerald-100/90">Susegad Network</p>
-          </div>
-
-          <div className="absolute left-1/2 top-[58%] -translate-x-1/2 -translate-y-1/2">
-            <div className={`relative h-40 w-40 ${bloomed ? "animate-none" : "gs-breathe"}`}>
-              <span className="absolute inset-0 rounded-full border border-emerald-100/20 bg-emerald-300/10 shadow-[0_0_70px_rgba(134,239,172,.45)] backdrop-blur-[2px]" />
-              <span className="absolute inset-5 rounded-full border border-amber-200/40" />
-              <span className="absolute inset-10 rounded-full bg-black/35 backdrop-blur-md" />
-              <span className="absolute inset-[3.45rem] rounded-full bg-amber-200 shadow-[0_0_36px_rgba(253,224,71,.9)]" />
-              {Array.from({ length: 18 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="absolute left-1/2 top-1/2 h-1.5 w-16 origin-left rounded-full bg-gradient-to-r from-emerald-100/90 to-transparent"
-                  style={{
-                    transform: `rotate(${i * 20}deg) translateX(${bloomed ? 34 : 18}px) scaleX(${bloomed ? 1.6 : 1})`,
-                    opacity: bloomed ? 0 : 0.58,
-                    transition: "transform 800ms cubic-bezier(.2,.9,.18,1), opacity 700ms ease",
-                  }}
-                />
-              ))}
-              {bloomed &&
-                Array.from({ length: 28 }).map((_, i) => (
-                  <span
-                    key={i}
-                    className="absolute left-1/2 top-1/2 h-2 w-10 origin-left rounded-full bg-gradient-to-r from-amber-100 to-emerald-200/0"
-                    style={{
-                      transform: `rotate(${(i * 360) / 28}deg) translateX(${44 + (i % 5) * 8}px)`,
-                      animation: "gsBloom 900ms ease-out forwards",
-                    }}
-                  />
-                ))}
-            </div>
-            <p className="mt-5 text-center text-xs font-bold uppercase tracking-[0.34em] text-white drop-shadow-2xl">
-              {bloomed ? "Opening" : "Tap to enter"}
+            <h1 className="gs-title mt-6 text-[2.6rem] font-semibold leading-none tracking-[-0.02em]">
+              Goa Social
+            </h1>
+            <p className="gs-sub mt-4 text-[10px] font-medium uppercase tracking-[0.62em] text-emerald-100/70">
+              Susegad Network
             </p>
           </div>
 
-          <div className="absolute inset-x-8 bottom-[9%] flex items-center justify-between border-t border-white/20 pt-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-50/80">
-            <span>North</span>
-            <span>Stories</span>
-            <span>South</span>
+          {/* enter ring */}
+          <div className="absolute left-1/2 bottom-[19%] -translate-x-1/2 text-center">
+            <div className="gs-ring relative mx-auto h-20 w-20">
+              <span className="gs-ring-a absolute inset-0 rounded-full border border-white/35" />
+              <span className="gs-ring-b absolute inset-0 rounded-full border border-amber-200/45" />
+              <span className="absolute inset-[34%] rounded-full bg-amber-100 shadow-[0_0_28px_rgba(253,230,138,.85)]" />
+            </div>
+            <p className="gs-cta mt-5 text-[10px] font-semibold uppercase tracking-[0.42em] text-white/85">
+              {bloomed ? "Entering" : "Tap to enter"}
+            </p>
+          </div>
+
+          {/* progress hairline */}
+          <div className="absolute inset-x-0 bottom-0 h-[2px] bg-white/10">
+            <span className="gs-progress block h-full bg-gradient-to-r from-emerald-300 via-amber-200 to-emerald-300" style={{ animationDuration: `${duration}ms` }} />
           </div>
 
           <style>{`
-            @keyframes gsFirefly {
-              0%, 100% { transform: translate3d(0,0,0); opacity: .25; }
-              40% { transform: translate3d(18px,-26px,0); opacity: .95; }
-              70% { transform: translate3d(-12px,-44px,0); opacity: .45; }
+            .gs-splash { background:#02100d; transition: opacity 700ms cubic-bezier(.4,0,.2,1), filter 700ms; }
+            .gs-splash--out { opacity:0; filter: blur(6px); }
+            .gs-sky {
+              background:
+                radial-gradient(120% 80% at 50% 62%, rgba(255,196,120,.35), transparent 55%),
+                linear-gradient(180deg,#04131b 0%, #0a2a2f 32%, #16463f 56%, #2c5c46 72%, #071a18 100%);
+              animation: gsSkyIn 2.6s cubic-bezier(.16,1,.3,1) both;
             }
-            @keyframes gsBloom {
-              from { opacity: 1; filter: blur(0); }
-              to { opacity: 0; filter: blur(4px); }
+            @keyframes gsSkyIn { from { transform: scale(1.08); opacity:.4 } to { transform:none; opacity:1 } }
+            .gs-sun {
+              background: radial-gradient(circle, rgba(255,241,199,.98) 0%, rgba(255,196,110,.72) 38%, rgba(255,150,70,.18) 62%, transparent 74%);
+              filter: blur(1px);
+              animation: gsSunRise 3.4s cubic-bezier(.16,1,.3,1) both;
             }
-            .gs-breathe { animation: gsBreath 2.1s ease-in-out infinite; }
-            @keyframes gsBreath {
-              0%, 100% { transform: scale(1); }
-              50% { transform: scale(1.06); }
+            @keyframes gsSunRise { from { transform: translate(-50%, 40%) scale(.72); opacity:0 } to { transform: translate(-50%,-50%) scale(1); opacity:1 } }
+            .gs-haze { background: linear-gradient(180deg, transparent, rgba(255,203,140,.18), transparent); animation: gsDrift 14s ease-in-out infinite alternate; }
+            @keyframes gsDrift { from { transform: translate3d(-4%,0,0) } to { transform: translate3d(4%,0,0) } }
+            .gs-sea { background: linear-gradient(180deg, rgba(9,44,45,.9), rgba(2,16,13,1)); }
+            .gs-shimmer {
+              background: repeating-linear-gradient(180deg, rgba(255,220,160,.10) 0 1px, transparent 1px 9px);
+              mask-image: linear-gradient(180deg, rgba(0,0,0,.9), transparent 70%);
+              animation: gsShimmer 6s linear infinite;
             }
+            @keyframes gsShimmer { from { transform: translateY(0) } to { transform: translateY(9px) } }
+            .gs-ridge { height: 16vh; animation: gsUp 1.6s .25s cubic-bezier(.16,1,.3,1) both; }
+            .gs-palm { transform-origin: 50% 100%; animation: gsSway 7s ease-in-out infinite alternate; opacity:.98 }
+            @keyframes gsSway { from { rotate: -1.4deg } to { rotate: 1.6deg } }
+            .gs-palms { animation: gsUp 1.9s .1s cubic-bezier(.16,1,.3,1) both; }
+            @keyframes gsUp { from { transform: translateY(26px); opacity:0 } to { transform:none; opacity:1 } }
+            .gs-ember { background: rgba(255,226,168,.95); box-shadow: 0 0 12px rgba(255,205,120,.9); animation-name: gsEmber; animation-timing-function: ease-in-out; animation-iteration-count: infinite; opacity:0 }
+            @keyframes gsEmber {
+              0% { transform: translate3d(0,0,0); opacity:0 }
+              18% { opacity:.9 }
+              100% { transform: translate3d(26px,-140px,0); opacity:0 }
+            }
+            .gs-mark { animation: gsMark 1.5s .2s cubic-bezier(.16,1,.3,1) both; }
+            @keyframes gsMark { from { transform: translateY(14px) scale(.82); opacity:0 } to { transform:none; opacity:1 } }
+            .gs-title { animation: gsTitle 1.8s .45s cubic-bezier(.16,1,.3,1) both; text-shadow: 0 22px 60px rgba(0,0,0,.65); }
+            @keyframes gsTitle { from { letter-spacing:.32em; opacity:0; transform: translateY(10px) } to { letter-spacing:-.02em; opacity:1; transform:none } }
+            .gs-sub { animation: gsFade 1.4s 1.15s both; }
+            .gs-cta { animation: gsFade 1.2s 1.5s both, gsPulse 2.4s 2.6s ease-in-out infinite; }
+            @keyframes gsFade { from { opacity:0 } to { opacity:1 } }
+            @keyframes gsPulse { 0%,100% { opacity:.6 } 50% { opacity:1 } }
+            .gs-ring { animation: gsFade 1s 1.3s both; }
+            .gs-ring-a { animation: gsRing 2.8s ease-out infinite; }
+            .gs-ring-b { animation: gsRing 2.8s .9s ease-out infinite; }
+            @keyframes gsRing { 0% { transform: scale(.55); opacity:.9 } 100% { transform: scale(1.5); opacity:0 } }
+            .gs-progress { width:0; animation-name: gsProgress; animation-timing-function: linear; animation-fill-mode: forwards; }
+            @keyframes gsProgress { from { width:0 } to { width:100% } }
+            .gs-splash--bloom .gs-sun { animation: none; transform: translate(-50%,-50%) scale(2.6); opacity:1; transition: transform 900ms cubic-bezier(.16,1,.3,1); }
+            .gs-splash--bloom .gs-sky { filter: brightness(1.45) saturate(1.2); transition: filter 700ms ease; }
+            .gs-splash--bloom .gs-ring { transform: scale(1.35); opacity:0; transition: all 700ms cubic-bezier(.16,1,.3,1); }
             @media (prefers-reduced-motion: reduce) {
-              .gs-breathe, .fixed span { animation: none !important; }
+              .gs-splash * { animation: none !important; transition: none !important; }
             }
           `}</style>
         </button>

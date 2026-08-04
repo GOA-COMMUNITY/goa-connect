@@ -75,7 +75,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const mutedRef = useRef(true);
   const visibleRatios = useRef<Record<number, number>>({});
   const [activeIdx, setActiveIdx] = useState(0);
-  const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1, 2]));
+  const [mounted, setMounted] = useState<Set<number>>(() => new Set([0, 1]));
   const [ready, setReady] = useState<Set<number>>(() => new Set());
   const [liked, setLiked] = useState<Set<string>>(() => new Set());
   const [muted, setMuted] = useState(() => {
@@ -95,7 +95,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     setReady(new Set());
     activeIdxRef.current = 0;
     setActiveIdx(0);
-    setMounted(new Set([0, 1, 2].filter((index) => index < shorts.length)));
+    setMounted(new Set([0, 1].filter((index) => index < shorts.length)));
   }, [videoIdsKey, shorts.length]);
 
   const frameStyle = useMemo(
@@ -106,15 +106,15 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const keepWarmAround = useCallback((center: number) => {
     setMounted((previous) => {
       const next = new Set<number>();
-      for (let i = center - 2; i <= center + 3; i += 1) {
+      for (let i = center - 1; i <= center + 1; i += 1) {
         if (i >= 0 && i < shorts.length) next.add(i);
       }
-      if (shorts.length > 0) next.add(0);
       let changed = next.size !== previous.size;
       if (!changed) next.forEach((i) => { if (!previous.has(i)) changed = true; });
       return changed ? next : previous;
     });
   }, [shorts.length]);
+
 
   const pauseLocal = useCallback(() => {
     Object.values(players.current).forEach((player) => {
@@ -355,22 +355,33 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             key={`${short.videoId}-${index}`}
             ref={(element) => { itemRefs.current[index] = element; }}
             data-short-index={index}
-            className="relative isolate flex w-full snap-start items-center justify-center overflow-hidden rounded-[1.35rem] border border-border bg-black shadow-card"
+            className="gs-short relative isolate flex w-full snap-start items-center justify-center overflow-hidden rounded-[1.35rem] border border-border bg-black shadow-card"
             style={frameStyle}
           >
             <img
-              src={`https://i.ytimg.com/vi/${short.videoId}/hqdefault.jpg`}
+              src={`https://i.ytimg.com/vi/${short.videoId}/${index <= 1 ? "hqdefault" : "mqdefault"}.jpg`}
               alt=""
-              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-80 blur-[1px]"
+              className="absolute inset-0 h-full w-full object-cover opacity-90"
               loading={index <= 2 ? "eager" : "lazy"}
               decoding="async"
             />
             {shouldMount && (
-              <div
-                ref={(element) => { hostRefs.current[index] = element; }}
-                className="absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
-              />
+              <div className="absolute inset-0 overflow-hidden">
+                <div
+                  ref={(element) => { hostRefs.current[index] = element; }}
+                  className="absolute left-1/2 top-1/2 h-[124%] w-[124%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                />
+              </div>
             )}
+
+            {/* Goa Social header band — hides all source-player chrome */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/85 via-black/45 to-transparent px-4 pb-10 pt-3 text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-sm">{short.channelIcon}</span>
+              <div className="min-w-0">
+                <p className="truncate text-xs font-semibold">{short.channelName}</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] opacity-70">Goa Social</p>
+              </div>
+            </div>
 
             <button
               type="button"
@@ -380,9 +391,10 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               aria-label="Play Goa Social short"
             />
 
+
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-3 bg-gradient-to-t from-black/90 via-black/30 to-transparent px-4 pb-6 pt-28 text-white">
               <div className="min-w-0 max-w-[68%]">
-                <div className="inline-flex items-center gap-2 rounded-full bg-black/35 px-2.5 py-1.5 backdrop-blur-md">
+                <div className="inline-flex items-center gap-2 rounded-full bg-black/45 px-2.5 py-1.5">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-sm">{short.channelIcon}</span>
                   <span className="truncate text-xs font-semibold">Goa Social Short</span>
                 </div>
@@ -420,7 +432,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
                 <button
                   type="button"
                   onClick={toggleSound}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-black/60 backdrop-blur"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-black/65"
                   aria-label={muted ? "Unmute" : "Mute"}
                 >
                   {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
