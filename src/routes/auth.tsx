@@ -276,6 +276,18 @@ function AuthPage() {
         </div>
 
         <button
+          type="button"
+          onClick={handleInstant}
+          disabled={busy}
+          className="gs-press mb-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-card disabled:opacity-50"
+        >
+          <Sparkles className="h-4 w-4" />
+          Continue instantly — no email needed
+        </button>
+
+
+
+        <button
           onClick={handleGoogle}
           disabled={busy}
           className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-background py-3 text-sm font-semibold text-foreground transition hover:bg-secondary"
