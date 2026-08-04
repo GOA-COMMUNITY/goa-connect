@@ -369,19 +369,28 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               <div className="absolute inset-0 overflow-hidden">
                 <div
                   ref={(element) => { hostRefs.current[index] = element; }}
-                  className="absolute left-1/2 top-1/2 h-[136%] w-[136%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                  className="absolute left-1/2 top-1/2 h-[124%] w-[124%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
                 />
               </div>
             )}
 
+            {/* Goa Social header band — hides all source-player chrome */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/85 via-black/45 to-transparent px-4 pb-10 pt-3 text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-sm">{short.channelIcon}</span>
+              <div className="min-w-0">
+                <p className="truncate text-xs font-semibold">{short.channelName}</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] opacity-70">Goa Social</p>
+              </div>
+            </div>
 
             <button
               type="button"
               onPointerDown={enableSound}
               onClick={enableSound}
-              className="absolute inset-0 z-10 cursor-default bg-transparent"
+              className="absolute inset-0 z-30 cursor-default bg-transparent"
               aria-label="Play Goa Social short"
             />
+
 
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-3 bg-gradient-to-t from-black/90 via-black/30 to-transparent px-4 pb-6 pt-28 text-white">
               <div className="min-w-0 max-w-[68%]">
