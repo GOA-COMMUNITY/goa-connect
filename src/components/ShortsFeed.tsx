@@ -106,15 +106,15 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const keepWarmAround = useCallback((center: number) => {
     setMounted((previous) => {
       const next = new Set<number>();
-      for (let i = center - 2; i <= center + 3; i += 1) {
+      for (let i = center - 1; i <= center + 1; i += 1) {
         if (i >= 0 && i < shorts.length) next.add(i);
       }
-      if (shorts.length > 0) next.add(0);
       let changed = next.size !== previous.size;
       if (!changed) next.forEach((i) => { if (!previous.has(i)) changed = true; });
       return changed ? next : previous;
     });
   }, [shorts.length]);
+
 
   const pauseLocal = useCallback(() => {
     Object.values(players.current).forEach((player) => {
