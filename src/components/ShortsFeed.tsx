@@ -387,7 +387,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               type="button"
               onPointerDown={enableSound}
               onClick={enableSound}
-              className="absolute inset-0 z-30 cursor-default bg-transparent"
+              className="absolute inset-0 z-10 cursor-default bg-transparent"
               aria-label="Play Goa Social short"
             />
 
