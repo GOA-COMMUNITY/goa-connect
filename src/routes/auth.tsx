@@ -116,6 +116,44 @@ function AuthPage() {
   }
 
 
+  // One-tap account: no email, no password, no verification.
+  async function handleInstant() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const id = `goan${Math.random().toString(36).slice(2, 8)}${Date.now().toString(36).slice(-4)}`;
+      const pass = crypto.randomUUID().replace(/-/g, "");
+      const { error } = await supabase.auth.signUp({
+        email: `${id}@goa.social`,
+        password: pass,
+        options: {
+          data: { full_name: name.trim() || `Goan ${id.slice(-4)}`, is_tourist: userType === "tourist" },
+        },
+      });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      const { data: signedIn } = await supabase.auth.signInWithPassword({
+        email: `${id}@goa.social`,
+        password: pass,
+      });
+      if (!signedIn.session) {
+        toast.error("Could not start your session — try again.");
+        return;
+      }
+      try {
+        localStorage.setItem("gs_quick_login", JSON.stringify({ id: `${id}@goa.social`, pass }));
+      } catch {}
+      toast.success("You're in — welcome to Goa Social!");
+      navigate({ to: "/" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleGoogle() {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
@@ -129,6 +167,7 @@ function AuthPage() {
     if (result.redirected) return;
     navigate({ to: "/" });
   }
+
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-primary/5 via-background to-blue-50 px-4 py-10">
