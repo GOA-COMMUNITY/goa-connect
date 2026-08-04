@@ -366,11 +366,14 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
               decoding="async"
             />
             {shouldMount && (
-              <div
-                ref={(element) => { hostRefs.current[index] = element; }}
-                className="absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
-              />
+              <div className="absolute inset-0 overflow-hidden">
+                <div
+                  ref={(element) => { hostRefs.current[index] = element; }}
+                  className="absolute left-1/2 top-1/2 h-[136%] w-[136%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                />
+              </div>
             )}
+
 
             <button
               type="button"
