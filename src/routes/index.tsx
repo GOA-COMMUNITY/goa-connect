@@ -4,6 +4,8 @@ import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
 import { useEffect, useState } from "react";
+import { getCachedShorts, warmShorts } from "@/lib/shorts-warmup";
+
 
 const initialVideos: Short[] = [
   { videoId: "CNiJy7Hsqbg", channelName: "Adventure Goa DK", channelIcon: "🌴" },
