@@ -6,7 +6,11 @@ export type Short = {
   videoId: string;
   channelName: string;
   channelIcon: string;
+  /** Present for shorts pre-cached on Goa Social's own hosting (instant playback). */
+  src?: string;
+  poster?: string;
 };
+
 
 declare global {
   interface Window {
