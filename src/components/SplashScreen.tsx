@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { releaseWarmup } from "@/lib/shorts-warmup";
+
 
 /**
  * Cinematic Goa Social intro.
