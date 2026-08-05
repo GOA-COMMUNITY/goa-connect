@@ -58,7 +58,7 @@ const stories = [
 const chips = ["For You", "North Goa", "South Goa", "Trending", "Food", "Events", "Music", "Beaches"];
 
 function Home() {
-  const [videos, setVideos] = useState<Short[]>(initialVideos);
+  const [videos, setVideos] = useState<Short[]>(() => getCachedShorts() ?? initialVideos);
   const [activeChip, setActiveChip] = useState("For You");
 
   useEffect(() => {
@@ -70,12 +70,10 @@ function Home() {
     };
 
     setVideos((current) => prioritizeSharedShort(current));
-    // Fetch early so the first short can preload under the splash
-    fetch(`/videos.json?v=${Math.floor(Date.now() / 900000)}`, { cache: "no-store" })
-      .then((r) => r.json())
-      .then((v: Short[]) => setVideos(prioritizeSharedShort(v.slice(0, 36))))
-      .catch(() => {});
+    // Warm YouTube origins + buffer the first shorts while the splash plays.
+    void warmShorts(initialVideos, (items) => setVideos(prioritizeSharedShort(items)));
   }, []);
+
 
   // Split feed into interleaved chunks: 1 short → dashboard → 2 shorts → stories → rest → ad
   const firstShort = videos.slice(0, 1);
