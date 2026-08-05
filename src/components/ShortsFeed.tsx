@@ -388,20 +388,44 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             style={frameStyle}
           >
             <img
-              src={`https://i.ytimg.com/vi/${short.videoId}/${index <= 1 ? "hqdefault" : "mqdefault"}.jpg`}
+              src={short.poster ?? `https://i.ytimg.com/vi/${short.videoId}/${index <= 1 ? "hqdefault" : "mqdefault"}.jpg`}
               alt=""
               className="absolute inset-0 h-full w-full object-cover opacity-90"
               loading={index <= 2 ? "eager" : "lazy"}
               decoding="async"
             />
-            {shouldMount && (
-              <div className="absolute inset-0 overflow-hidden">
-                <div
-                  ref={(element) => { hostRefs.current[index] = element; }}
-                  className="absolute left-1/2 top-1/2 h-[124%] w-[124%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
-                />
-              </div>
+            {short.src ? (
+              <video
+                ref={(element) => {
+                  nativeRefs.current[index] = element;
+                  if (element) {
+                    readyRef.current.add(index);
+                  }
+                }}
+                src={short.src}
+                poster={short.poster}
+                className="absolute inset-0 h-full w-full object-cover"
+                playsInline
+                loop
+                muted
+                preload={index <= 2 ? "auto" : "metadata"}
+                onCanPlay={() => {
+                  readyRef.current.add(index);
+                  setReady(new Set(readyRef.current));
+                  if (index === activeIdxRef.current) syncPlayback(index);
+                }}
+              />
+            ) : (
+              shouldMount && (
+                <div className="absolute inset-0 overflow-hidden">
+                  <div
+                    ref={(element) => { hostRefs.current[index] = element; }}
+                    className="absolute left-1/2 top-1/2 h-[124%] w-[124%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                  />
+                </div>
+              )
             )}
+
 
             {/* Goa Social header band — hides all source-player chrome */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/85 via-black/45 to-transparent px-4 pb-10 pt-3 text-white">
