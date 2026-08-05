@@ -32,6 +32,17 @@ jobs:
       - name: Refresh latest YouTube Shorts list
         run: bun run videos:update || echo "Keeping existing videos.json"
 
+      - name: Install media tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          sudo curl -sSL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
+
+      - name: Pre-cache first 10 shorts (compressed, regenerated each run)
+        run: bun run shorts:cache || echo "Falling back to streamed shorts only"
+
+
       - name: Build (static SPA)
         run: bun run build
 
