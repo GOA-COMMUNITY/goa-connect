@@ -6,7 +6,11 @@ export type Short = {
   videoId: string;
   channelName: string;
   channelIcon: string;
+  /** Present for shorts pre-cached on Goa Social's own hosting (instant playback). */
+  src?: string;
+  poster?: string;
 };
+
 
 declare global {
   interface Window {
@@ -69,7 +73,9 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const hostRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const nativeRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const players = useRef<Record<number, any>>({});
+
   const readyRef = useRef<Set<number>>(new Set());
   const activeIdxRef = useRef(0);
   const mutedRef = useRef(true);
@@ -123,6 +129,14 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         player.pauseVideo?.();
       } catch {}
     });
+    Object.values(nativeRefs.current).forEach((video) => {
+      try {
+        if (video && !video.paused) {
+          video.muted = true;
+          video.pause();
+        }
+      } catch {}
+    });
   }, []);
 
   const syncPlayback = useCallback((index: number) => {
@@ -153,7 +167,20 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         }
       } catch {}
     });
+    Object.entries(nativeRefs.current).forEach(([rawIndex, video]) => {
+      if (!video) return;
+      try {
+        if (Number(rawIndex) === index) {
+          video.muted = mutedRef.current;
+          void video.play().catch(() => {});
+        } else {
+          video.muted = true;
+          video.pause();
+        }
+      } catch {}
+    });
   }, [pauseLocal]);
+
 
   const setActive = useCallback((index: number) => {
     if (index < 0 || index >= shorts.length) return;
@@ -237,13 +264,15 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   useEffect(() => {
     if (shorts.length === 0) return;
+    if (shorts.every((short) => short.src)) return;
     let cancelled = false;
     loadYT().then((YT) => {
       if (cancelled) return;
       mounted.forEach((index) => {
         const short = shorts[index];
         const host = hostRefs.current[index];
-        if (!short || !host || players.current[index]) return;
+        if (!short || short.src || !host || players.current[index]) return;
+
         players.current[index] = new YT.Player(host, {
           videoId: short.videoId,
           width: "100%",
@@ -359,20 +388,44 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             style={frameStyle}
           >
             <img
-              src={`https://i.ytimg.com/vi/${short.videoId}/${index <= 1 ? "hqdefault" : "mqdefault"}.jpg`}
+              src={short.poster ?? `https://i.ytimg.com/vi/${short.videoId}/${index <= 1 ? "hqdefault" : "mqdefault"}.jpg`}
               alt=""
               className="absolute inset-0 h-full w-full object-cover opacity-90"
               loading={index <= 2 ? "eager" : "lazy"}
               decoding="async"
             />
-            {shouldMount && (
-              <div className="absolute inset-0 overflow-hidden">
-                <div
-                  ref={(element) => { hostRefs.current[index] = element; }}
-                  className="absolute left-1/2 top-1/2 h-[124%] w-[124%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
-                />
-              </div>
+            {short.src ? (
+              <video
+                ref={(element) => {
+                  nativeRefs.current[index] = element;
+                  if (element) {
+                    readyRef.current.add(index);
+                  }
+                }}
+                src={short.src}
+                poster={short.poster}
+                className="absolute inset-0 h-full w-full object-cover"
+                playsInline
+                loop
+                muted
+                preload={index <= 2 ? "auto" : "metadata"}
+                onCanPlay={() => {
+                  readyRef.current.add(index);
+                  setReady(new Set(readyRef.current));
+                  if (index === activeIdxRef.current) syncPlayback(index);
+                }}
+              />
+            ) : (
+              shouldMount && (
+                <div className="absolute inset-0 overflow-hidden">
+                  <div
+                    ref={(element) => { hostRefs.current[index] = element; }}
+                    className="absolute left-1/2 top-1/2 h-[124%] w-[124%] -translate-x-1/2 -translate-y-1/2 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                  />
+                </div>
+              )
             )}
+
 
             {/* Goa Social header band — hides all source-player chrome */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-gradient-to-b from-black/85 via-black/45 to-transparent px-4 pb-10 pt-3 text-white">
