@@ -264,13 +264,15 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   useEffect(() => {
     if (shorts.length === 0) return;
+    if (shorts.every((short) => short.src)) return;
     let cancelled = false;
     loadYT().then((YT) => {
       if (cancelled) return;
       mounted.forEach((index) => {
         const short = shorts[index];
         const host = hostRefs.current[index];
-        if (!short || !host || players.current[index]) return;
+        if (!short || short.src || !host || players.current[index]) return;
+
         players.current[index] = new YT.Player(host, {
           videoId: short.videoId,
           width: "100%",
