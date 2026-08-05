@@ -73,7 +73,9 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const hostRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const nativeRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const players = useRef<Record<number, any>>({});
+
   const readyRef = useRef<Set<number>>(new Set());
   const activeIdxRef = useRef(0);
   const mutedRef = useRef(true);
