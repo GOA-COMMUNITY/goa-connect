@@ -129,6 +129,14 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         player.pauseVideo?.();
       } catch {}
     });
+    Object.values(nativeRefs.current).forEach((video) => {
+      try {
+        if (video && !video.paused) {
+          video.muted = true;
+          video.pause();
+        }
+      } catch {}
+    });
   }, []);
 
   const syncPlayback = useCallback((index: number) => {
@@ -159,7 +167,20 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         }
       } catch {}
     });
+    Object.entries(nativeRefs.current).forEach(([rawIndex, video]) => {
+      if (!video) return;
+      try {
+        if (Number(rawIndex) === index) {
+          video.muted = mutedRef.current;
+          void video.play().catch(() => {});
+        } else {
+          video.muted = true;
+          video.pause();
+        }
+      } catch {}
+    });
   }, [pauseLocal]);
+
 
   const setActive = useCallback((index: number) => {
     if (index < 0 || index >= shorts.length) return;
