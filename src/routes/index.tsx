@@ -65,16 +65,31 @@ function Home() {
 
   useEffect(() => {
     const sharedShort = new URLSearchParams(window.location.search).get("short");
-    const prioritizeSharedShort = (items: Short[]) => {
-      if (!sharedShort) return items;
-      const match = items.find((video) => video.videoId === sharedShort);
-      return match ? [match, ...items.filter((video) => video.videoId !== sharedShort)] : items;
+    let cached: Short[] = [];
+
+    const merge = (items: Short[]) => {
+      const seen = new Set(cached.map((short) => short.videoId));
+      const combined = [...cached, ...items.filter((short) => !seen.has(short.videoId))];
+      if (!sharedShort) return combined;
+      const match = combined.find((video) => video.videoId === sharedShort);
+      return match ? [match, ...combined.filter((video) => video.videoId !== sharedShort)] : combined;
     };
 
-    setVideos((current) => prioritizeSharedShort(current));
-    // Warm YouTube origins + buffer the first shorts while the splash plays.
-    void warmShorts(initialVideos, (items) => setVideos(prioritizeSharedShort(items)));
+    // Shorts pre-cached on Goa Social's own hosting play instantly — show them first.
+    void fetch("/cached-shorts.json", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((items: Short[]) => {
+        if (!Array.isArray(items) || items.length === 0) return;
+        cached = items;
+        setVideos((current) => merge(current));
+      })
+      .catch(() => {});
+
+    setVideos((current) => merge(current));
+    // Warm YouTube origins + buffer the first streamed shorts while the splash plays.
+    void warmShorts(initialVideos, (items) => setVideos(merge(items)));
   }, []);
+
 
 
   // Split feed into interleaved chunks: 1 short → dashboard → 2 shorts → stories → rest → ad
