@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { releaseWarmup } from "@/lib/shorts-warmup";
+
 
 /**
  * Cinematic Goa Social intro.
@@ -35,8 +37,10 @@ export function SplashScreen({
   function finish() {
     setDone(true);
     sessionStorage.setItem("gs_splash", "1");
+    releaseWarmup();
     window.dispatchEvent(new Event("gs-enable-shorts-sound"));
   }
+
 
   function handleEnter() {
     if (bloomed) return;
