@@ -607,3 +607,69 @@ function ChannelsPanel() {
     </div>
   );
 }
+
+type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number };
+
+function ShortsSettingsPanel() {
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 10 });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    supabase.from("app_settings").select("value").eq("key", "shorts").maybeSingle()
+      .then(({ data }) => { if (data?.value) setS({ ...s, ...(data.value as ShortsSettings) }); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function save(next: ShortsSettings) {
+    setS(next);
+    setSaving(true);
+    const { error } = await supabase.from("app_settings")
+      .upsert({ key: "shorts", value: next, updated_at: new Date().toISOString() });
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    toast.success("Shorts settings saved");
+  }
+
+  const Row = ({ label, hint, on, onToggle }: { label: string; hint: string; on: boolean; onToggle: () => void }) => (
+    <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
+      <div>
+        <p className="text-sm font-semibold">{label}</p>
+        <p className="text-[11px] text-muted-foreground">{hint}</p>
+      </div>
+      <button onClick={onToggle} aria-label={label}>
+        {on ? <ToggleRight className="h-6 w-6 text-primary" /> : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-soft">
+      <h2 className="text-lg font-bold">Shorts engine</h2>
+      <Row
+        label="Play pre-cached shorts first"
+        hint="First clips stream from our own hosting for an instant start."
+        on={s.cachedFirst}
+        onToggle={() => save({ ...s, cachedFirst: !s.cachedFirst })}
+      />
+      <Row
+        label="Auto-refresh latest shorts"
+        hint="Pull the newest Shorts from your channels every 30 minutes."
+        on={s.autoRefresh}
+        onToggle={() => save({ ...s, autoRefresh: !s.autoRefresh })}
+      />
+      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
+        <div>
+          <p className="text-sm font-semibold">Pre-cached clips per refresh</p>
+          <p className="text-[11px] text-muted-foreground">Old clips are deleted each run to save storage.</p>
+        </div>
+        <input
+          type="number" min={0} max={20} value={s.maxCached}
+          onChange={(e) => setS({ ...s, maxCached: Number(e.target.value) })}
+          onBlur={() => save(s)}
+          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
+        />
+      </div>
+      {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
+    </div>
+  );
+}
