@@ -122,6 +122,24 @@ function ChatRoom() {
     setBody("");
     setSending(false);
     qc.invalidateQueries({ queryKey: ["conversations"] });
+    void requestReply();
+  }
+
+  async function requestReply() {
+    setTyping(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-reply", {
+        body: { conversationId: id },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      qc.invalidateQueries({ queryKey: ["messages", id] });
+      qc.invalidateQueries({ queryKey: ["conversations"] });
+    } catch {
+      // Silent: real users simply may not reply instantly.
+    } finally {
+      setTyping(false);
+    }
   }
 
   return (
