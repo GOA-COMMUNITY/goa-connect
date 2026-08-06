@@ -39,8 +39,13 @@ jobs:
           sudo curl -sSL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
 
-      - name: Pre-cache first 10 shorts (compressed, regenerated each run)
+      - name: Pre-cache first shorts (compressed, regenerated each run)
         run: bun run shorts:cache || echo "Falling back to streamed shorts only"
+
+      - name: Report cache result
+        run: |
+          echo "Manifest:"; cat public/cached-shorts.json || true
+          echo "Files:"; ls -lh public/cached 2>/dev/null || echo "(no cached folder)"
 
 
       - name: Build (static SPA)

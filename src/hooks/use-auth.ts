@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
-import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { ensureMasterAdminRole } from "@/lib/admin-bootstrap.functions";
 
 export function useAuth() {
-  const ensureMasterAdmin = useServerFn(ensureMasterAdminRole);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -15,13 +12,8 @@ export function useAuth() {
 
     async function loadRole(u: User | null) {
       if (!u) {
-        setIsAdmin(false);
+        if (mounted) setIsAdmin(false);
         return;
-      }
-      if (u.email?.toLowerCase() === "eshaanaralawrence@gmail.com") {
-        try {
-          await ensureMasterAdmin();
-        } catch {}
       }
       const { data } = await supabase
         .from("user_roles")
@@ -37,11 +29,12 @@ export function useAuth() {
       const u = data.session?.user ?? null;
       setUser(u);
       await loadRole(u);
-      setLoading(false);
+      if (mounted) setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange(async (_e, session) => {
       const u = session?.user ?? null;
+      if (!mounted) return;
       setUser(u);
       await loadRole(u);
     });
@@ -50,7 +43,7 @@ export function useAuth() {
       mounted = false;
       sub.subscription.unsubscribe();
     };
-  }, [ensureMasterAdmin]);
+  }, []);
 
   return { user, isAdmin, loading };
 }

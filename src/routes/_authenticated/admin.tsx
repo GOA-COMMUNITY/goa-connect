@@ -427,6 +427,50 @@ function ChannelsPanel() {
   const [rows, setRows] = useState<Channel[]>([]);
   const [draft, setDraft] = useState({ name: "", url: "", icon: "🌴", priority: 100 });
   const [busy, setBusy] = useState(false);
+  const [paste, setPaste] = useState("");
+
+  function parseChannelLine(line: string) {
+    let url = line.trim().replace(/[<>"']/g, "");
+    if (!url) return null;
+    if (!/^https?:/i.test(url)) {
+      url = url.startsWith("@")
+        ? `https://www.youtube.com/${url}`
+        : `https://www.youtube.com/${url.replace(/^\/+/, "")}`;
+    }
+    url = url.split("?")[0].replace(/\/(shorts|videos|featured|streams)\/?$/i, "").replace(/\/$/, "");
+    const handle = url.match(/@([^/]+)/)?.[1];
+    const slug = handle ?? url.split("/").filter(Boolean).pop() ?? "Channel";
+    const name = slug
+      .replace(/[-_.]+/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+      .slice(0, 60);
+    return { name, url: `${url}/shorts` };
+  }
+
+  async function addPasted() {
+    const parsed = paste
+      .split(/[\n,\s]+/)
+      .map(parseChannelLine)
+      .filter(Boolean) as { name: string; url: string }[];
+    if (!parsed.length) return toast.error("No valid channel links found");
+    setBusy(true);
+    const existing = new Set(rows.map((r) => r.url.toLowerCase()));
+    const fresh = parsed.filter((p) => !existing.has(p.url.toLowerCase()));
+    if (!fresh.length) {
+      setBusy(false);
+      return toast.info("Those channels are already added");
+    }
+    const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
+    const { error } = await supabase.from("youtube_channels").insert(
+      fresh.map((p, i) => ({ name: p.name, url: p.url, icon: "🌴", priority: base + i + 1, active: true })),
+    );
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Added ${fresh.length} channel${fresh.length > 1 ? "s" : ""}`);
+    setPaste("");
+    reload();
+  }
+
 
   async function reload() {
     const { data } = await supabase
@@ -469,6 +513,30 @@ function ChannelsPanel() {
 
   return (
     <div className="space-y-4">
+      <ShortsSettingsPanel />
+
+      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-1 text-lg font-bold">Paste channel links</h2>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Paste one or more YouTube channel links (any format — @handle, /channel/…, /c/…), one per line.
+          Names are detected automatically and the newest Shorts start appearing on the next refresh.
+        </p>
+        <textarea
+          className={`${field} font-mono`}
+          rows={4}
+          placeholder={"https://www.youtube.com/@goanchannel\nhttps://youtube.com/@another/shorts"}
+          value={paste}
+          onChange={(e) => setPaste(e.target.value)}
+        />
+        <button
+          onClick={addPasted}
+          disabled={busy || !paste.trim()}
+          className="mt-3 flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+        >
+          <Plus className="h-4 w-4" /> Add pasted channels
+        </button>
+      </div>
+
       <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
         <h2 className="mb-1 text-lg font-bold">YouTube channels</h2>
         <p className="mb-4 text-xs text-muted-foreground">
@@ -536,6 +604,72 @@ function ChannelsPanel() {
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number };
+
+function ShortsSettingsPanel() {
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 10 });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    supabase.from("app_settings").select("value").eq("key", "shorts").maybeSingle()
+      .then(({ data }) => { if (data?.value) setS({ ...s, ...(data.value as ShortsSettings) }); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function save(next: ShortsSettings) {
+    setS(next);
+    setSaving(true);
+    const { error } = await supabase.from("app_settings")
+      .upsert({ key: "shorts", value: next, updated_at: new Date().toISOString() });
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    toast.success("Shorts settings saved");
+  }
+
+  const Row = ({ label, hint, on, onToggle }: { label: string; hint: string; on: boolean; onToggle: () => void }) => (
+    <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
+      <div>
+        <p className="text-sm font-semibold">{label}</p>
+        <p className="text-[11px] text-muted-foreground">{hint}</p>
+      </div>
+      <button onClick={onToggle} aria-label={label}>
+        {on ? <ToggleRight className="h-6 w-6 text-primary" /> : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-soft">
+      <h2 className="text-lg font-bold">Shorts engine</h2>
+      <Row
+        label="Play pre-cached shorts first"
+        hint="First clips stream from our own hosting for an instant start."
+        on={s.cachedFirst}
+        onToggle={() => save({ ...s, cachedFirst: !s.cachedFirst })}
+      />
+      <Row
+        label="Auto-refresh latest shorts"
+        hint="Pull the newest Shorts from your channels every 30 minutes."
+        on={s.autoRefresh}
+        onToggle={() => save({ ...s, autoRefresh: !s.autoRefresh })}
+      />
+      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
+        <div>
+          <p className="text-sm font-semibold">Pre-cached clips per refresh</p>
+          <p className="text-[11px] text-muted-foreground">Old clips are deleted each run to save storage.</p>
+        </div>
+        <input
+          type="number" min={0} max={20} value={s.maxCached}
+          onChange={(e) => setS({ ...s, maxCached: Number(e.target.value) })}
+          onBlur={() => save(s)}
+          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
+        />
+      </div>
+      {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
     </div>
   );
 }

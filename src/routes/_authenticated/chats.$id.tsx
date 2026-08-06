@@ -36,6 +36,7 @@ function ChatRoom() {
   const qc = useQueryClient();
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: conv } = useQuery({
@@ -122,6 +123,24 @@ function ChatRoom() {
     setBody("");
     setSending(false);
     qc.invalidateQueries({ queryKey: ["conversations"] });
+    void requestReply();
+  }
+
+  async function requestReply() {
+    setTyping(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-reply", {
+        body: { conversationId: id },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      qc.invalidateQueries({ queryKey: ["messages", id] });
+      qc.invalidateQueries({ queryKey: ["conversations"] });
+    } catch {
+      // Silent: real users simply may not reply instantly.
+    } finally {
+      setTyping(false);
+    }
   }
 
   return (
@@ -159,6 +178,19 @@ function ChatRoom() {
             </div>
           );
         })}
+        {typing && (
+          <div className="flex justify-start">
+            <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-secondary px-4 py-3">
+              {[0, 150, 300].map((d) => (
+                <span
+                  key={d}
+                  className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+                  style={{ animationDelay: `${d}ms` }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <form
