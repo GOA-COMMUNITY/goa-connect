@@ -469,6 +469,30 @@ function ChannelsPanel() {
 
   return (
     <div className="space-y-4">
+      <ShortsSettingsPanel />
+
+      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-1 text-lg font-bold">Paste channel links</h2>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Paste one or more YouTube channel links (any format — @handle, /channel/…, /c/…), one per line.
+          Names are detected automatically and the newest Shorts start appearing on the next refresh.
+        </p>
+        <textarea
+          className={`${field} font-mono`}
+          rows={4}
+          placeholder={"https://www.youtube.com/@goanchannel\nhttps://youtube.com/@another/shorts"}
+          value={paste}
+          onChange={(e) => setPaste(e.target.value)}
+        />
+        <button
+          onClick={addPasted}
+          disabled={busy || !paste.trim()}
+          className="mt-3 flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+        >
+          <Plus className="h-4 w-4" /> Add pasted channels
+        </button>
+      </div>
+
       <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
         <h2 className="mb-1 text-lg font-bold">YouTube channels</h2>
         <p className="mb-4 text-xs text-muted-foreground">
