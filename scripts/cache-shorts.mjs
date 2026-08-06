@@ -20,7 +20,7 @@ const run = promisify(execFile);
 
 const OUT_DIR = "public/cached";
 const MANIFEST = "public/cached-shorts.json";
-const MAX_CLIPS = Number(process.env.CACHE_MAX_CLIPS || 10);
+let MAX_CLIPS = Number(process.env.CACHE_MAX_CLIPS || 10);
 const MAX_BYTES = 2_200_000;
 
 const FALLBACK_CHANNELS = [
@@ -57,6 +57,31 @@ async function fetchChannels() {
   }
 }
 
+async function fetchSettings() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/app_settings?select=value&key=eq.shorts`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    });
+    if (!r.ok) return null;
+    const rows = await r.json();
+    return rows?.[0]?.value ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const YT_ARGS = [
+  "--no-warnings",
+  "--ignore-config",
+  "--retries", "5",
+  "--fragment-retries", "5",
+  "--socket-timeout", "20",
+  "--extractor-args", "youtube:player_client=android,ios,web_safari",
+  "--user-agent",
+  "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36",
+];
+
 function shortsUrl(raw) {
   let url = raw.trim();
   if (!/^https?:/i.test(url)) url = `https://www.youtube.com/${url.replace(/^\/+/, "")}`;
@@ -71,7 +96,7 @@ async function latestIdsFor(channel, limit) {
       [
         "--flat-playlist",
         "--playlist-end", String(limit),
-        "--no-warnings",
+        ...YT_ARGS,
         "--print", "%(id)s",
         shortsUrl(channel.url),
       ],
@@ -108,7 +133,7 @@ async function download(videoId) {
     "yt-dlp",
     [
       "-f", "bv*[height<=480][ext=mp4]+ba[ext=m4a]/b[height<=480][ext=mp4]/b[ext=mp4]/b",
-      "--no-warnings",
+      ...YT_ARGS,
       "--no-playlist",
       "--max-filesize", "40M",
       "-o", raw,
@@ -135,6 +160,19 @@ async function compress(input, output) {
 async function main() {
   await rm(OUT_DIR, { recursive: true, force: true });
   await mkdir(OUT_DIR, { recursive: true });
+
+  const settings = await fetchSettings();
+  if (settings && settings.cachedFirst === false) {
+    await writeFile(MANIFEST, "[]\n");
+    console.log("cachedFirst disabled in admin settings — skipping pre-cache");
+    return;
+  }
+  if (settings && Number(settings.maxCached) >= 0) MAX_CLIPS = Number(settings.maxCached);
+  if (MAX_CLIPS === 0) {
+    await writeFile(MANIFEST, "[]\n");
+    console.log("maxCached = 0 — skipping pre-cache");
+    return;
+  }
 
   const channels = (await fetchChannels()).sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100));
   const lists = [];
