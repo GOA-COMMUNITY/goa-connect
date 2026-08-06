@@ -178,6 +178,19 @@ function ChatRoom() {
             </div>
           );
         })}
+        {typing && (
+          <div className="flex justify-start">
+            <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-secondary px-4 py-3">
+              {[0, 150, 300].map((d) => (
+                <span
+                  key={d}
+                  className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+                  style={{ animationDelay: `${d}ms` }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <form
