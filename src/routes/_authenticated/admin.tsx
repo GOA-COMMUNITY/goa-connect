@@ -427,6 +427,50 @@ function ChannelsPanel() {
   const [rows, setRows] = useState<Channel[]>([]);
   const [draft, setDraft] = useState({ name: "", url: "", icon: "🌴", priority: 100 });
   const [busy, setBusy] = useState(false);
+  const [paste, setPaste] = useState("");
+
+  function parseChannelLine(line: string) {
+    let url = line.trim().replace(/[<>"']/g, "");
+    if (!url) return null;
+    if (!/^https?:/i.test(url)) {
+      url = url.startsWith("@")
+        ? `https://www.youtube.com/${url}`
+        : `https://www.youtube.com/${url.replace(/^\/+/, "")}`;
+    }
+    url = url.split("?")[0].replace(/\/(shorts|videos|featured|streams)\/?$/i, "").replace(/\/$/, "");
+    const handle = url.match(/@([^/]+)/)?.[1];
+    const slug = handle ?? url.split("/").filter(Boolean).pop() ?? "Channel";
+    const name = slug
+      .replace(/[-_.]+/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+      .slice(0, 60);
+    return { name, url: `${url}/shorts` };
+  }
+
+  async function addPasted() {
+    const parsed = paste
+      .split(/[\n,\s]+/)
+      .map(parseChannelLine)
+      .filter(Boolean) as { name: string; url: string }[];
+    if (!parsed.length) return toast.error("No valid channel links found");
+    setBusy(true);
+    const existing = new Set(rows.map((r) => r.url.toLowerCase()));
+    const fresh = parsed.filter((p) => !existing.has(p.url.toLowerCase()));
+    if (!fresh.length) {
+      setBusy(false);
+      return toast.info("Those channels are already added");
+    }
+    const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
+    const { error } = await supabase.from("youtube_channels").insert(
+      fresh.map((p, i) => ({ name: p.name, url: p.url, icon: "🌴", priority: base + i + 1, active: true })),
+    );
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Added ${fresh.length} channel${fresh.length > 1 ? "s" : ""}`);
+    setPaste("");
+    reload();
+  }
+
 
   async function reload() {
     const { data } = await supabase
