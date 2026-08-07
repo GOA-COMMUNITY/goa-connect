@@ -94,21 +94,41 @@ function shortsUrl(raw) {
 }
 
 async function latestIdsFor(channel, limit) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const { stdout } = await run(
+        "yt-dlp",
+        [
+          "--flat-playlist",
+          "--playlist-end", String(limit),
+          ...YT_ARGS,
+          "--print", "%(id)s",
+          shortsUrl(channel.url),
+        ],
+        { maxBuffer: 10 * 1024 * 1024 },
+      );
+      const ids = stdout.split("\n").map((s) => s.trim()).filter((s) => /^[\w-]{11}$/.test(s));
+      if (ids.length > 0) return ids;
+    } catch (e) {
+      console.warn(`list attempt ${attempt}/3 failed for ${channel.name}:`, e.message.split("\n")[0]);
+    }
+  }
+  return [];
+}
+
+async function fallbackQueue(channels) {
   try {
-    const { stdout } = await run(
-      "yt-dlp",
-      [
-        "--flat-playlist",
-        "--playlist-end", String(limit),
-        ...YT_ARGS,
-        "--print", "%(id)s",
-        shortsUrl(channel.url),
-      ],
-      { maxBuffer: 10 * 1024 * 1024 },
-    );
-    return stdout.split("\n").map((s) => s.trim()).filter((s) => /^[\w-]{11}$/.test(s));
-  } catch (e) {
-    console.warn(`could not list ${channel.name}:`, e.message.split("\n")[0]);
+    const videos = JSON.parse(await readFile("public/videos.json", "utf8"));
+    return videos
+      .filter((video) => /^[\w-]{11}$/.test(video.videoId))
+      .map((video) => ({
+        videoId: video.videoId,
+        channel: channels.find((channel) => channel.name === video.channelName) ?? {
+          name: video.channelName ?? "Goa Social",
+          icon: video.channelIcon ?? "🌴",
+        },
+      }));
+  } catch {
     return [];
   }
 }
@@ -185,7 +205,11 @@ async function main() {
     lists.push({ channel, items: await latestIdsFor(channel, MAX_CLIPS) });
   }
 
-  const queue = interleave(lists);
+  const listedQueue = interleave(lists);
+  const queue = listedQueue.length > 0 ? listedQueue : await fallbackQueue(channels);
+  if (listedQueue.length === 0 && queue.length > 0) {
+    console.warn(`channel listing unavailable; trying ${queue.length} IDs from videos.json`);
+  }
   const manifest = [];
 
   for (const item of queue) {
