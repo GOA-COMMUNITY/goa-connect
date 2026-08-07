@@ -48,7 +48,9 @@ jobs:
           path: |
             public/cached
             public/cached-shorts.json
-          key: goa-shorts-cache-v2
+          key: goa-shorts-cache-v2-${{ github.run_id }}
+          restore-keys: |
+            goa-shorts-cache-v2-
 
       - name: Refresh latest YouTube Shorts list
         run: bun run videos:update || echo "Keeping existing videos.json"
