@@ -1,4 +1,8 @@
 import { writeFile, readFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const run = promisify(execFile);
 
 const FALLBACK_CHANNELS = [
   { name: "Adventure Goa DK", url: "https://www.youtube.com/@adventuregoadk/shorts", icon: "🌴", priority: 1 },
@@ -45,12 +49,34 @@ function uniqueVideoIds(html) {
   return ids;
 }
 
+function shortsUrl(raw) {
+  const clean = raw.trim().replace(/\/(videos|featured|streams|shorts)\/?$/, "");
+  return `${clean}/shorts`;
+}
+
+async function idsFromYtDlp(channel) {
+  try {
+    const { stdout } = await run("yt-dlp", [
+      "--flat-playlist", "--playlist-end", "30", "--no-warnings", "--ignore-config",
+      "--retries", "3", "--socket-timeout", "20", "--js-runtimes", "deno",
+      "--remote-components", "ejs:github",
+      "--extractor-args", "youtube:player_client=web,web_safari,android_vr",
+      "--print", "%(id)s", shortsUrl(channel.url),
+    ], { maxBuffer: 10 * 1024 * 1024 });
+    return stdout.split("\n").map((id) => id.trim()).filter((id) => /^[\w-]{11}$/.test(id));
+  } catch (error) {
+    console.warn(`yt-dlp listing failed for ${channel.name}:`, error.message.split("\n")[0]);
+    return [];
+  }
+}
+
 const channels = (await fetchChannels()).sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100));
 const seen = new Set();
 const videos = [];
 
 for (const channel of channels) {
   try {
+    const extracted = await idsFromYtDlp(channel);
     const response = await fetch(channel.url, {
       headers: {
         "user-agent": "Mozilla/5.0 (compatible; GoaSocialBot/1.0)",
@@ -59,7 +85,7 @@ for (const channel of channels) {
     });
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const html = await response.text();
-    for (const videoId of uniqueVideoIds(html)) {
+    for (const videoId of [...extracted, ...uniqueVideoIds(html)]) {
       if (seen.has(videoId)) continue;
       seen.add(videoId);
       videos.push({ videoId, channelName: channel.name, channelIcon: channel.icon ?? "🌴" });

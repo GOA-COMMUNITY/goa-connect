@@ -12,14 +12,16 @@
  * The cache folder is regenerated from scratch on every run, so old
  * clips are auto-deleted and no video is retained long-term.
  */
-import { mkdir, rm, readFile, writeFile, readdir, stat } from "node:fs/promises";
+import { mkdir, rm, readFile, writeFile, readdir, stat, rename, copyFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 const run = promisify(execFile);
 
 const OUT_DIR = "public/cached";
+const NEXT_DIR = "public/cached-next";
 const MANIFEST = "public/cached-shorts.json";
+const NEXT_MANIFEST = "public/cached-shorts.next.json";
 let MAX_CLIPS = Number(process.env.CACHE_MAX_CLIPS || 10);
 const MAX_BYTES = 2_200_000;
 
@@ -77,7 +79,9 @@ const YT_ARGS = [
   "--retries", "5",
   "--fragment-retries", "5",
   "--socket-timeout", "20",
-  "--extractor-args", "youtube:player_client=android,ios,web_safari",
+  "--js-runtimes", "deno",
+  "--remote-components", "ejs:github",
+  "--extractor-args", "youtube:player_client=web,web_safari,android_vr",
   "--user-agent",
   "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36",
 ];
@@ -90,21 +94,41 @@ function shortsUrl(raw) {
 }
 
 async function latestIdsFor(channel, limit) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const { stdout } = await run(
+        "yt-dlp",
+        [
+          "--flat-playlist",
+          "--playlist-end", String(limit),
+          ...YT_ARGS,
+          "--print", "%(id)s",
+          shortsUrl(channel.url),
+        ],
+        { maxBuffer: 10 * 1024 * 1024 },
+      );
+      const ids = stdout.split("\n").map((s) => s.trim()).filter((s) => /^[\w-]{11}$/.test(s));
+      if (ids.length > 0) return ids;
+    } catch (e) {
+      console.warn(`list attempt ${attempt}/3 failed for ${channel.name}:`, e.message.split("\n")[0]);
+    }
+  }
+  return [];
+}
+
+async function fallbackQueue(channels) {
   try {
-    const { stdout } = await run(
-      "yt-dlp",
-      [
-        "--flat-playlist",
-        "--playlist-end", String(limit),
-        ...YT_ARGS,
-        "--print", "%(id)s",
-        shortsUrl(channel.url),
-      ],
-      { maxBuffer: 10 * 1024 * 1024 },
-    );
-    return stdout.split("\n").map((s) => s.trim()).filter((s) => /^[\w-]{11}$/.test(s));
-  } catch (e) {
-    console.warn(`could not list ${channel.name}:`, e.message.split("\n")[0]);
+    const videos = JSON.parse(await readFile("public/videos.json", "utf8"));
+    return videos
+      .filter((video) => /^[\w-]{11}$/.test(video.videoId))
+      .map((video) => ({
+        videoId: video.videoId,
+        channel: channels.find((channel) => channel.name === video.channelName) ?? {
+          name: video.channelName ?? "Goa Social",
+          icon: video.channelIcon ?? "🌴",
+        },
+      }));
+  } catch {
     return [];
   }
 }
@@ -128,7 +152,7 @@ function interleave(lists) {
 }
 
 async function download(videoId) {
-  const raw = `${OUT_DIR}/${videoId}.src.mp4`;
+  const raw = `${NEXT_DIR}/${videoId}.src.%(ext)s`;
   await run(
     "yt-dlp",
     [
@@ -158,8 +182,9 @@ async function compress(input, output) {
 }
 
 async function main() {
-  await rm(OUT_DIR, { recursive: true, force: true });
-  await mkdir(OUT_DIR, { recursive: true });
+  await rm(NEXT_DIR, { recursive: true, force: true });
+  await rm(NEXT_MANIFEST, { force: true });
+  await mkdir(NEXT_DIR, { recursive: true });
 
   const settings = await fetchSettings();
   if (settings && settings.cachedFirst === false) {
@@ -180,19 +205,24 @@ async function main() {
     lists.push({ channel, items: await latestIdsFor(channel, MAX_CLIPS) });
   }
 
-  const queue = interleave(lists);
+  const listedQueue = interleave(lists);
+  const queue = listedQueue.length > 0 ? listedQueue : await fallbackQueue(channels);
+  if (listedQueue.length === 0 && queue.length > 0) {
+    console.warn(`channel listing unavailable; trying ${queue.length} IDs from videos.json`);
+  }
   const manifest = [];
 
   for (const item of queue) {
     if (manifest.length >= MAX_CLIPS) break;
-    const out = `${OUT_DIR}/${item.videoId}.mp4`;
+    const out = `${NEXT_DIR}/${item.videoId}.mp4`;
     let raw;
     try {
       raw = await download(item.videoId);
-      const files = await readdir(OUT_DIR);
+      const files = await readdir(NEXT_DIR);
       const actual = files.find((f) => f.startsWith(`${item.videoId}.src`));
-      await compress(`${OUT_DIR}/${actual}`, out);
-      await rm(`${OUT_DIR}/${actual}`, { force: true });
+      if (!actual) throw new Error("download completed without a media file");
+      await compress(`${NEXT_DIR}/${actual}`, out);
+      await rm(`${NEXT_DIR}/${actual}`, { force: true });
       const info = await stat(out);
       if (info.size > MAX_BYTES) {
         console.warn(`skipping ${item.videoId} (${Math.round(info.size / 1024)}kb too big)`);
@@ -214,13 +244,27 @@ async function main() {
     }
   }
 
-  await writeFile(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
-  console.log(`manifest written with ${manifest.length} pre-cached shorts`);
+  if (manifest.length === 0) {
+    await rm(NEXT_DIR, { recursive: true, force: true });
+    const previous = await readFile(MANIFEST, "utf8").then(JSON.parse).catch(() => []);
+    if (previous.length > 0) {
+      console.warn(`no new clips downloaded; preserving ${previous.length} previously cached shorts`);
+      return;
+    }
+    throw new Error("YouTube returned no downloadable shorts and no previous cache exists");
+  }
+
+  await writeFile(NEXT_MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
+  await rm(OUT_DIR, { recursive: true, force: true });
+  await rename(NEXT_DIR, OUT_DIR);
+  await copyFile(NEXT_MANIFEST, MANIFEST);
+  await rm(NEXT_MANIFEST, { force: true });
+  console.log(`manifest published with ${manifest.length} pre-cached shorts`);
 }
 
 try {
   await main();
 } catch (e) {
-  console.warn("cache-shorts failed, keeping YouTube-only feed:", e.message);
-  await writeFile(MANIFEST, "[]\n").catch(() => {});
+  console.error("cache-shorts failed:", e.message);
+  process.exitCode = 1;
 }
