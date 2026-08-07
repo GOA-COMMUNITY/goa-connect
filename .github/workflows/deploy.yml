@@ -42,16 +42,6 @@ jobs:
           yt-dlp --version
           deno --version
 
-      - name: Restore last successful shorts cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/cached
-            public/cached-shorts.json
-          key: goa-shorts-cache-v2-${{ github.run_id }}
-          restore-keys: |
-            goa-shorts-cache-v2-
-
       - name: Refresh latest YouTube Shorts list
         run: bun run videos:update || echo "Keeping existing videos.json"
 
