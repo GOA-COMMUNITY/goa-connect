@@ -420,14 +420,19 @@ function ContentPanel() {
 
 type Channel = {
   id: string; name: string; url: string; icon: string | null;
-  priority: number; active: boolean;
+  priority: number; active: boolean; weight: number;
+  avatar_url: string | null; subscribers: string | null; description: string | null;
 };
+
+type Preview = ChannelInfo & { weight: number; duplicate: boolean };
 
 function ChannelsPanel() {
   const [rows, setRows] = useState<Channel[]>([]);
   const [draft, setDraft] = useState({ name: "", url: "", icon: "🌴", priority: 100 });
   const [busy, setBusy] = useState(false);
   const [paste, setPaste] = useState("");
+  const [previews, setPreviews] = useState<Preview[]>([]);
+  const lookup = useServerFn(getChannelInfo);
 
   function parseChannelLine(line: string) {
     let url = line.trim().replace(/[<>"']/g, "");
@@ -447,7 +452,8 @@ function ChannelsPanel() {
     return { name, url: `${url}/shorts` };
   }
 
-  async function addPasted() {
+  /** Step 1 — look up public details for every pasted link. */
+  async function checkPasted() {
     const parsed = paste
       .split(/[\n,\s]+/)
       .map(parseChannelLine)
@@ -455,21 +461,41 @@ function ChannelsPanel() {
     if (!parsed.length) return toast.error("No valid channel links found");
     setBusy(true);
     const existing = new Set(rows.map((r) => r.url.toLowerCase()));
-    const fresh = parsed.filter((p) => !existing.has(p.url.toLowerCase()));
-    if (!fresh.length) {
-      setBusy(false);
-      return toast.info("Those channels are already added");
-    }
+    const results = await Promise.all(
+      parsed.map(async (p) => {
+        const info = await lookup({ data: { url: p.url } }).catch(() => null);
+        const base: ChannelInfo = info ?? {
+          url: p.url, name: p.name, avatarUrl: null, subscribers: null,
+          description: null, latestShorts: 0, ok: false,
+        };
+        return { ...base, weight: 10, duplicate: existing.has(base.url.toLowerCase()) };
+      }),
+    );
+    setBusy(false);
+    setPreviews(results);
+  }
+
+  /** Step 2 — save the confirmed channels with their share percentage. */
+  async function savePreviews() {
+    const fresh = previews.filter((p) => !p.duplicate);
+    if (!fresh.length) return toast.info("Those channels are already added");
+    setBusy(true);
     const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
     const { error } = await supabase.from("youtube_channels").insert(
-      fresh.map((p, i) => ({ name: p.name, url: p.url, icon: "🌴", priority: base + i + 1, active: true })),
+      fresh.map((p, i) => ({
+        name: p.name, url: p.url, icon: "🌴",
+        priority: base + i + 1, active: true, weight: p.weight,
+        avatar_url: p.avatarUrl, subscribers: p.subscribers, description: p.description,
+      })),
     );
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success(`Added ${fresh.length} channel${fresh.length > 1 ? "s" : ""}`);
     setPaste("");
+    setPreviews([]);
     reload();
   }
+
 
 
   async function reload() {
