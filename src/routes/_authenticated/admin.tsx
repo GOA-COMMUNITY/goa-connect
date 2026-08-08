@@ -548,7 +548,8 @@ function ChannelsPanel() {
         <h2 className="mb-1 text-lg font-bold">Paste channel links</h2>
         <p className="mb-3 text-xs text-muted-foreground">
           Paste one or more YouTube channel links (any format — @handle, /channel/…, /c/…), one per line.
-          Names are detected automatically and the newest Shorts start appearing on the next refresh.
+          We fetch the channel details first so you can confirm, and set how big a share of the daily
+          100 downloads each channel gets.
         </p>
         <textarea
           className={`${field} font-mono`}
@@ -558,13 +559,53 @@ function ChannelsPanel() {
           onChange={(e) => setPaste(e.target.value)}
         />
         <button
-          onClick={addPasted}
+          onClick={checkPasted}
           disabled={busy || !paste.trim()}
           className="mt-3 flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
-          <Plus className="h-4 w-4" /> Add pasted channels
+          <Search className="h-4 w-4" /> {busy ? "Checking…" : "Check channels"}
         </button>
+
+        {previews.length > 0 && (
+          <div className="mt-4 space-y-3">
+            {previews.map((p, i) => (
+              <div key={p.url} className="flex gap-3 rounded-2xl border border-border bg-secondary/40 p-3">
+                {p.avatarUrl
+                  ? <img src={p.avatarUrl} alt={`${p.name} channel avatar`} loading="lazy"
+                      className="h-12 w-12 shrink-0 rounded-full object-cover" />
+                  : <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg">🌴</div>}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{p.name}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {[p.subscribers, `${p.latestShorts} recent shorts found`, p.duplicate ? "already added" : null]
+                      .filter(Boolean).join(" · ")}
+                  </p>
+                  {p.description && <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{p.description}</p>}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-[11px] text-muted-foreground">Share</span>
+                    <input
+                      type="range" min={1} max={100} value={p.weight}
+                      onChange={(e) => setPreviews(previews.map((x, xi) =>
+                        xi === i ? { ...x, weight: Number(e.target.value) } : x))}
+                      className="h-1 flex-1 accent-primary"
+                    />
+                    <span className="w-10 text-right text-[11px] font-semibold">{p.weight}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button
+              onClick={savePreviews}
+              disabled={busy}
+              className="flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" /> Add {previews.filter((p) => !p.duplicate).length} channel(s)
+            </button>
+          </div>
+        )}
       </div>
+
+
 
       <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
         <h2 className="mb-1 text-lg font-bold">YouTube channels</h2>
