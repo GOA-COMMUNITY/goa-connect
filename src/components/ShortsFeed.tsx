@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Heart, MessageCircle, Send, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
+import { recordLike, recordShare, recordWatch } from "@/lib/viewer-context";
 
 export type Short = {
   videoId: string;
@@ -78,6 +79,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   const readyRef = useRef<Set<number>>(new Set());
   const activeIdxRef = useRef(0);
+  const activeSinceRef = useRef(Date.now());
   const mutedRef = useRef(true);
   const visibleRatios = useRef<Record<number, number>>({});
   const [activeIdx, setActiveIdx] = useState(0);
@@ -367,12 +369,18 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     setLiked((previous) => {
       const next = new Set(previous);
       if (next.has(videoId)) next.delete(videoId);
-      else next.add(videoId);
+      else {
+        next.add(videoId);
+        const short = shorts.find((item) => item.videoId === videoId);
+        if (short) recordLike(short);
+      }
       return next;
     });
   }
 
   function shareShort(videoId: string) {
+    const shared = shorts.find((item) => item.videoId === videoId);
+    if (shared) recordShare(shared);
     const url = `${window.location.origin}/?short=${encodeURIComponent(videoId)}`;
     navigator.clipboard?.writeText(url);
     toast.success("Goa Social short link copied");
