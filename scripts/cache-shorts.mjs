@@ -17,7 +17,7 @@
  *      day starts from scratch with fresh latest shorts
  *   7. old clips are only deleted AFTER the new set is verified on disk
  */
-import { mkdir, rm, readFile, writeFile, readdir, stat, rename, copyFile, cp } from "node:fs/promises";
+import { mkdir, rm, readFile, writeFile, readdir, stat, rename, copyFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
