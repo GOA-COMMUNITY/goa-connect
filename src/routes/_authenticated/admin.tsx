@@ -635,19 +635,35 @@ function ChannelsPanel() {
             <tr>
               <th className="p-3 text-left">Channel</th>
               <th className="p-3 text-left">URL</th>
+              <th className="p-3 text-left">Share</th>
               <th className="p-3 text-left">Priority</th>
               <th className="p-3 text-left">Active</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {rows.map((c) => (
+            {rows.map((c) => {
+              const totalWeight = rows.filter((r) => r.active).reduce((sum, r) => sum + (r.weight || 10), 0) || 1;
+              const share = c.active ? Math.round(((c.weight || 10) / totalWeight) * 100) : 0;
+              return (
               <tr key={c.id} className="border-t border-border">
                 <td className="p-3">
-                  <span className="mr-2 text-lg">{c.icon ?? "🌴"}</span>
+                  {c.avatar_url
+                    ? <img src={c.avatar_url} alt={`${c.name} avatar`} loading="lazy"
+                        className="mr-2 inline-block h-7 w-7 rounded-full object-cover align-middle" />
+                    : <span className="mr-2 text-lg">{c.icon ?? "🌴"}</span>}
                   <span className="font-semibold">{c.name}</span>
+                  {c.subscribers && <p className="text-[11px] text-muted-foreground">{c.subscribers}</p>}
                 </td>
                 <td className="max-w-[280px] truncate p-3 text-xs text-muted-foreground" title={c.url}>{c.url}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
+                    <input type="number" min={1} max={100} defaultValue={c.weight ?? 10}
+                      onBlur={(e) => updateRow(c.id, { weight: Number(e.target.value) || 10 })}
+                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm" />
+                    <span className="text-[11px] text-muted-foreground">≈{share}%</span>
+                  </div>
+                </td>
                 <td className="p-3">
                   <input type="number" defaultValue={c.priority}
                     onBlur={(e) => updateRow(c.id, { priority: Number(e.target.value) })}
@@ -667,10 +683,12 @@ function ChannelsPanel() {
                   </button>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No channels yet</td></tr>
+              <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No channels yet</td></tr>
             )}
+
           </tbody>
         </table>
       </div>
