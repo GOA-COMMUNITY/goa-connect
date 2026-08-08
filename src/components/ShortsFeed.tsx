@@ -184,12 +184,19 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   const setActive = useCallback((index: number) => {
     if (index < 0 || index >= shorts.length) return;
+    // feed brain: how long the previous short actually held attention
+    const previous = activeIdxRef.current;
+    if (previous !== index && shorts[previous]) {
+      recordWatch(shorts[previous], Date.now() - activeSinceRef.current);
+    }
+    activeSinceRef.current = Date.now();
     activeIdxRef.current = index;
     setActiveIdx(index);
     keepWarmAround(index);
     window.dispatchEvent(new CustomEvent("gs-shorts-active-feed", { detail: feedId.current }));
     syncPlayback(index);
-  }, [keepWarmAround, shorts.length, syncPlayback]);
+  }, [keepWarmAround, shorts, syncPlayback]);
+
 
   useEffect(() => {
     mutedRef.current = muted;
