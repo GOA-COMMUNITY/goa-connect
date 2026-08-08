@@ -308,33 +308,45 @@ export type Database = {
       youtube_channels: {
         Row: {
           active: boolean
+          avatar_url: string | null
           created_at: string
+          description: string | null
           icon: string | null
           id: string
           name: string
           priority: number
+          subscribers: string | null
           updated_at: string
           url: string
+          weight: number
         }
         Insert: {
           active?: boolean
+          avatar_url?: string | null
           created_at?: string
+          description?: string | null
           icon?: string | null
           id?: string
           name: string
           priority?: number
+          subscribers?: string | null
           updated_at?: string
           url: string
+          weight?: number
         }
         Update: {
           active?: boolean
+          avatar_url?: string | null
           created_at?: string
+          description?: string | null
           icon?: string | null
           id?: string
           name?: string
           priority?: number
+          subscribers?: string | null
           updated_at?: string
           url?: string
+          weight?: number
         }
         Relationships: []
       }
