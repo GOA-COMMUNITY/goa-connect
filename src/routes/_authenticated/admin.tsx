@@ -761,7 +761,6 @@ function ShortsSettingsPanel() {
         />
       </div>
 
-      </div>
       {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
     </div>
   );
