@@ -747,15 +747,20 @@ function ShortsSettingsPanel() {
       />
       <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
         <div>
-          <p className="text-sm font-semibold">Pre-cached clips per refresh</p>
-          <p className="text-[11px] text-muted-foreground">Old clips are deleted each run to save storage.</p>
+          <p className="text-sm font-semibold">Downloaded shorts per day</p>
+          <p className="text-[11px] text-muted-foreground">
+            Rebuilt every day from the newest shorts across your channels. Old clips are deleted only
+            after the new pool is verified.
+          </p>
         </div>
         <input
-          type="number" min={0} max={20} value={s.maxCached}
+          type="number" min={0} max={300} value={s.maxCached}
           onChange={(e) => setS({ ...s, maxCached: Number(e.target.value) })}
           onBlur={() => save(s)}
           className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
         />
+      </div>
+
       </div>
       {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
     </div>
