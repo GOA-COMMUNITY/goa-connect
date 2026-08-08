@@ -5,6 +5,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
 import { useEffect, useState } from "react";
 import { getCachedShorts, warmShorts } from "@/lib/shorts-warmup";
+import { rankShorts } from "@/lib/viewer-context";
 
 
 const initialVideos: Short[] = [
@@ -70,9 +71,10 @@ function Home() {
     const merge = (items: Short[]) => {
       const seen = new Set(cached.map((short) => short.videoId));
       const combined = [...cached, ...items.filter((short) => !seen.has(short.videoId))];
-      if (!sharedShort) return combined;
-      const match = combined.find((video) => video.videoId === sharedShort);
-      return match ? [match, ...combined.filter((video) => video.videoId !== sharedShort)] : combined;
+      const ranked = rankShorts(combined);
+      if (!sharedShort) return ranked;
+      const match = ranked.find((video) => video.videoId === sharedShort);
+      return match ? [match, ...ranked.filter((video) => video.videoId !== sharedShort)] : ranked;
     };
 
     // Shorts pre-cached on Goa Social's own hosting play instantly — show them first.
@@ -137,7 +139,10 @@ function Home() {
         <section className="mt-4 bg-card py-4">
           <div className="mb-3 flex items-center justify-between px-4">
             <h2 className="text-base font-semibold text-foreground">Live Stories</h2>
-            <Link to="/explore" className="text-sm font-medium text-primary">See all</Link>
+            <div className="flex items-center gap-3">
+              <Link to="/my-feed" className="text-sm font-medium text-muted-foreground">Your feed</Link>
+              <Link to="/explore" className="text-sm font-medium text-primary">See all</Link>
+            </div>
           </div>
           <div className="scrollbar-hide flex gap-4 overflow-x-auto px-4">
             {stories.map((s) => {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Heart, MessageCircle, Send, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
+import { recordLike, recordShare, recordWatch } from "@/lib/viewer-context";
 
 export type Short = {
   videoId: string;
@@ -78,6 +79,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   const readyRef = useRef<Set<number>>(new Set());
   const activeIdxRef = useRef(0);
+  const activeSinceRef = useRef(Date.now());
   const mutedRef = useRef(true);
   const visibleRatios = useRef<Record<number, number>>({});
   const [activeIdx, setActiveIdx] = useState(0);
@@ -184,12 +186,19 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
 
   const setActive = useCallback((index: number) => {
     if (index < 0 || index >= shorts.length) return;
+    // feed brain: how long the previous short actually held attention
+    const previous = activeIdxRef.current;
+    if (previous !== index && shorts[previous]) {
+      recordWatch(shorts[previous], Date.now() - activeSinceRef.current);
+    }
+    activeSinceRef.current = Date.now();
     activeIdxRef.current = index;
     setActiveIdx(index);
     keepWarmAround(index);
     window.dispatchEvent(new CustomEvent("gs-shorts-active-feed", { detail: feedId.current }));
     syncPlayback(index);
-  }, [keepWarmAround, shorts.length, syncPlayback]);
+  }, [keepWarmAround, shorts, syncPlayback]);
+
 
   useEffect(() => {
     mutedRef.current = muted;
@@ -360,12 +369,18 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
     setLiked((previous) => {
       const next = new Set(previous);
       if (next.has(videoId)) next.delete(videoId);
-      else next.add(videoId);
+      else {
+        next.add(videoId);
+        const short = shorts.find((item) => item.videoId === videoId);
+        if (short) recordLike(short);
+      }
       return next;
     });
   }
 
   function shareShort(videoId: string) {
+    const shared = shorts.find((item) => item.videoId === videoId);
+    if (shared) recordShare(shared);
     const url = `${window.location.origin}/?short=${encodeURIComponent(videoId)}`;
     navigator.clipboard?.writeText(url);
     toast.success("Goa Social short link copied");

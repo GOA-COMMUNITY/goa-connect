@@ -19,6 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
@@ -42,17 +43,35 @@ jobs:
           yt-dlp --version
           deno --version
 
+      - name: Today's date (UTC)
+        id: day
+        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+      # Cache key rolls over every day -> the 100 shorts reset daily,
+      # while the 30-minute runs within a day just top the pool up.
+      - name: Restore today's shorts pool
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/cached
+            public/cached-shorts.json
+            public/cached-history.json
+          key: shorts-pool-${{ steps.day.outputs.date }}-${{ github.run_id }}
+          restore-keys: |
+            shorts-pool-${{ steps.day.outputs.date }}-
+
       - name: Refresh latest YouTube Shorts list
         run: bun run videos:update || echo "Keeping existing videos.json"
 
-      - name: Pre-cache first shorts (compressed, regenerated each run)
+      - name: Download / top up today's 100 latest shorts
         run: bun run shorts:cache
 
       - name: Report cache result
         run: |
-          echo "Manifest:"; cat public/cached-shorts.json || true
-          echo "Files:"; ls -lh public/cached 2>/dev/null || echo "(no cached folder)"
+          echo "Clips in manifest:"; node -e "console.log(JSON.parse(require('fs').readFileSync('public/cached-shorts.json','utf8')).length)" || true
+          echo "Files:"; ls public/cached 2>/dev/null | wc -l
           test "$(find public/cached -type f -name '*.mp4' 2>/dev/null | wc -l)" -gt 0
+
 
 
       - name: Build (static SPA)

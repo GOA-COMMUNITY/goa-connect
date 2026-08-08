@@ -1,16 +1,21 @@
 /**
- * Pre-cache the newest Shorts from the licensed Goan channels into
- * public/cached/ so the first videos in the feed play from our own
- * hosting (instant start, no YouTube round-trip).
+ * Daily Shorts cache builder for Goa Social.
  *
- * Runs in GitHub Actions on every scheduled build:
- *   1. read active channels from the database (admin-managed)
- *   2. take the newest shorts, shuffled across channels by priority
- *   3. download + compress to a small mp4 (<= ~1.5 MB, 360p, no audio loss)
- *   4. write public/cached-shorts.json manifest
+ * Goal: keep ~100 freshly downloaded Shorts on our own hosting so the feed
+ * starts instantly instead of waiting on YouTube.
  *
- * The cache folder is regenerated from scratch on every run, so old
- * clips are auto-deleted and no video is retained long-term.
+ * How it works
+ *   1. read active channels (admin-managed) + their `weight` percentage
+ *   2. compute a per-channel quota from the weights and the channel count:
+ *        few channels  -> many latest shorts each
+ *        many channels -> 1 latest short each
+ *   3. list the newest shorts per channel (latest first) and interleave
+ *   4. download + compress each one; if a channel fails or runs dry the gap
+ *      is filled by the next-latest short from another channel
+ *   5. never download the same videoId twice on the same day (history file)
+ *   6. reset every day: the history + cache are keyed by UTC date, so a new
+ *      day starts from scratch with fresh latest shorts
+ *   7. old clips are only deleted AFTER the new set is verified on disk
  */
 import { mkdir, rm, readFile, writeFile, readdir, stat, rename, copyFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
@@ -22,11 +27,14 @@ const OUT_DIR = "public/cached";
 const NEXT_DIR = "public/cached-next";
 const MANIFEST = "public/cached-shorts.json";
 const NEXT_MANIFEST = "public/cached-shorts.next.json";
-let MAX_CLIPS = Number(process.env.CACHE_MAX_CLIPS || 10);
+const HISTORY = "public/cached-history.json";
+
+let MAX_CLIPS = Number(process.env.CACHE_MAX_CLIPS || 100);
 const MAX_BYTES = 2_200_000;
+const TODAY = new Date().toISOString().slice(0, 10);
 
 const FALLBACK_CHANNELS = [
-  { name: "Adventure Goa DK", url: "https://www.youtube.com/@adventuregoadk/shorts", icon: "🌴", priority: 1 },
+  { name: "Adventure Goa DK", url: "https://www.youtube.com/@adventuregoadk/shorts", icon: "🌴", priority: 1, weight: 10 },
 ];
 
 async function loadEnv() {
@@ -47,7 +55,7 @@ async function fetchChannels() {
   if (!SUPABASE_URL || !SUPABASE_KEY) return FALLBACK_CHANNELS;
   try {
     const r = await fetch(
-      `${SUPABASE_URL}/rest/v1/youtube_channels?select=name,url,icon,priority&active=eq.true&order=priority.asc`,
+      `${SUPABASE_URL}/rest/v1/youtube_channels?select=name,url,icon,priority,weight&active=eq.true&order=priority.asc`,
       { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
     );
     if (!r.ok) throw new Error(String(r.status));
@@ -72,6 +80,41 @@ async function fetchSettings() {
     return null;
   }
 }
+
+/* ---------------- daily history (no duplicate pulls within one day) --------- */
+
+async function loadHistory() {
+  try {
+    const data = JSON.parse(await readFile(HISTORY, "utf8"));
+    if (data?.date === TODAY && Array.isArray(data.ids)) return new Set(data.ids);
+  } catch {}
+  return new Set();
+}
+
+async function saveHistory(ids) {
+  await writeFile(HISTORY, `${JSON.stringify({ date: TODAY, ids: [...ids] }, null, 2)}\n`);
+}
+
+/** Clips already cached today stay — we only top up to MAX_CLIPS. */
+async function loadExisting(history) {
+  try {
+    const manifest = JSON.parse(await readFile(MANIFEST, "utf8"));
+    if (!Array.isArray(manifest) || manifest.length === 0) return [];
+    if (history.size === 0) return []; // new day -> full reset
+    const kept = [];
+    for (const item of manifest) {
+      try {
+        await stat(`public${item.src}`);
+        kept.push(item);
+      } catch {}
+    }
+    return kept;
+  } catch {
+    return [];
+  }
+}
+
+/* ---------------- yt-dlp ---------------------------------------------------- */
 
 const YT_ARGS = [
   "--no-warnings",
@@ -105,7 +148,7 @@ async function latestIdsFor(channel, limit) {
           "--print", "%(id)s",
           shortsUrl(channel.url),
         ],
-        { maxBuffer: 10 * 1024 * 1024 },
+        { maxBuffer: 20 * 1024 * 1024 },
       );
       const ids = stdout.split("\n").map((s) => s.trim()).filter((s) => /^[\w-]{11}$/.test(s));
       if (ids.length > 0) return ids;
@@ -133,12 +176,30 @@ async function fallbackQueue(channels) {
   }
 }
 
-/** Round-robin across channels so the cache is a mix, priority order first. */
-function interleave(lists) {
+/**
+ * Quota per channel from the admin weights.
+ * Every channel gets at least its latest short; the remaining slots are
+ * distributed proportionally to `weight` (percentage-ish share).
+ */
+function quotas(channels, target) {
+  const n = channels.length;
+  if (n === 0) return [];
+  const base = Math.min(1, target);
+  const remaining = Math.max(0, target - base * n);
+  const totalWeight = channels.reduce((sum, c) => sum + Math.max(1, Number(c.weight) || 10), 0);
+  return channels.map((c) => {
+    const w = Math.max(1, Number(c.weight) || 10);
+    return { channel: c, quota: base + Math.ceil((remaining * w) / totalWeight) };
+  });
+}
+
+/** Round-robin across channels so the cache is a mix, priority/weight first. */
+function interleave(lists, target) {
   const out = [];
   let i = 0;
   let added = true;
-  while (added && out.length < MAX_CLIPS * 2) {
+  const cap = target * 3;
+  while (added && out.length < cap) {
     added = false;
     for (const list of lists) {
       if (list.items[i]) {
@@ -199,21 +260,39 @@ async function main() {
     return;
   }
 
-  const channels = (await fetchChannels()).sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100));
-  const lists = [];
-  for (const channel of channels) {
-    lists.push({ channel, items: await latestIdsFor(channel, MAX_CLIPS) });
+  const history = await loadHistory();
+  const existing = await loadExisting(history);
+  if (history.size === 0) console.log(`new day (${TODAY}) — rebuilding the full cache`);
+  else console.log(`same day — keeping ${existing.length} clips, topping up to ${MAX_CLIPS}`);
+
+  const needed = MAX_CLIPS - existing.length;
+  if (needed <= 0) {
+    console.log("cache already full for today");
+    await rm(NEXT_DIR, { recursive: true, force: true });
+    return;
   }
 
-  const listedQueue = interleave(lists);
-  const queue = listedQueue.length > 0 ? listedQueue : await fallbackQueue(channels);
-  if (listedQueue.length === 0 && queue.length > 0) {
+  const channels = (await fetchChannels()).sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100));
+  const plan = quotas(channels, needed);
+  const lists = [];
+  for (const { channel, quota } of plan) {
+    // over-fetch so gaps left by failing channels can be filled from others
+    const ids = await latestIdsFor(channel, Math.min(50, quota + 5));
+    lists.push({ channel, items: ids.filter((id) => !history.has(id)) });
+    console.log(`${channel.name}: quota ${quota}, listed ${ids.length}`);
+  }
+
+  const listedQueue = interleave(lists, needed);
+  let queue = listedQueue;
+  if (queue.length === 0) {
+    queue = (await fallbackQueue(channels)).filter((item) => !history.has(item.videoId));
     console.warn(`channel listing unavailable; trying ${queue.length} IDs from videos.json`);
   }
-  const manifest = [];
 
+  const manifest = [];
   for (const item of queue) {
-    if (manifest.length >= MAX_CLIPS) break;
+    if (manifest.length >= needed) break;
+    if (history.has(item.videoId)) continue;
     const out = `${NEXT_DIR}/${item.videoId}.mp4`;
     let raw;
     try {
@@ -229,6 +308,7 @@ async function main() {
         await rm(out, { force: true });
         continue;
       }
+      history.add(item.videoId);
       manifest.push({
         videoId: item.videoId,
         src: `/cached/${item.videoId}.mp4`,
@@ -237,7 +317,7 @@ async function main() {
         channelIcon: item.channel.icon ?? "🌴",
         bytes: info.size,
       });
-      console.log(`cached ${item.videoId} (${Math.round(info.size / 1024)}kb) — ${item.channel.name}`);
+      console.log(`cached ${manifest.length}/${needed} ${item.videoId} (${Math.round(info.size / 1024)}kb) — ${item.channel.name}`);
     } catch (e) {
       console.warn(`failed ${item.videoId}:`, e.message.split("\n")[0]);
       if (raw) await rm(raw, { force: true }).catch(() => {});
@@ -246,6 +326,11 @@ async function main() {
 
   if (manifest.length === 0) {
     await rm(NEXT_DIR, { recursive: true, force: true });
+    if (existing.length > 0) {
+      console.warn(`no new clips downloaded; preserving ${existing.length} previously cached shorts`);
+      await saveHistory(history);
+      return;
+    }
     const previous = await readFile(MANIFEST, "utf8").then(JSON.parse).catch(() => []);
     if (previous.length > 0) {
       console.warn(`no new clips downloaded; preserving ${previous.length} previously cached shorts`);
@@ -254,12 +339,31 @@ async function main() {
     throw new Error("YouTube returned no downloadable shorts and no previous cache exists");
   }
 
-  await writeFile(NEXT_MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
+  // Carry the still-valid clips from earlier today into the new folder, then
+  // swap atomically so the old set is deleted only after the new one is ready.
+  for (const item of existing) {
+    try {
+      await copyFile(`public${item.src}`, `${NEXT_DIR}/${item.videoId}.mp4`);
+    } catch {}
+  }
+  const finalManifest = [...manifest, ...existing].slice(0, MAX_CLIPS);
+
+  // verify every entry exists on disk before deleting anything
+  const verified = [];
+  for (const item of finalManifest) {
+    try {
+      const info = await stat(`${NEXT_DIR}/${item.videoId}.mp4`);
+      if (info.size > 0) verified.push({ ...item, bytes: info.size });
+    } catch {}
+  }
+
+  await writeFile(NEXT_MANIFEST, `${JSON.stringify(verified, null, 2)}\n`);
   await rm(OUT_DIR, { recursive: true, force: true });
   await rename(NEXT_DIR, OUT_DIR);
   await copyFile(NEXT_MANIFEST, MANIFEST);
   await rm(NEXT_MANIFEST, { force: true });
-  console.log(`manifest published with ${manifest.length} pre-cached shorts`);
+  await saveHistory(history);
+  console.log(`manifest published with ${verified.length} pre-cached shorts (${TODAY})`);
 }
 
 try {

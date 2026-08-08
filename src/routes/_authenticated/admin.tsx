@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { getChannelInfo, type ChannelInfo } from "@/lib/youtube.functions";
 import { toast } from "sonner";
 import {
   Shield, Users, Store, MessageCircle, Bot, Settings, Trash2,
   ToggleLeft, ToggleRight, ArrowLeft, Search, Youtube, Plus,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -420,14 +423,19 @@ function ContentPanel() {
 
 type Channel = {
   id: string; name: string; url: string; icon: string | null;
-  priority: number; active: boolean;
+  priority: number; active: boolean; weight: number;
+  avatar_url: string | null; subscribers: string | null; description: string | null;
 };
+
+type Preview = ChannelInfo & { weight: number; duplicate: boolean };
 
 function ChannelsPanel() {
   const [rows, setRows] = useState<Channel[]>([]);
   const [draft, setDraft] = useState({ name: "", url: "", icon: "🌴", priority: 100 });
   const [busy, setBusy] = useState(false);
   const [paste, setPaste] = useState("");
+  const [previews, setPreviews] = useState<Preview[]>([]);
+  const lookup = useServerFn(getChannelInfo);
 
   function parseChannelLine(line: string) {
     let url = line.trim().replace(/[<>"']/g, "");
@@ -447,7 +455,8 @@ function ChannelsPanel() {
     return { name, url: `${url}/shorts` };
   }
 
-  async function addPasted() {
+  /** Step 1 — look up public details for every pasted link. */
+  async function checkPasted() {
     const parsed = paste
       .split(/[\n,\s]+/)
       .map(parseChannelLine)
@@ -455,21 +464,41 @@ function ChannelsPanel() {
     if (!parsed.length) return toast.error("No valid channel links found");
     setBusy(true);
     const existing = new Set(rows.map((r) => r.url.toLowerCase()));
-    const fresh = parsed.filter((p) => !existing.has(p.url.toLowerCase()));
-    if (!fresh.length) {
-      setBusy(false);
-      return toast.info("Those channels are already added");
-    }
+    const results = await Promise.all(
+      parsed.map(async (p) => {
+        const info = await lookup({ data: { url: p.url } }).catch(() => null);
+        const base: ChannelInfo = info ?? {
+          url: p.url, name: p.name, avatarUrl: null, subscribers: null,
+          description: null, latestShorts: 0, ok: false,
+        };
+        return { ...base, weight: 10, duplicate: existing.has(base.url.toLowerCase()) };
+      }),
+    );
+    setBusy(false);
+    setPreviews(results);
+  }
+
+  /** Step 2 — save the confirmed channels with their share percentage. */
+  async function savePreviews() {
+    const fresh = previews.filter((p) => !p.duplicate);
+    if (!fresh.length) return toast.info("Those channels are already added");
+    setBusy(true);
     const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
     const { error } = await supabase.from("youtube_channels").insert(
-      fresh.map((p, i) => ({ name: p.name, url: p.url, icon: "🌴", priority: base + i + 1, active: true })),
+      fresh.map((p, i) => ({
+        name: p.name, url: p.url, icon: "🌴",
+        priority: base + i + 1, active: true, weight: p.weight,
+        avatar_url: p.avatarUrl, subscribers: p.subscribers, description: p.description,
+      })),
     );
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success(`Added ${fresh.length} channel${fresh.length > 1 ? "s" : ""}`);
     setPaste("");
+    setPreviews([]);
     reload();
   }
+
 
 
   async function reload() {
@@ -519,7 +548,8 @@ function ChannelsPanel() {
         <h2 className="mb-1 text-lg font-bold">Paste channel links</h2>
         <p className="mb-3 text-xs text-muted-foreground">
           Paste one or more YouTube channel links (any format — @handle, /channel/…, /c/…), one per line.
-          Names are detected automatically and the newest Shorts start appearing on the next refresh.
+          We fetch the channel details first so you can confirm, and set how big a share of the daily
+          100 downloads each channel gets.
         </p>
         <textarea
           className={`${field} font-mono`}
@@ -529,13 +559,53 @@ function ChannelsPanel() {
           onChange={(e) => setPaste(e.target.value)}
         />
         <button
-          onClick={addPasted}
+          onClick={checkPasted}
           disabled={busy || !paste.trim()}
           className="mt-3 flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
-          <Plus className="h-4 w-4" /> Add pasted channels
+          <Search className="h-4 w-4" /> {busy ? "Checking…" : "Check channels"}
         </button>
+
+        {previews.length > 0 && (
+          <div className="mt-4 space-y-3">
+            {previews.map((p, i) => (
+              <div key={p.url} className="flex gap-3 rounded-2xl border border-border bg-secondary/40 p-3">
+                {p.avatarUrl
+                  ? <img src={p.avatarUrl} alt={`${p.name} channel avatar`} loading="lazy"
+                      className="h-12 w-12 shrink-0 rounded-full object-cover" />
+                  : <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg">🌴</div>}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{p.name}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {[p.subscribers, `${p.latestShorts} recent shorts found`, p.duplicate ? "already added" : null]
+                      .filter(Boolean).join(" · ")}
+                  </p>
+                  {p.description && <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{p.description}</p>}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-[11px] text-muted-foreground">Share</span>
+                    <input
+                      type="range" min={1} max={100} value={p.weight}
+                      onChange={(e) => setPreviews(previews.map((x, xi) =>
+                        xi === i ? { ...x, weight: Number(e.target.value) } : x))}
+                      className="h-1 flex-1 accent-primary"
+                    />
+                    <span className="w-10 text-right text-[11px] font-semibold">{p.weight}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button
+              onClick={savePreviews}
+              disabled={busy}
+              className="flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" /> Add {previews.filter((p) => !p.duplicate).length} channel(s)
+            </button>
+          </div>
+        )}
       </div>
+
+
 
       <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
         <h2 className="mb-1 text-lg font-bold">YouTube channels</h2>
@@ -565,19 +635,35 @@ function ChannelsPanel() {
             <tr>
               <th className="p-3 text-left">Channel</th>
               <th className="p-3 text-left">URL</th>
+              <th className="p-3 text-left">Share</th>
               <th className="p-3 text-left">Priority</th>
               <th className="p-3 text-left">Active</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {rows.map((c) => (
+            {rows.map((c) => {
+              const totalWeight = rows.filter((r) => r.active).reduce((sum, r) => sum + (r.weight || 10), 0) || 1;
+              const share = c.active ? Math.round(((c.weight || 10) / totalWeight) * 100) : 0;
+              return (
               <tr key={c.id} className="border-t border-border">
                 <td className="p-3">
-                  <span className="mr-2 text-lg">{c.icon ?? "🌴"}</span>
+                  {c.avatar_url
+                    ? <img src={c.avatar_url} alt={`${c.name} avatar`} loading="lazy"
+                        className="mr-2 inline-block h-7 w-7 rounded-full object-cover align-middle" />
+                    : <span className="mr-2 text-lg">{c.icon ?? "🌴"}</span>}
                   <span className="font-semibold">{c.name}</span>
+                  {c.subscribers && <p className="text-[11px] text-muted-foreground">{c.subscribers}</p>}
                 </td>
                 <td className="max-w-[280px] truncate p-3 text-xs text-muted-foreground" title={c.url}>{c.url}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
+                    <input type="number" min={1} max={100} defaultValue={c.weight ?? 10}
+                      onBlur={(e) => updateRow(c.id, { weight: Number(e.target.value) || 10 })}
+                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm" />
+                    <span className="text-[11px] text-muted-foreground">≈{share}%</span>
+                  </div>
+                </td>
                 <td className="p-3">
                   <input type="number" defaultValue={c.priority}
                     onBlur={(e) => updateRow(c.id, { priority: Number(e.target.value) })}
@@ -597,10 +683,12 @@ function ChannelsPanel() {
                   </button>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No channels yet</td></tr>
+              <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No channels yet</td></tr>
             )}
+
           </tbody>
         </table>
       </div>
@@ -611,7 +699,7 @@ function ChannelsPanel() {
 type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number };
 
 function ShortsSettingsPanel() {
-  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 10 });
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100 });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -659,16 +747,20 @@ function ShortsSettingsPanel() {
       />
       <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
         <div>
-          <p className="text-sm font-semibold">Pre-cached clips per refresh</p>
-          <p className="text-[11px] text-muted-foreground">Old clips are deleted each run to save storage.</p>
+          <p className="text-sm font-semibold">Downloaded shorts per day</p>
+          <p className="text-[11px] text-muted-foreground">
+            Rebuilt every day from the newest shorts across your channels. Old clips are deleted only
+            after the new pool is verified.
+          </p>
         </div>
         <input
-          type="number" min={0} max={20} value={s.maxCached}
+          type="number" min={0} max={300} value={s.maxCached}
           onChange={(e) => setS({ ...s, maxCached: Number(e.target.value) })}
           onBlur={() => save(s)}
           className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
         />
       </div>
+
       {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
     </div>
   );

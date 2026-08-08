@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as MyFeedRouteImport } from './routes/my-feed'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -35,6 +36,11 @@ const RefundsRoute = RefundsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFeedRoute = MyFeedRouteImport.update({
+  id: '/my-feed',
+  path: '/my-feed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/business': typeof BusinessRoute
   '/explore': typeof ExploreRoute
+  '/my-feed': typeof MyFeedRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/terms': typeof TermsRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/business': typeof BusinessRoute
   '/explore': typeof ExploreRoute
+  '/my-feed': typeof MyFeedRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/terms': typeof TermsRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/business': typeof BusinessRoute
   '/explore': typeof ExploreRoute
+  '/my-feed': typeof MyFeedRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/terms': typeof TermsRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/business'
     | '/explore'
+    | '/my-feed'
     | '/privacy'
     | '/refunds'
     | '/terms'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/business'
     | '/explore'
+    | '/my-feed'
     | '/privacy'
     | '/refunds'
     | '/terms'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/business'
     | '/explore'
+    | '/my-feed'
     | '/privacy'
     | '/refunds'
     | '/terms'
@@ -172,6 +184,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BusinessRoute: typeof BusinessRoute
   ExploreRoute: typeof ExploreRoute
+  MyFeedRoute: typeof MyFeedRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
   TermsRoute: typeof TermsRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-feed': {
+      id: '/my-feed'
+      path: '/my-feed'
+      fullPath: '/my-feed'
+      preLoaderRoute: typeof MyFeedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -298,6 +318,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BusinessRoute: BusinessRoute,
   ExploreRoute: ExploreRoute,
+  MyFeedRoute: MyFeedRoute,
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
   TermsRoute: TermsRoute,
@@ -305,13 +326,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
