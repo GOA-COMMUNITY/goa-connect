@@ -699,7 +699,7 @@ function ChannelsPanel() {
 type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number };
 
 function ShortsSettingsPanel() {
-  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 10 });
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100 });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
