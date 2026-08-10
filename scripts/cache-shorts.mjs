@@ -161,7 +161,7 @@ async function latestIdsFor(channel, limit) {
         [
           "--flat-playlist",
           "--playlist-end", String(limit),
-          ...YT_ARGS,
+          ...ytArgs(attempt),
           "--print", "%(id)s",
           shortsUrl(channel.url),
         ],
@@ -231,19 +231,28 @@ function interleave(lists, target) {
 
 async function download(videoId) {
   const raw = `${NEXT_DIR}/${videoId}.src.%(ext)s`;
-  await run(
-    "yt-dlp",
-    [
-      "-f", "bv*[height<=480][ext=mp4]+ba[ext=m4a]/b[height<=480][ext=mp4]/b[ext=mp4]/b",
-      ...YT_ARGS,
-      "--no-playlist",
-      "--max-filesize", "40M",
-      "-o", raw,
-      `https://www.youtube.com/watch?v=${videoId}`,
-    ],
-    { maxBuffer: 10 * 1024 * 1024 },
-  );
-  return raw;
+  let lastError;
+  // Rotate player clients / user agents — YouTube blocks a single signature fast.
+  for (let attempt = 0; attempt < CLIENT_SETS.length; attempt += 1) {
+    try {
+      await run(
+        "yt-dlp",
+        [
+          "-f", "bv*[height<=480][ext=mp4]+ba[ext=m4a]/b[height<=480][ext=mp4]/b[ext=mp4]/b",
+          ...ytArgs(attempt),
+          "--no-playlist",
+          "--max-filesize", "40M",
+          "-o", raw,
+          `https://www.youtube.com/watch?v=${videoId}`,
+        ],
+        { maxBuffer: 10 * 1024 * 1024 },
+      );
+      return raw;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw lastError ?? new Error("download failed");
 }
 
 async function compress(input, output) {
