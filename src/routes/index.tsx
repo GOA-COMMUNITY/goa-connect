@@ -3,9 +3,10 @@ import { Coffee, Music, Palmtree, Shell, Sparkles, Sun, Users, Utensils, Waves }
 import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCachedShorts, warmShorts } from "@/lib/shorts-warmup";
 import { rankShorts } from "@/lib/viewer-context";
+import { getShortsSettings } from "@/lib/app-settings";
 
 
 const initialVideos: Short[] = [
