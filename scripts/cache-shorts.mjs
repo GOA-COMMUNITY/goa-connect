@@ -116,18 +116,35 @@ async function loadExisting(history) {
 
 /* ---------------- yt-dlp ---------------------------------------------------- */
 
-const YT_ARGS = [
-  "--no-warnings",
-  "--ignore-config",
-  "--retries", "5",
-  "--fragment-retries", "5",
-  "--socket-timeout", "20",
-  "--js-runtimes", "deno",
-  "--remote-components", "ejs:github",
-  "--extractor-args", "youtube:player_client=web,web_safari,android_vr",
-  "--user-agent",
-  "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36",
+const CLIENT_SETS = [
+  "youtube:player_client=web_safari,android_vr",
+  "youtube:player_client=tv_simply,web_embedded",
+  "youtube:player_client=ios,mweb",
+  "youtube:player_client=android_vr,web",
 ];
+
+const UAS = [
+  "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+];
+
+function ytArgs(attempt = 0) {
+  return [
+    "--no-warnings",
+    "--ignore-config",
+    "--retries", "5",
+    "--fragment-retries", "5",
+    "--socket-timeout", "20",
+    "--sleep-requests", "1",
+    "--js-runtimes", "deno",
+    "--remote-components", "ejs:github",
+    "--extractor-args", CLIENT_SETS[attempt % CLIENT_SETS.length],
+    "--user-agent", UAS[attempt % UAS.length],
+  ];
+}
+
+const YT_ARGS = ytArgs(0);
 
 function shortsUrl(raw) {
   let url = raw.trim();
