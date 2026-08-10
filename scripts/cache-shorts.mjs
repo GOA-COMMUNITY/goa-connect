@@ -302,8 +302,8 @@ async function main() {
   const plan = quotas(channels, needed);
   const lists = [];
   for (const { channel, quota } of plan) {
-    // over-fetch so gaps left by failing channels can be filled from others
-    const ids = await latestIdsFor(channel, Math.min(50, quota + 5));
+    // over-fetch heavily so gaps left by failing channels can be filled from others
+    const ids = await latestIdsFor(channel, Math.min(150, quota + 40));
     lists.push({ channel, items: ids.filter((id) => !history.has(id)) });
     console.log(`${channel.name}: quota ${quota}, listed ${ids.length}`);
   }
@@ -316,39 +316,48 @@ async function main() {
   }
 
   const manifest = [];
-  for (const item of queue) {
-    if (manifest.length >= needed) break;
-    if (history.has(item.videoId)) continue;
-    const out = `${NEXT_DIR}/${item.videoId}.mp4`;
-    let raw;
-    try {
-      raw = await download(item.videoId);
-      const files = await readdir(NEXT_DIR);
-      const actual = files.find((f) => f.startsWith(`${item.videoId}.src`));
-      if (!actual) throw new Error("download completed without a media file");
-      await compress(`${NEXT_DIR}/${actual}`, out);
-      await rm(`${NEXT_DIR}/${actual}`, { force: true });
-      const info = await stat(out);
-      if (info.size > MAX_BYTES) {
-        console.warn(`skipping ${item.videoId} (${Math.round(info.size / 1024)}kb too big)`);
-        await rm(out, { force: true });
-        continue;
+  let cursor = 0;
+  const CONCURRENCY = Number(process.env.CACHE_CONCURRENCY || 4);
+
+  async function worker() {
+    while (manifest.length < needed) {
+      const item = queue[cursor++];
+      if (!item) return;
+      if (history.has(item.videoId)) continue;
+      history.add(item.videoId); // claim it so parallel workers never duplicate
+      const out = `${NEXT_DIR}/${item.videoId}.mp4`;
+      let raw;
+      try {
+        raw = await download(item.videoId);
+        const files = await readdir(NEXT_DIR);
+        const actual = files.find((f) => f.startsWith(`${item.videoId}.src`));
+        if (!actual) throw new Error("download completed without a media file");
+        await compress(`${NEXT_DIR}/${actual}`, out);
+        await rm(`${NEXT_DIR}/${actual}`, { force: true });
+        const info = await stat(out);
+        if (info.size > MAX_BYTES) {
+          console.warn(`skipping ${item.videoId} (${Math.round(info.size / 1024)}kb too big)`);
+          await rm(out, { force: true });
+          continue;
+        }
+        manifest.push({
+          videoId: item.videoId,
+          src: `/cached/${item.videoId}.mp4`,
+          poster: `https://i.ytimg.com/vi/${item.videoId}/hq720.jpg`,
+          channelName: item.channel.name,
+          channelIcon: item.channel.icon ?? "🌴",
+          bytes: info.size,
+        });
+        console.log(`cached ${manifest.length}/${needed} ${item.videoId} (${Math.round(info.size / 1024)}kb) — ${item.channel.name}`);
+      } catch (e) {
+        console.warn(`failed ${item.videoId}:`, e.message.split("\n")[0]);
+        if (raw) await rm(raw, { force: true }).catch(() => {});
       }
-      history.add(item.videoId);
-      manifest.push({
-        videoId: item.videoId,
-        src: `/cached/${item.videoId}.mp4`,
-        poster: `https://i.ytimg.com/vi/${item.videoId}/hq720.jpg`,
-        channelName: item.channel.name,
-        channelIcon: item.channel.icon ?? "🌴",
-        bytes: info.size,
-      });
-      console.log(`cached ${manifest.length}/${needed} ${item.videoId} (${Math.round(info.size / 1024)}kb) — ${item.channel.name}`);
-    } catch (e) {
-      console.warn(`failed ${item.videoId}:`, e.message.split("\n")[0]);
-      if (raw) await rm(raw, { force: true }).catch(() => {});
     }
   }
+
+  await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
+  if (manifest.length > needed) manifest.length = needed;
 
   if (manifest.length === 0) {
     await rm(NEXT_DIR, { recursive: true, force: true });
