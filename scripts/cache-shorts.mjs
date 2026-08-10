@@ -144,7 +144,7 @@ function ytArgs(attempt = 0) {
   ];
 }
 
-const YT_ARGS = ytArgs(0);
+
 
 function shortsUrl(raw) {
   let url = raw.trim();

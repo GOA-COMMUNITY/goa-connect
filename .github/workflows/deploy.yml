@@ -64,6 +64,7 @@ jobs:
         run: bun run videos:update || echo "Keeping existing videos.json"
 
       - name: Download / top up today's 100 latest shorts
+        timeout-minutes: 120
         run: bun run shorts:cache
 
       - name: Report cache result
