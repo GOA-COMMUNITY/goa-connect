@@ -696,10 +696,10 @@ function ChannelsPanel() {
   );
 }
 
-type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number };
+type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number; embedsEnabled: boolean };
 
 function ShortsSettingsPanel() {
-  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100 });
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100, embedsEnabled: true });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {

@@ -122,6 +122,7 @@ function ChatRoom() {
       .update({ last_message: text, last_message_at: new Date().toISOString() })
       .eq("id", id);
     setBody("");
+    inputRef.current?.focus();
     setSending(false);
     qc.invalidateQueries({ queryKey: ["conversations"] });
     void requestReply();
