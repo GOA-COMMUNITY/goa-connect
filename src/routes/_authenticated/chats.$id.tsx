@@ -38,6 +38,7 @@ function ChatRoom() {
   const [sending, setSending] = useState(false);
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: conv } = useQuery({
     queryKey: ["conv", id],

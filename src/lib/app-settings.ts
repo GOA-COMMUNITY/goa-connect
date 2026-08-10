@@ -18,16 +18,22 @@ export const defaultShortsSettings: ShortsSettings = {
 let cached: Promise<ShortsSettings> | null = null;
 
 export function getShortsSettings(): Promise<ShortsSettings> {
-  if (cached) return cached;
-  cached = supabase
-    .from("app_settings")
-    .select("value")
-    .eq("key", "shorts")
-    .maybeSingle()
-    .then(({ data }) => ({
-      ...defaultShortsSettings,
-      ...((data?.value as Partial<ShortsSettings> | null) ?? {}),
-    }))
-    .catch(() => defaultShortsSettings);
+  if (!cached) {
+    cached = (async () => {
+      try {
+        const { data } = await supabase
+          .from("app_settings")
+          .select("value")
+          .eq("key", "shorts")
+          .maybeSingle();
+        return {
+          ...defaultShortsSettings,
+          ...((data?.value as Partial<ShortsSettings> | null) ?? {}),
+        };
+      } catch {
+        return defaultShortsSettings;
+      }
+    })();
+  }
   return cached;
 }
