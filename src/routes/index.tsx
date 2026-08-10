@@ -3,9 +3,10 @@ import { Coffee, Music, Palmtree, Shell, Sparkles, Sun, Users, Utensils, Waves }
 import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCachedShorts, warmShorts } from "@/lib/shorts-warmup";
 import { rankShorts } from "@/lib/viewer-context";
+import { getShortsSettings } from "@/lib/app-settings";
 
 
 const initialVideos: Short[] = [
@@ -63,6 +64,7 @@ const chips = ["For You", "North Goa", "South Goa", "Trending", "Food", "Events"
 function Home() {
   const [videos, setVideos] = useState<Short[]>(() => getCachedShorts() ?? initialVideos);
   const [activeChip, setActiveChip] = useState("For You");
+  const embedsAllowed = useRef(true);
 
   useEffect(() => {
     const sharedShort = new URLSearchParams(window.location.search).get("short");
@@ -70,7 +72,9 @@ function Home() {
 
     const merge = (items: Short[]) => {
       const seen = new Set(cached.map((short) => short.videoId));
-      const combined = [...cached, ...items.filter((short) => !seen.has(short.videoId))];
+      let combined = [...cached, ...items.filter((short) => !seen.has(short.videoId))];
+      // Admin can switch off YouTube live-frame shorts — then only our own downloads play.
+      if (!embedsAllowed.current) combined = combined.filter((short) => !!short.src);
       const ranked = rankShorts(combined);
       if (!sharedShort) return ranked;
       const match = ranked.find((video) => video.videoId === sharedShort);
@@ -87,10 +91,16 @@ function Home() {
       })
       .catch(() => {});
 
+    void getShortsSettings().then((settings) => {
+      embedsAllowed.current = settings.embedsEnabled;
+      setVideos((current) => merge(current));
+    });
+
     setVideos((current) => merge(current));
     // Warm YouTube origins + buffer the first streamed shorts while the splash plays.
     void warmShorts(initialVideos, (items) => setVideos(merge(items)));
   }, []);
+
 
 
 

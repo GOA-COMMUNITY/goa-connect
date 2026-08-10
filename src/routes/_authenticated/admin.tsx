@@ -696,10 +696,10 @@ function ChannelsPanel() {
   );
 }
 
-type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number };
+type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number; embedsEnabled: boolean };
 
 function ShortsSettingsPanel() {
-  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100 });
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100, embedsEnabled: true });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -733,6 +733,12 @@ function ShortsSettingsPanel() {
   return (
     <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-soft">
       <h2 className="text-lg font-bold">Shorts engine</h2>
+      <Row
+        label="YouTube live-frame shorts"
+        hint="Off = the feed plays only the shorts downloaded onto Goa Social hosting."
+        on={s.embedsEnabled}
+        onToggle={() => save({ ...s, embedsEnabled: !s.embedsEnabled })}
+      />
       <Row
         label="Play pre-cached shorts first"
         hint="First clips stream from our own hosting for an instant start."

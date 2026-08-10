@@ -38,6 +38,7 @@ function ChatRoom() {
   const [sending, setSending] = useState(false);
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: conv } = useQuery({
     queryKey: ["conv", id],
@@ -121,6 +122,7 @@ function ChatRoom() {
       .update({ last_message: text, last_message_at: new Date().toISOString() })
       .eq("id", id);
     setBody("");
+    inputRef.current?.focus();
     setSending(false);
     qc.invalidateQueries({ queryKey: ["conversations"] });
     void requestReply();
@@ -198,6 +200,8 @@ function ChatRoom() {
         className="sticky bottom-0 flex items-center gap-2 border-t border-border bg-card p-3"
       >
         <input
+          ref={inputRef}
+          autoFocus
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Type a message…"
