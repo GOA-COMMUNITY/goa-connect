@@ -198,6 +198,8 @@ function ChatRoom() {
         className="sticky bottom-0 flex items-center gap-2 border-t border-border bg-card p-3"
       >
         <input
+          ref={inputRef}
+          autoFocus
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Type a message…"
