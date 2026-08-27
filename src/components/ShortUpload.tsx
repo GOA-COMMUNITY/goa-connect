@@ -1,1 +1,131 @@
-aW1wb3J0IHsgdXNlUmVmLCB1c2VTdGF0ZSB9IGZyb20gInJlYWN0IjsKaW1wb3J0IHsgRmlsbSwgTG9hZGVyMiwgVXBsb2FkLCBYIH0gZnJvbSAibHVjaWRlLXJlYWN0IjsKaW1wb3J0IHsgdG9hc3QgfSBmcm9tICJzb25uZXIiOwppbXBvcnQgeyBCdXR0b24gfSBmcm9tICJAL2NvbXBvbmVudHMvdWkvYnV0dG9uIjsKaW1wb3J0IHsgc3VwYWJhc2UgfSBmcm9tICJAL2ludGVncmF0aW9ucy9zdXBhYmFzZS9jbGllbnQiOwoKY29uc3QgTUFYX0ZJTEVfQllURVMgPSA1MCAqIDEwMjQgKiAxMDI0Owpjb25zdCBNQVhfRFVSQVRJT05fU0VDT05EUyA9IDkwOwoKdHlwZSBTaG9ydFVwbG9hZFByb3BzID0gewogIHVzZXJJZDogc3RyaW5nOwogIGFyZWE/OiBzdHJpbmcgfCBudWxsOwogIG9uVXBsb2FkZWQ/OiAoKSA9PiB2b2lkOwp9OwoKZXhwb3J0IGZ1bmN0aW9uIFNob3J0VXBsb2FkKHsgdXNlcklkLCBhcmVhLCBvblVwbG9hZGVkIH06IFNob3J0VXBsb2FkUHJvcHMpIHsKICBjb25zdCBpbnB1dFJlZiA9IHVzZVJlZjxIVE1MSW5wdXRFbGVtZW50PihudWxsKTsKICBjb25zdCBbZmlsZSwgc2V0RmlsZV0gPSB1c2VTdGF0ZTxGaWxlIHwgbnVsbD4obnVsbCk7CiAgY29uc3QgW3ByZXZpZXcsIHNldFByZXZpZXddID0gdXNlU3RhdGU8c3RyaW5nIHwgbnVsbD4obnVsbCk7CiAgY29uc3QgW2NhcHRpb24sIHNldENhcHRpb25dID0gdXNlU3RhdGUoIiIpOwogIGNvbnN0IFtkdXJhdGlvbiwgc2V0RHVyYXRpb25dID0gdXNlU3RhdGU8bnVtYmVyIHwgbnVsbD4obnVsbCk7CiAgY29uc3QgW3VwbG9hZGluZywgc2V0VXBsb2FkaW5nXSA9IHVzZVN0YXRlKGZhbHNlKTsKCiAgZnVuY3Rpb24gY2xlYXJTZWxlY3Rpb24oKSB7CiAgICBpZiAocHJldmlldykgVVJMLnJldm9rZU9iamVjdFVSTChwcmV2aWV3KTsKICAgIHNldEZpbGUobnVsbCk7CiAgICBzZXRQcmV2aWV3KG51bGwpOwogICAgc2V0RHVyYXRpb24obnVsbCk7CiAgICBpZiAoaW5wdXRSZWYuY3VycmVudCkgaW5wdXRSZWYuY3VycmVudC52YWx1ZSA9ICIiOwogIH0KCiAgZnVuY3Rpb24gc2VsZWN0RmlsZShuZXh0OiBGaWxlIHwgdW5kZWZpbmVkKSB7CiAgICBpZiAoIW5leHQpIHJldHVybjsKICAgIGlmICghbmV4dC50eXBlLnN0YXJ0c1dpdGgoInZpZGVvLyIpKSByZXR1cm4gdG9hc3QuZXJyb3IoIkNob29zZSBhIHZpZGVvIGZpbGUiKTsKICAgIGlmIChuZXh0LnNpemUgPiBNQVhfRklMRV9CWVRFUykgcmV0dXJuIHRvYXN0LmVycm9yKCJWaWRlbyBtdXN0IGJlIHNtYWxsZXIgdGhhbiA1MCBNQiIpOwogICAgaWYgKHByZXZpZXcpIFVSTC5yZXZva2VPYmplY3RVUkwocHJldmlldyk7CiAgICBzZXRGaWxlKG5leHQpOwogICAgc2V0UHJldmlldyhVUkwuY3JlYXRlT2JqZWN0VVJMKG5leHQpKTsKICAgIHNldER1cmF0aW9uKG51bGwpOwogIH0KCiAgYXN5bmMgZnVuY3Rpb24gdXBsb2FkU2hvcnQoKSB7CiAgICBpZiAoIWZpbGUgfHwgIXByZXZpZXcpIHJldHVybjsKICAgIGlmIChkdXJhdGlvbiA9PT0gbnVsbCkgcmV0dXJuIHRvYXN0LmVycm9yKCJXYWl0IGZvciB0aGUgdmlkZW8gcHJldmlldyB0byBsb2FkIik7CiAgICBpZiAoZHVyYXRpb24gPiBNQVhfRFVSQVRJT05fU0VDT05EUykgcmV0dXJuIHRvYXN0LmVycm9yKCJTaG9ydHMgY2FuIGJlIHVwIHRvIDkwIHNlY29uZHMiKTsKICAgIHNldFVwbG9hZGluZyh0cnVlKTsKICAgIGNvbnN0IGV4dGVuc2lvbiA9IGZpbGUubmFtZS5zcGxpdCgiLiIpLnBvcCgpPy50b0xvd2VyQ2FzZSgpLnJlcGxhY2UoL1teYS16MC05XS9nLCAiIikgfHwgIm1wNCI7CiAgICBjb25zdCBwYXRoID0gYCR7dXNlcklkfS8ke2NyeXB0by5yYW5kb21VVUlEKCl9LiR7ZXh0ZW5zaW9ufWA7CiAgICBjb25zdCB7IGVycm9yOiBzdG9yYWdlRXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlLnN0b3JhZ2UuZnJvbSgic2hvcnRzIikudXBsb2FkKHBhdGgsIGZpbGUsIHsKICAgICAgY2FjaGVDb250cm9sOiAiMzE1MzYwMDAiLAogICAgICBjb250ZW50VHlwZTogZmlsZS50eXBlLAogICAgICB1cHNlcnQ6IGZhbHNlLAogICAgfSk7CiAgICBpZiAoc3RvcmFnZUVycm9yKSB7CiAgICAgIHNldFVwbG9hZGluZyhmYWxzZSk7CiAgICAgIHJldHVybiB0b2FzdC5lcnJvcihzdG9yYWdlRXJyb3IubWVzc2FnZSk7CiAgICB9CiAgICBjb25zdCB7IGVycm9yOiByb3dFcnJvciB9ID0gYXdhaXQgc3VwYWJhc2UuZnJvbSgidXNlcl9zaG9ydHMiKS5pbnNlcnQoewogICAgICB1c2VyX2lkOiB1c2VySWQsCiAgICAgIHZpZGVvX3BhdGg6IHBhdGgsCiAgICAgIGNhcHRpb246IGNhcHRpb24udHJpbSgpLnNsaWNlKDAsIDUwMCksCiAgICAgIGFyZWE6IGFyZWEgfHwgbnVsbCwKICAgICAgZHVyYXRpb25fc2Vjb25kczogTWF0aC5yb3VuZChkdXJhdGlvbiksCiAgICB9KTsKICAgIGlmIChyb3dFcnJvcikgewogICAgICBhd2FpdCBzdXBhYmFzZS5zdG9yYWdlLmZyb20oInNob3J0cyIpLnJlbW92ZShbcGF0aF0pOwogICAgICBzZXRVcGxvYWRpbmcoZmFsc2UpOwogICAgICByZXR1cm4gdG9hc3QuZXJyb3Iocm93RXJyb3IubWVzc2FnZSk7CiAgICB9CiAgICBjbGVhclNlbGVjdGlvbigpOwogICAgc2V0Q2FwdGlvbigiIik7CiAgICBzZXRVcGxvYWRpbmcoZmFsc2UpOwogICAgdG9hc3Quc3VjY2VzcygiWW91ciBzaG9ydCBpcyBsaXZlIik7CiAgICBvblVwbG9hZGVkPy4oKTsKICB9CgogIHJldHVybiAoCiAgICA8c2VjdGlvbiBjbGFzc05hbWU9Im92ZXJmbG93LWhpZGRlbiByb3VuZGVkLTN4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1jYXJkIHNoYWRvdy1zb2Z0Ij4KICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0zIGJvcmRlci1iIGJvcmRlci1ib3JkZXIgcC00Ij4KICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImZsZXggaC0xMCB3LTEwIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciByb3VuZGVkLWZ1bGwgYmctcHJpbWFyeS8xMCB0ZXh0LXByaW1hcnkiPgogICAgICAgICAgPEZpbG0gY2xhc3NOYW1lPSJoLTUgdy01IiAvPgogICAgICAgIDwvc3Bhbj4KICAgICAgICA8ZGl2PgogICAgICAgICAgPGgyIGNsYXNzTmFtZT0iZm9udC1zZW1pYm9sZCB0ZXh0LWZvcmVncm91bmQiPlBvc3QgYSBTaG9ydDwvaDI+CiAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQteHMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5WZXJ0aWNhbCB2aWRlbyDCtyB1cCB0byA5MCBzZWNvbmRzIMK3IDUwIE1CPC9wPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTMgcC00Ij4KICAgICAgICA8aW5wdXQKICAgICAgICAgIHJlZj17aW5wdXRSZWZ9CiAgICAgICAgICB0eXBlPSJmaWxlIgogICAgICAgICAgYWNjZXB0PSJ2aWRlby9tcDQsdmlkZW8vd2VibSx2aWRlby9xdWlja3RpbWUiCiAgICAgICAgICBjbGFzc05hbWU9ImhpZGRlbiIKICAgICAgICAgIG9uQ2hhbmdlPXsoZXZlbnQpID0+IHNlbGVjdEZpbGUoZXZlbnQudGFyZ2V0LmZpbGVzPy5bMF0pfQogICAgICAgIC8+CiAgICAgICAgeyFwcmV2aWV3ID8gKAogICAgICAgICAgPEJ1dHRvbiB0eXBlPSJidXR0b24iIHZhcmlhbnQ9Im91dGxpbmUiIGNsYXNzTmFtZT0iaC0zMiB3LWZ1bGwgZmxleC1jb2wgYm9yZGVyLWRhc2hlZCIgb25DbGljaz17KCkgPT4gaW5wdXRSZWYuY3VycmVudD8uY2xpY2soKX0+CiAgICAgICAgICAgIDxVcGxvYWQgY2xhc3NOYW1lPSJoLTYgdy02IHRleHQtcHJpbWFyeSIgLz4KICAgICAgICAgICAgQ2hvb3NlIHZpZGVvCiAgICAgICAgICA8L0J1dHRvbj4KICAgICAgICApIDogKAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InJlbGF0aXZlIG14LWF1dG8gYXNwZWN0LVs5LzE2XSBtYXgtaC1bNDIwcHhdIG92ZXJmbG93LWhpZGRlbiByb3VuZGVkLTJ4bCBiZy1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgPHZpZGVvCiAgICAgICAgICAgICAgc3JjPXtwcmV2aWV3fQogICAgICAgICAgICAgIGNsYXNzTmFtZT0iaC1mdWxsIHctZnVsbCBvYmplY3QtY29udGFpbiIKICAgICAgICAgICAgICBjb250cm9scwogICAgICAgICAgICAgIHBsYXlzSW5saW5lCiAgICAgICAgICAgICAgb25Mb2FkZWRNZXRhZGF0YT17KGV2ZW50KSA9PiBzZXREdXJhdGlvbihldmVudC5jdXJyZW50VGFyZ2V0LmR1cmF0aW9uKX0KICAgICAgICAgICAgLz4KICAgICAgICAgICAgPEJ1dHRvbiB0eXBlPSJidXR0b24iIHNpemU9Imljb24iIHZhcmlhbnQ9InNlY29uZGFyeSIgY2xhc3NOYW1lPSJhYnNvbHV0ZSByaWdodC0yIHRvcC0yIHJvdW5kZWQtZnVsbCIgb25DbGljaz17Y2xlYXJTZWxlY3Rpb259IGFyaWEtbGFiZWw9IlJlbW92ZSBzZWxlY3RlZCB2aWRlbyI+CiAgICAgICAgICAgICAgPFggY2xhc3NOYW1lPSJoLTQgdy00IiAvPgogICAgICAgICAgICA8L0J1dHRvbj4KICAgICAgICAgIDwvZGl2PgogICAgICAgICl9CiAgICAgICAgPHRleHRhcmVhCiAgICAgICAgICB2YWx1ZT17Y2FwdGlvbn0KICAgICAgICAgIG9uQ2hhbmdlPXsoZXZlbnQpID0+IHNldENhcHRpb24oZXZlbnQudGFyZ2V0LnZhbHVlKX0KICAgICAgICAgIG1heExlbmd0aD17NTAwfQogICAgICAgICAgcm93cz17M30KICAgICAgICAgIHBsYWNlaG9sZGVyPSJXcml0ZSBhIGNhcHRpb24gYWJvdXQgdGhpcyBtb21lbnQgaW4gR29h4oCmIgogICAgICAgICAgY2xhc3NOYW1lPSJ3LWZ1bGwgcmVzaXplLW5vbmUgcm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZCBweC00IHB5LTMgdGV4dC1zbSBvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLXByaW1hcnkiCiAgICAgICAgLz4KICAgICAgICA8QnV0dG9uIHR5cGU9ImJ1dHRvbiIgY2xhc3NOYW1lPSJoLTExIHctZnVsbCByb3VuZGVkLWZ1bGwiIGRpc2FibGVkPXshZmlsZSB8fCB1cGxvYWRpbmcgfHwgKGR1cmF0aW9uID8/IDApID4gTUFYX0RVUkFUSU9OX1NFQ09ORFN9IG9uQ2xpY2s9e3VwbG9hZFNob3J0fT4KICAgICAgICAgIHt1cGxvYWRpbmcgPyA8TG9hZGVyMiBjbGFzc05hbWU9ImgtNCB3LTQgYW5pbWF0ZS1zcGluIiAvPiA6IDxVcGxvYWQgY2xhc3NOYW1lPSJoLTQgdy00IiAvPn0KICAgICAgICAgIHt1cGxvYWRpbmcgPyAiUG9zdGluZ+KApiIgOiAiUG9zdCBTaG9ydCJ9CiAgICAgICAgPC9CdXR0b24+CiAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgogICk7Cn0=
+import { useRef, useState } from "react";
+import { Film, Loader2, Upload, X } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+
+const MAX_FILE_BYTES = 50 * 1024 * 1024;
+const MAX_DURATION_SECONDS = 90;
+
+type ShortUploadProps = {
+  userId: string;
+  area?: string | null;
+  onUploaded?: () => void;
+};
+
+export function ShortUpload({ userId, area, onUploaded }: ShortUploadProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [caption, setCaption] = useState("");
+  const [duration, setDuration] = useState<number | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  function clearSelection() {
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(null);
+    setPreview(null);
+    setDuration(null);
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
+  function selectFile(next: File | undefined) {
+    if (!next) return;
+    if (!next.type.startsWith("video/")) return toast.error("Choose a video file");
+    if (next.size > MAX_FILE_BYTES) return toast.error("Video must be smaller than 50 MB");
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(next);
+    setPreview(URL.createObjectURL(next));
+    setDuration(null);
+  }
+
+  async function uploadShort() {
+    if (!file || !preview) return;
+    if (duration === null) return toast.error("Wait for the video preview to load");
+    if (duration > MAX_DURATION_SECONDS) return toast.error("Shorts can be up to 90 seconds");
+    setUploading(true);
+    const extension = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
+    const path = `${userId}/${crypto.randomUUID()}.${extension}`;
+    const { error: storageError } = await supabase.storage.from("shorts").upload(path, file, {
+      cacheControl: "31536000",
+      contentType: file.type,
+      upsert: false,
+    });
+    if (storageError) {
+      setUploading(false);
+      return toast.error(storageError.message);
+    }
+    const { error: rowError } = await supabase.from("user_shorts").insert({
+      user_id: userId,
+      video_path: path,
+      caption: caption.trim().slice(0, 500),
+      area: area || null,
+      duration_seconds: Math.round(duration),
+    });
+    if (rowError) {
+      await supabase.storage.from("shorts").remove([path]);
+      setUploading(false);
+      return toast.error(rowError.message);
+    }
+    clearSelection();
+    setCaption("");
+    setUploading(false);
+    toast.success("Your short is live");
+    onUploaded?.();
+  }
+
+  return (
+    <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+      <div className="flex items-center gap-3 border-b border-border p-4">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Film className="h-5 w-5" />
+        </span>
+        <div>
+          <h2 className="font-semibold text-foreground">Post a Short</h2>
+          <p className="text-xs text-muted-foreground">Vertical video · up to 90 seconds · 50 MB</p>
+        </div>
+      </div>
+
+      <div className="space-y-3 p-4">
+        <input
+          ref={inputRef}
+          type="file"
+          accept="video/mp4,video/webm,video/quicktime"
+          className="hidden"
+          onChange={(event) => selectFile(event.target.files?.[0])}
+        />
+        {!preview ? (
+          <Button type="button" variant="outline" className="h-32 w-full flex-col border-dashed" onClick={() => inputRef.current?.click()}>
+            <Upload className="h-6 w-6 text-primary" />
+            Choose video
+          </Button>
+        ) : (
+          <div className="relative mx-auto aspect-[9/16] max-h-[420px] overflow-hidden rounded-2xl bg-foreground">
+            <video
+              src={preview}
+              className="h-full w-full object-contain"
+              controls
+              playsInline
+              onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
+            />
+            <Button type="button" size="icon" variant="secondary" className="absolute right-2 top-2 rounded-full" onClick={clearSelection} aria-label="Remove selected video">
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+        <textarea
+          value={caption}
+          onChange={(event) => setCaption(event.target.value)}
+          maxLength={500}
+          rows={3}
+          placeholder="Write a caption about this moment in Goa…"
+          className="w-full resize-none rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+        />
+        <Button type="button" className="h-11 w-full rounded-full" disabled={!file || uploading || (duration ?? 0) > MAX_DURATION_SECONDS} onClick={uploadShort}>
+          {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          {uploading ? "Posting…" : "Post Short"}
+        </Button>
+      </div>
+    </section>
+  );
+}

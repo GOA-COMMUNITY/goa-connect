@@ -1,1 +1,3 @@
-cHJvamVjdF9pZCA9ICJrbXd3YmplZHZzeHFvYmZjZ3NmeCIKW2Z1bmN0aW9ucy5haS1yZXBseV0KdmVyaWZ5X2p3dCA9IHRydWUK
+project_id = "kmwwbjedvsxqobfcgsfx"
+[functions.ai-reply]
+verify_jwt = true

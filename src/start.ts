@@ -1,1 +1,24 @@
-aW1wb3J0IHsgY3JlYXRlU3RhcnQsIGNyZWF0ZU1pZGRsZXdhcmUgfSBmcm9tICJAdGFuc3RhY2svcmVhY3Qtc3RhcnQiOwoKaW1wb3J0IHsgcmVuZGVyRXJyb3JQYWdlIH0gZnJvbSAiLi9saWIvZXJyb3ItcGFnZSI7CmltcG9ydCB7IGF0dGFjaFN1cGFiYXNlQXV0aCB9IGZyb20gIkAvaW50ZWdyYXRpb25zL3N1cGFiYXNlL2F1dGgtYXR0YWNoZXIiOwoKY29uc3QgZXJyb3JNaWRkbGV3YXJlID0gY3JlYXRlTWlkZGxld2FyZSgpLnNlcnZlcihhc3luYyAoeyBuZXh0IH0pID0+IHsKICB0cnkgewogICAgcmV0dXJuIGF3YWl0IG5leHQoKTsKICB9IGNhdGNoIChlcnJvcikgewogICAgaWYgKGVycm9yICE9IG51bGwgJiYgdHlwZW9mIGVycm9yID09PSAib2JqZWN0IiAmJiAic3RhdHVzQ29kZSIgaW4gZXJyb3IpIHsKICAgICAgdGhyb3cgZXJyb3I7CiAgICB9CiAgICBjb25zb2xlLmVycm9yKGVycm9yKTsKICAgIHJldHVybiBuZXcgUmVzcG9uc2UocmVuZGVyRXJyb3JQYWdlKCksIHsKICAgICAgc3RhdHVzOiA1MDAsCiAgICAgIGhlYWRlcnM6IHsgImNvbnRlbnQtdHlwZSI6ICJ0ZXh0L2h0bWw7IGNoYXJzZXQ9dXRmLTgiIH0sCiAgICB9KTsKICB9Cn0pOwoKZXhwb3J0IGNvbnN0IHN0YXJ0SW5zdGFuY2UgPSBjcmVhdGVTdGFydCgoKSA9PiAoewogIGZ1bmN0aW9uTWlkZGxld2FyZTogW2F0dGFjaFN1cGFiYXNlQXV0aF0sCiAgcmVxdWVzdE1pZGRsZXdhcmU6IFtlcnJvck1pZGRsZXdhcmVdLAp9KSk7Cg==
+import { createStart, createMiddleware } from "@tanstack/react-start";
+
+import { renderErrorPage } from "./lib/error-page";
+import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+
+const errorMiddleware = createMiddleware().server(async ({ next }) => {
+  try {
+    return await next();
+  } catch (error) {
+    if (error != null && typeof error === "object" && "statusCode" in error) {
+      throw error;
+    }
+    console.error(error);
+    return new Response(renderErrorPage(), {
+      status: 500,
+      headers: { "content-type": "text/html; charset=utf-8" },
+    });
+  }
+});
+
+export const startInstance = createStart(() => ({
+  functionMiddleware: [attachSupabaseAuth],
+  requestMiddleware: [errorMiddleware],
+}));

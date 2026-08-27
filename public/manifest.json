@@ -1,1 +1,12 @@
-ewogICJuYW1lIjogIkdvYSBTb2NpYWwiLAogICJzaG9ydF9uYW1lIjogIkdvYSBTb2NpYWwiLAogICJkZXNjcmlwdGlvbiI6ICJHb2EncyBvd24gc29jaWFsIG5ldHdvcmsg4oCUIGJ5IEdvYW5zLCBmb3IgR29hbnMuIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmMGYyZjUiLAogICJ0aGVtZV9jb2xvciI6ICIjMTg3N2YyIiwKICAiaWNvbnMiOiBbCiAgICB7ICJzcmMiOiAiL2xvZ28ucG5nIiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiIH0KICBdCn0K
+{
+  "name": "Goa Social",
+  "short_name": "Goa Social",
+  "description": "Goa's own social network — by Goans, for Goans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#1877f2",
+  "icons": [
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

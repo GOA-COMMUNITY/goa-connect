@@ -1,1 +1,313 @@
-IyBHb2EgU29jaWFsIOKAlCBZb3VUdWJlIFNob3J0cyBkb3dubG9hZCBwaXBlbGluZQoKVGhpcyBpcyB0aGUgZXhhY3QgbWV0aG9kIEdvYSBTb2NpYWwgdXNlcyB0byBwcmUtZG93bmxvYWQgWW91VHViZSBTaG9ydHMgb250byBpdHMgb3duCmhvc3Rpbmcgc28gdGhlIGZlZWQgc3RhcnRzIGluc3RhbnRseSBpbnN0ZWFkIG9mIHdhaXRpbmcgb24gWW91VHViZS4KCk5vdGhpbmcgcnVucyBpbiB0aGUgYnJvd3Nlci4gRXZlcnl0aGluZyBoYXBwZW5zIGluc2lkZSBhIEdpdEh1YiBBY3Rpb25zIHJ1bm5lciBkdXJpbmcKZGVwbG95LCBhbmQgdGhlIGZpbmlzaGVkIGAubXA0YCBmaWxlcyBhcmUgc2hpcHBlZCBhcyBzdGF0aWMgYXNzZXRzIG9uIEdpdEh1YiBQYWdlcy4KCi0tLQoKIyMgMS4gVGhlIG1vdmluZyBwYXJ0cwoKfCBQaWVjZSB8IFJvbGUgfAp8IC0tLSB8IC0tLSB8CnwgYHl0LWRscGAgKG5pZ2h0bHkgYnVpbGQpIHwgbGlzdHMgYSBjaGFubmVsJ3MgbmV3ZXN0IFNob3J0cyBhbmQgZG93bmxvYWRzIHRoZW0gfAp8IGBkZW5vYCB8IEpTIHJ1bnRpbWUgeXQtZGxwIHVzZXMgdG8gc29sdmUgWW91VHViZSdzIHBsYXllciBjaGFsbGVuZ2VzIHwKfCBgZmZtcGVnYCB8IHJlLWVuY29kZXMgZWFjaCBjbGlwIHRvIGEgdGlueSAzNjBwIGZpbGUgfAp8IGBzY3JpcHRzL2NhY2hlLXNob3J0cy5tanNgIHwgdGhlIG9yY2hlc3RyYXRvciAocXVvdGFzLCByZXRyaWVzLCBkZWR1cGUsIGF0b21pYyBzd2FwKSB8CnwgYC5naXRodWIvd29ya2Zsb3dzL2RlcGxveS55bWxgIHwgaW5zdGFsbHMgdGhlIHRvb2xzLCBydW5zIHRoZSBzY3JpcHQsIGNhY2hlcyB0aGUgcG9vbCwgZGVwbG95cyB8CnwgYHB1YmxpYy9jYWNoZWQvKi5tcDRgIHwgdGhlIGRvd25sb2FkZWQgY2xpcHMgfAp8IGBwdWJsaWMvY2FjaGVkLXNob3J0cy5qc29uYCB8IG1hbmlmZXN0IHRoZSBzaXRlIHJlYWRzIHwKfCBgcHVibGljL2NhY2hlZC1oaXN0b3J5Lmpzb25gIHwgcGVyLWRheSBsaXN0IG9mIGFscmVhZHktcHVsbGVkIHZpZGVvIElEcyB8CgotLS0KCiMjIDIuIFN0ZXAtYnktc3RlcCBtZXRob2QKCiMjIyBTdGVwIEEg4oCUIHJlYWQgdGhlIGNoYW5uZWwgbGlzdCBmcm9tIHRoZSBkYXRhYmFzZQpDaGFubmVscyBhcmUgYWRtaW4tbWFuYWdlZCByb3dzIGluIHRoZSBgeW91dHViZV9jaGFubmVsc2AgdGFibGUKKGBuYW1lYCwgYHVybGAsIGBpY29uYCwgYHByaW9yaXR5YCwgYHdlaWdodGAsIGBhY3RpdmVgKS4gVGhlIHNjcmlwdCBmZXRjaGVzIHRoZW0gb3ZlciB0aGUKUkVTVCBBUEkgd2l0aCB0aGUgcHVibGlzaGFibGUga2V5LiBJZiB0aGUgREIgaXMgdW5yZWFjaGFibGUgaXQgZmFsbHMgYmFjayB0byBhIGhhcmRjb2RlZCBsaXN0LgoKIyMjIFN0ZXAgQiDigJQgcmVhZCB0aGUgYWRtaW4gc2V0dGluZ3MKVGhlIGBhcHBfc2V0dGluZ3NgIHJvdyB3aXRoIGtleSBgc2hvcnRzYCBjYW4gZGlzYWJsZSBjYWNoaW5nIGVudGlyZWx5IChgY2FjaGVkRmlyc3Q6IGZhbHNlYCkKb3IgY2hhbmdlIHRoZSBkYWlseSB0YXJnZXQgKGBtYXhDYWNoZWRgKS4gRGVmYXVsdCB0YXJnZXQgaXMgKioxMDAgY2xpcHMvZGF5KiouCgojIyMgU3RlcCBDIOKAlCB3b3JrIG91dCBob3cgbWFueSBjbGlwcyBlYWNoIGNoYW5uZWwgb3dlcwpFdmVyeSBhY3RpdmUgY2hhbm5lbCBpcyBndWFyYW50ZWVkIGF0IGxlYXN0IGl0cyBzaW5nbGUgbGF0ZXN0IFNob3J0LiBUaGUgcmVtYWluaW5nIHNsb3RzIGFyZQpzcGxpdCBwcm9wb3J0aW9uYWxseSB0byBlYWNoIGNoYW5uZWwncyBgd2VpZ2h0YDoKCmBgYGpzCmZ1bmN0aW9uIHF1b3RhcyhjaGFubmVscywgdGFyZ2V0KSB7CiAgY29uc3QgbiA9IGNoYW5uZWxzLmxlbmd0aDsKICBpZiAobiA9PT0gMCkgcmV0dXJuIFtdOwogIGNvbnN0IGJhc2UgPSBNYXRoLm1pbigxLCB0YXJnZXQpOwogIGNvbnN0IHJlbWFpbmluZyA9IE1hdGgubWF4KDAsIHRhcmdldCAtIGJhc2UgKiBuKTsKICBjb25zdCB0b3RhbFdlaWdodCA9IGNoYW5uZWxzLnJlZHVjZSgoc3VtLCBjKSA9PiBzdW0gKyBNYXRoLm1heCgxLCBOdW1iZXIoYy53ZWlnaHQpIHx8IDEwKSwgMCk7CiAgcmV0dXJuIGNoYW5uZWxzLm1hcCgoYykgPT4gewogICAgY29uc3QgdyA9IE1hdGgubWF4KDEsIE51bWJlcihjLndlaWdodCkgfHwgMTApOwogICAgcmV0dXJuIHsgY2hhbm5lbDogYywgcXVvdGE6IGJhc2UgKyBNYXRoLmNlaWwoKHJlbWFpbmluZyAqIHcpIC8gdG90YWxXZWlnaHQpIH07CiAgfSk7Cn0KYGBgCgpTbzogZmV3IGNoYW5uZWxzIOKGkiBtYW55IGxhdGVzdCBTaG9ydHMgZWFjaC4gTWFueSBjaGFubmVscyDihpIgb25lIGxhdGVzdCBTaG9ydCBlYWNoLgoKIyMjIFN0ZXAgRCDigJQgbGlzdCB0aGUgbmV3ZXN0IFNob3J0cyBwZXIgY2hhbm5lbApgeXQtZGxwIC0tZmxhdC1wbGF5bGlzdGAgb24gdGhlIGNoYW5uZWwncyBgL3Nob3J0c2AgdGFiLCBuZXdlc3QgZmlyc3QsIHdpdGggMyBhdHRlbXB0cyBhbmQgYQpkaWZmZXJlbnQgcGxheWVyLWNsaWVudC91c2VyLWFnZW50IHNpZ25hdHVyZSBvbiBlYWNoIGF0dGVtcHQ6CgpgYGBqcwphc3luYyBmdW5jdGlvbiBsYXRlc3RJZHNGb3IoY2hhbm5lbCwgbGltaXQpIHsKICBmb3IgKGxldCBhdHRlbXB0ID0gMTsgYXR0ZW1wdCA8PSAzOyBhdHRlbXB0ICs9IDEpIHsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHsgc3Rkb3V0IH0gPSBhd2FpdCBydW4oInl0LWRscCIsIFsKICAgICAgICAiLS1mbGF0LXBsYXlsaXN0IiwKICAgICAgICAiLS1wbGF5bGlzdC1lbmQiLCBTdHJpbmcobGltaXQpLAogICAgICAgIC4uLnl0QXJncyhhdHRlbXB0KSwKICAgICAgICAiLS1wcmludCIsICIlKGlkKXMiLAogICAgICAgIHNob3J0c1VybChjaGFubmVsLnVybCksCiAgICAgIF0sIHsgbWF4QnVmZmVyOiAyMCAqIDEwMjQgKiAxMDI0IH0pOwogICAgICBjb25zdCBpZHMgPSBzdGRvdXQuc3BsaXQoIlxuIikubWFwKHMgPT4gcy50cmltKCkpLmZpbHRlcihzID0+IC9eW1x3LV17MTF9JC8udGVzdChzKSk7CiAgICAgIGlmIChpZHMubGVuZ3RoID4gMCkgcmV0dXJuIGlkczsKICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgY29uc29sZS53YXJuKGBsaXN0IGF0dGVtcHQgJHthdHRlbXB0fS8zIGZhaWxlZCBmb3IgJHtjaGFubmVsLm5hbWV9OmAsIGUubWVzc2FnZS5zcGxpdCgiXG4iKVswXSk7CiAgICB9CiAgfQogIHJldHVybiBbXTsKfQpgYGAKCkl0IGRlbGliZXJhdGVseSBvdmVyLWZldGNoZXMgKGBxdW90YSArIDQwYCwgY2FwcGVkIGF0IDE1MCkgc28gZ2FwcyBsZWZ0IGJ5IGEgZmFpbGluZyBjaGFubmVsCmNhbiBiZSBmaWxsZWQgZnJvbSBhbm90aGVyIGNoYW5uZWwncyAybmQvM3JkLzR0aCBsYXRlc3QgU2hvcnQuCgojIyMgU3RlcCBFIOKAlCBpbnRlcmxlYXZlIGludG8gb25lIHF1ZXVlClJvdW5kLXJvYmluIGFjcm9zcyBjaGFubmVscyBzbyB0aGUgY2FjaGUgaXMgYSBtaXggcmF0aGVyIHRoYW4gNDAgY2xpcHMgZnJvbSBvbmUgY3JlYXRvcjoKCmBgYGpzCmZ1bmN0aW9uIGludGVybGVhdmUobGlzdHMsIHRhcmdldCkgewogIGNvbnN0IG91dCA9IFtdOwogIGxldCBpID0gMCwgYWRkZWQgPSB0cnVlOwogIGNvbnN0IGNhcCA9IHRhcmdldCAqIDM7CiAgd2hpbGUgKGFkZGVkICYmIG91dC5sZW5ndGggPCBjYXApIHsKICAgIGFkZGVkID0gZmFsc2U7CiAgICBmb3IgKGNvbnN0IGxpc3Qgb2YgbGlzdHMpIHsKICAgICAgaWYgKGxpc3QuaXRlbXNbaV0pIHsgb3V0LnB1c2goeyB2aWRlb0lkOiBsaXN0Lml0ZW1zW2ldLCBjaGFubmVsOiBsaXN0LmNoYW5uZWwgfSk7IGFkZGVkID0gdHJ1ZTsgfQogICAgfQogICAgaSArPSAxOwogIH0KICByZXR1cm4gb3V0Owp9CmBgYAoKSWYgY2hhbm5lbCBsaXN0aW5nIGZhaWxzIGNvbXBsZXRlbHksIGl0IGZhbGxzIGJhY2sgdG8gSURzIGFscmVhZHkgaW4gYHB1YmxpYy92aWRlb3MuanNvbmAuCgojIyMgU3RlcCBGIOKAlCBkb3dubG9hZCwgcm90YXRpbmcgc2lnbmF0dXJlcwpZb3VUdWJlIGJsb2NrcyBhIHNpbmdsZSBjbGllbnQgc2lnbmF0dXJlIHF1aWNrbHksIHNvIGVhY2ggdmlkZW8gaXMgcmV0cmllZCBhY3Jvc3MgZm91cgpkaWZmZXJlbnQgcGxheWVyLWNsaWVudCArIHVzZXItYWdlbnQgY29tYmluYXRpb25zOgoKYGBganMKY29uc3QgQ0xJRU5UX1NFVFMgPSBbCiAgInlvdXR1YmU6cGxheWVyX2NsaWVudD13ZWJfc2FmYXJpLGFuZHJvaWRfdnIiLAogICJ5b3V0dWJlOnBsYXllcl9jbGllbnQ9dHZfc2ltcGx5LHdlYl9lbWJlZGRlZCIsCiAgInlvdXR1YmU6cGxheWVyX2NsaWVudD1pb3MsbXdlYiIsCiAgInlvdXR1YmU6cGxheWVyX2NsaWVudD1hbmRyb2lkX3ZyLHdlYiIsCl07Cgpjb25zdCBVQVMgPSBbCiAgIk1vemlsbGEvNS4wIChMaW51eDsgQW5kcm9pZCAxMykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEyMCBNb2JpbGUgU2FmYXJpLzUzNy4zNiIsCiAgIk1vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzYwNS4xLjE1IChLSFRNTCwgbGlrZSBHZWNrbykgVmVyc2lvbi8xNy40IFNhZmFyaS82MDUuMS4xNSIsCiAgIk1vemlsbGEvNS4wIChpUGhvbmU7IENQVSBpUGhvbmUgT1MgMTdfNCBsaWtlIE1hYyBPUyBYKSBBcHBsZVdlYktpdC82MDUuMS4xNSAoS0hUTUwsIGxpa2UgR2Vja28pIFZlcnNpb24vMTcuNCBNb2JpbGUvMTVFMTQ4IFNhZmFyaS82MDQuMSIsCl07CgpmdW5jdGlvbiB5dEFyZ3MoYXR0ZW1wdCA9IDApIHsKICByZXR1cm4gWwogICAgIi0tbm8td2FybmluZ3MiLCAiLS1pZ25vcmUtY29uZmlnIiwKICAgICItLXJldHJpZXMiLCAiNSIsICItLWZyYWdtZW50LXJldHJpZXMiLCAiNSIsCiAgICAiLS1zb2NrZXQtdGltZW91dCIsICIyMCIsICItLXNsZWVwLXJlcXVlc3RzIiwgIjEiLAogICAgIi0tanMtcnVudGltZXMiLCAiZGVubyIsCiAgICAiLS1yZW1vdGUtY29tcG9uZW50cyIsICJlanM6Z2l0aHViIiwKICAgICItLWV4dHJhY3Rvci1hcmdzIiwgQ0xJRU5UX1NFVFNbYXR0ZW1wdCAlIENMSUVOVF9TRVRTLmxlbmd0aF0sCiAgICAiLS11c2VyLWFnZW50IiwgVUFTW2F0dGVtcHQgJSBVQVMubGVuZ3RoXSwKICBdOwp9Cgphc3luYyBmdW5jdGlvbiBkb3dubG9hZCh2aWRlb0lkKSB7CiAgY29uc3QgcmF3ID0gYCR7TkVYVF9ESVJ9LyR7dmlkZW9JZH0uc3JjLiUoZXh0KXNgOwogIGxldCBsYXN0RXJyb3I7CiAgZm9yIChsZXQgYXR0ZW1wdCA9IDA7IGF0dGVtcHQgPCBDTElFTlRfU0VUUy5sZW5ndGg7IGF0dGVtcHQgKz0gMSkgewogICAgdHJ5IHsKICAgICAgYXdhaXQgcnVuKCJ5dC1kbHAiLCBbCiAgICAgICAgIi1mIiwgImJ2KltoZWlnaHQ8PTQ4MF1bZXh0PW1wNF0rYmFbZXh0PW00YV0vYltoZWlnaHQ8PTQ4MF1bZXh0PW1wNF0vYltleHQ9bXA0XS9iIiwKICAgICAgICAuLi55dEFyZ3MoYXR0ZW1wdCksCiAgICAgICAgIi0tbm8tcGxheWxpc3QiLAogICAgICAgICItLW1heC1maWxlc2l6ZSIsICI0ME0iLAogICAgICAgICItbyIsIHJhdywKICAgICAgICBgaHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj0ke3ZpZGVvSWR9YCwKICAgICAgXSwgeyBtYXhCdWZmZXI6IDEwICogMTAyNCAqIDEwMjQgfSk7CiAgICAgIHJldHVybiByYXc7CiAgICB9IGNhdGNoIChlKSB7IGxhc3RFcnJvciA9IGU7IH0KICB9CiAgdGhyb3cgbGFzdEVycm9yID8/IG5ldyBFcnJvcigiZG93bmxvYWQgZmFpbGVkIik7Cn0KYGBgCgpUd28gZGV0YWlscyB0aGF0IG1hdHRlciBhIGxvdDoKLSBgLS1qcy1ydW50aW1lcyBkZW5vYCArIGAtLXJlbW90ZS1jb21wb25lbnRzIGVqczpnaXRodWJgIGxldCB5dC1kbHAgc29sdmUgWW91VHViZSdzCiAgc2lnbmF0dXJlIGNoYWxsZW5nZXMg4oCUIHdpdGhvdXQgdGhlc2UgbW9zdCBkb3dubG9hZHMgNDAzLgotIFRoZSBmb3JtYXQgc3RyaW5nIGNhcHMgc291cmNlIHF1YWxpdHkgYXQgNDgwcCBzbyB0aGUgZG93bmxvYWQgaXMgZmFzdCBhbmQgc21hbGwuCgojIyMgU3RlcCBHIOKAlCBjb21wcmVzcyB3aXRoIGZmbXBlZwpFdmVyeSBjbGlwIGlzIHJlLWVuY29kZWQgdG8gMzYwcCBILjI2NCBiYXNlbGluZSwgbW9ubyA1NiBrYnBzIEFBQywgZmlyc3QgNjAgc2Vjb25kcyBvbmx5LAp3aXRoIGArZmFzdHN0YXJ0YCBzbyBwbGF5YmFjayBiZWdpbnMgYmVmb3JlIHRoZSBmaWxlIGZpbmlzaGVzIGJ1ZmZlcmluZzoKCmBgYGpzCmFzeW5jIGZ1bmN0aW9uIGNvbXByZXNzKGlucHV0LCBvdXRwdXQpIHsKICBhd2FpdCBydW4oImZmbXBlZyIsIFsKICAgICIteSIsICItaSIsIGlucHV0LAogICAgIi12ZiIsICJzY2FsZT0tMjozNjAiLAogICAgIi1jOnYiLCAibGlieDI2NCIsICItcHJlc2V0IiwgInZlcnlmYXN0IiwgIi1jcmYiLCAiMzEiLAogICAgIi1wcm9maWxlOnYiLCAiYmFzZWxpbmUiLCAiLWxldmVsIiwgIjMuMCIsICItcGl4X2ZtdCIsICJ5dXY0MjBwIiwKICAgICItYzphIiwgImFhYyIsICItYjphIiwgIjU2ayIsICItYWMiLCAiMSIsCiAgICAiLW1vdmZsYWdzIiwgIitmYXN0c3RhcnQiLAogICAgIi10IiwgIjYwIiwKICAgIG91dHB1dCwKICBdLCB7IG1heEJ1ZmZlcjogMTAgKiAxMDI0ICogMTAyNCB9KTsKfQpgYGAKCkFueXRoaW5nIHN0aWxsIGxhcmdlciB0aGFuIGBNQVhfQllURVNgICgyLjIgTUIpIGFmdGVyIGNvbXByZXNzaW9uIGlzIHRocm93biBhd2F5LgoKIyMjIFN0ZXAgSCDigJQgcGFyYWxsZWwgd29ya2VycyB3aXRoIGNsYWltLWJhc2VkIGRlZHVwZQpGb3VyIHdvcmtlcnMgcHVsbCBmcm9tIHRoZSBzaGFyZWQgcXVldWUuIEEgd29ya2VyIGFkZHMgdGhlIElEIHRvIHRoZSBoaXN0b3J5IHNldCAqYmVmb3JlKgpkb3dubG9hZGluZywgc28gdHdvIHdvcmtlcnMgY2FuIG5ldmVyIGdyYWIgdGhlIHNhbWUgdmlkZW86CgpgYGBqcwpjb25zdCBDT05DVVJSRU5DWSA9IE51bWJlcihwcm9jZXNzLmVudi5DQUNIRV9DT05DVVJSRU5DWSB8fCA0KTsKCmFzeW5jIGZ1bmN0aW9uIHdvcmtlcigpIHsKICB3aGlsZSAobWFuaWZlc3QubGVuZ3RoIDwgbmVlZGVkKSB7CiAgICBjb25zdCBpdGVtID0gcXVldWVbY3Vyc29yKytdOwogICAgaWYgKCFpdGVtKSByZXR1cm47CiAgICBpZiAoaGlzdG9yeS5oYXMoaXRlbS52aWRlb0lkKSkgY29udGludWU7CiAgICBoaXN0b3J5LmFkZChpdGVtLnZpZGVvSWQpOyAgICAgICAgICAvLyBjbGFpbSBpdAogICAgLy8gZG93bmxvYWQgLT4gY29tcHJlc3MgLT4gc2l6ZSBjaGVjayAtPiBwdXNoIHRvIG1hbmlmZXN0CiAgfQp9Cgphd2FpdCBQcm9taXNlLmFsbChBcnJheS5mcm9tKHsgbGVuZ3RoOiBDT05DVVJSRU5DWSB9LCAoKSA9PiB3b3JrZXIoKSkpOwpgYGAKCiMjIyBTdGVwIEkg4oCUIGRhaWx5IHJlc2V0LCBuZXZlciB0aGUgc2FtZSBzaG9ydCB0d2ljZSBpbiBhIGRheQpgcHVibGljL2NhY2hlZC1oaXN0b3J5Lmpzb25gIHN0b3JlcyBgeyBkYXRlOiAiWVlZWS1NTS1ERCIsIGlkczogWy4uLl0gfWAuCi0gSWYgdGhlIHN0b3JlZCBkYXRlIGlzIHRvZGF5LCB0aGUgZXhpc3RpbmcgY2xpcHMgYXJlIGtlcHQgYW5kIHRoZSBydW4gb25seSAqdG9wcyB1cCogdG8gMTAwLgotIElmIGl0J3MgYSBuZXcgVVRDIGRheSwgaGlzdG9yeSBpcyBlbXB0eSDihpIgZnVsbCByZWJ1aWxkIGZyb20gdGhlIG5ld2VzdCBTaG9ydHMuCi0gQSB2aWRlbyBJRCBhbHJlYWR5IGluIHRvZGF5J3MgaGlzdG9yeSBpcyBuZXZlciBkb3dubG9hZGVkIGFnYWluIHRoYXQgZGF5LiBUb21vcnJvdyBpdCdzCiAgZmFpciBnYW1lIGFnYWluLCBzbyBhIGNoYW5uZWwgdGhhdCBkaWRuJ3QgdXBsb2FkIGFueXRoaW5nIG5ldyBzdGlsbCBjb250cmlidXRlcy4KCiMjIyBTdGVwIEog4oCUIGF0b21pYyBzd2FwLCBvbGQgZmlsZXMgZGVsZXRlZCBvbmx5IGFmdGVyIHZlcmlmaWNhdGlvbgpFdmVyeXRoaW5nIGlzIGJ1aWx0IGludG8gYHB1YmxpYy9jYWNoZWQtbmV4dC9gLiBDbGlwcyBzdGlsbCB2YWxpZCBmcm9tIGVhcmxpZXIgdG9kYXkgYXJlIGNvcGllZAppbiwgdGhlbiBldmVyeSBtYW5pZmVzdCBlbnRyeSBpcyBgc3RhdGAtZWQgb24gZGlzay4gT25seSBlbnRyaWVzIHRoYXQgcmVhbGx5IGV4aXN0IGdldCB3cml0dGVuCnRvIHRoZSBtYW5pZmVzdCwgYW5kIG9ubHkgdGhlbiBpcyB0aGUgb2xkIGZvbGRlciByZW1vdmVkOgoKYGBganMKYXdhaXQgd3JpdGVGaWxlKE5FWFRfTUFOSUZFU1QsIGAke0pTT04uc3RyaW5naWZ5KHZlcmlmaWVkLCBudWxsLCAyKX1cbmApOwphd2FpdCBybShPVVRfRElSLCB7IHJlY3Vyc2l2ZTogdHJ1ZSwgZm9yY2U6IHRydWUgfSk7CmF3YWl0IHJlbmFtZShORVhUX0RJUiwgT1VUX0RJUik7CmF3YWl0IGNvcHlGaWxlKE5FWFRfTUFOSUZFU1QsIE1BTklGRVNUKTsKYXdhaXQgcm0oTkVYVF9NQU5JRkVTVCwgeyBmb3JjZTogdHJ1ZSB9KTsKYXdhaXQgc2F2ZUhpc3RvcnkoaGlzdG9yeSk7CmBgYAoKSWYgemVybyBuZXcgY2xpcHMgZG93bmxvYWQsIHRoZSBwcmV2aW91cyBjYWNoZSBpcyBwcmVzZXJ2ZWQgcmF0aGVyIHRoYW4gd2lwZWQg4oCUIHRoZSBzaXRlIG5ldmVyCmVuZHMgdXAgd2l0aCBhbiBlbXB0eSBmZWVkLgoKLS0tCgojIyAzLiBUaGUgR2l0SHViIEFjdGlvbnMgc2lkZQoKYGBgeWFtbAotIHVzZXM6IGRlbm9sYW5kL3NldHVwLWRlbm9AdjIKICB3aXRoOgogICAgZGVuby12ZXJzaW9uOiB2Mi54CgotIG5hbWU6IEluc3RhbGwgbWVkaWEgdG9vbHMKICBydW46IHwKICAgIHN1ZG8gYXB0LWdldCB1cGRhdGUgLXFxCiAgICBzdWRvIGFwdC1nZXQgaW5zdGFsbCAteSAtcXEgZmZtcGVnCiAgICBzdWRvIGN1cmwgLS1mYWlsIC0tcmV0cnkgNCAtc1NMIGh0dHBzOi8vZ2l0aHViLmNvbS95dC1kbHAveXQtZGxwLW5pZ2h0bHktYnVpbGRzL3JlbGVhc2VzL2xhdGVzdC9kb3dubG9hZC95dC1kbHAgLW8gL3Vzci9sb2NhbC9iaW4veXQtZGxwCiAgICBzdWRvIGNobW9kIGErcnggL3Vzci9sb2NhbC9iaW4veXQtZGxwCgotIG5hbWU6IFRvZGF5J3MgZGF0ZSAoVVRDKQogIGlkOiBkYXkKICBydW46IGVjaG8gImRhdGU9JChkYXRlIC11ICslRikiID4+ICIkR0lUSFVCX09VVFBVVCIKCiMgQ2FjaGUga2V5IHJvbGxzIG92ZXIgZGFpbHkgLT4gdGhlIDEwMCBzaG9ydHMgcmVzZXQgZWFjaCBkYXksCiMgd2hpbGUgdGhlIDMwLW1pbnV0ZSBydW5zIHdpdGhpbiBhIGRheSBqdXN0IHRvcCB0aGUgcG9vbCB1cC4KLSBuYW1lOiBSZXN0b3JlIHRvZGF5J3Mgc2hvcnRzIHBvb2wKICB1c2VzOiBhY3Rpb25zL2NhY2hlQHY0CiAgd2l0aDoKICAgIHBhdGg6IHwKICAgICAgcHVibGljL2NhY2hlZAogICAgICBwdWJsaWMvY2FjaGVkLXNob3J0cy5qc29uCiAgICAgIHB1YmxpYy9jYWNoZWQtaGlzdG9yeS5qc29uCiAgICBrZXk6IHNob3J0cy1wb29sLSR7eyBzdGVwcy5kYXkub3V0cHV0cy5kYXRlIH19LSR7eyBnaXRodWIucnVuX2lkIH19CiAgICByZXN0b3JlLWtleXM6IHwKICAgICAgc2hvcnRzLXBvb2wtJHt7IHN0ZXBzLmRheS5vdXRwdXRzLmRhdGUgfX0tCgotIG5hbWU6IERvd25sb2FkIC8gdG9wIHVwIHRvZGF5J3MgMTAwIGxhdGVzdCBzaG9ydHMKICB0aW1lb3V0LW1pbnV0ZXM6IDEyMAogIHJ1bjogYnVuIHJ1biBzaG9ydHM6Y2FjaGUKYGBgCgpUaGUgd29ya2Zsb3cgcnVucyBvbiBwdXNoIGFuZCBvbiBhIGAqLzMwICogKiAqICpgIGNyb24sIHNvIHRoZSBwb29sIHRvcHMgaXRzZWxmIHVwIGV2ZXJ5CjMwIG1pbnV0ZXMgYW5kIGZ1bGx5IHJlc2V0cyBlYWNoIFVUQyBkYXkuCgpLZXkgcG9pbnRzOiAqKm5pZ2h0bHkqKiB5dC1kbHAgKHRoZSBzdGFibGUgcmVsZWFzZSBnb2VzIHN0YWxlIGZhc3QgYWdhaW5zdCBZb3VUdWJlIGNoYW5nZXMpLApgZGVub2AgaW5zdGFsbGVkIGJlZm9yZSB0aGUgc2NyaXB0IHJ1bnMsIGFuZCBgYWN0aW9ucy9jYWNoZWAga2V5ZWQgYnkgZGF0ZSBzbyBhIDMwLW1pbnV0ZSBydW4KZG9lc24ndCByZS1kb3dubG9hZCB0aGUgOTAgY2xpcHMgaXQgYWxyZWFkeSBoYXMuCgotLS0KCiMjIDQuIEhvdyB0aGUgc2l0ZSBjb25zdW1lcyBpdAoKYHB1YmxpYy9jYWNoZWQtc2hvcnRzLmpzb25gIGlzIGFuIGFycmF5IG9mOgoKYGBganNvbgp7CiAgInZpZGVvSWQiOiAiYWJjMTIzWFlaMDAiLAogICJzcmMiOiAiL2NhY2hlZC9hYmMxMjNYWVowMC5tcDQiLAogICJwb3N0ZXIiOiAiaHR0cHM6Ly9pLnl0aW1nLmNvbS92aS9hYmMxMjNYWVowMC9ocTcyMC5qcGciLAogICJjaGFubmVsTmFtZSI6ICJBZHZlbnR1cmUgR29hIERLIiwKICAiY2hhbm5lbEljb24iOiAi8J+MtCIsCiAgImJ5dGVzIjogNzk2MDAwCn0KYGBgCgpgU2hvcnRzRmVlZGAgcmVhZHMgdGhlIG1hbmlmZXN0IGFuZCByZW5kZXJzIHRob3NlIGVudHJpZXMgYXMgbmF0aXZlIGA8dmlkZW8+YCBlbGVtZW50cyB3aXRoCnRoZSBwb3N0ZXIgYXMgdGhlIHBsYWNlaG9sZGVyIOKAlCBubyBZb3VUdWJlIGlmcmFtZSwgbm8gbmV0d29yayByb3VuZC10cmlwIHRvIFlvdVR1YmUsIHNvIHRoZQpmaXJzdCBmcmFtZSBhcHBlYXJzIGVzc2VudGlhbGx5IGluc3RhbnRseS4gT25seSB3aGVuIHRoZSBjYWNoZWQgcG9vbCBydW5zIG91dCAob3IgdGhlIGFkbWluCmhhcyBlbWJlZHMgZW5hYmxlZCkgZG9lcyBpdCBmYWxsIGJhY2sgdG8gYSBZb3VUdWJlIHBsYXllci4KCi0tLQoKIyMgNS4gV2h5IGVhY2ggY2hvaWNlIHdhcyBtYWRlCgotICoqRG93bmxvYWRpbmcgaW5zdGVhZCBvZiBlbWJlZGRpbmcqKiDigJQgYW4gaWZyYW1lIG5lZWRzIHNldmVyYWwgWW91VHViZSByb3VuZC10cmlwcyBiZWZvcmUKICB0aGUgZmlyc3QgZnJhbWU7IGEgNzAwIEtCIGxvY2FsIE1QNCBzdGFydHMgaW4gbWlsbGlzZWNvbmRzLgotICoqMzYwcCAvIENSRiAzMSAvIDYwcyBjYXAqKiDigJQga2VlcHMgMTAwIGNsaXBzIGFyb3VuZCA3MOKAkzEwMCBNQiB0b3RhbCwgd2hpY2ggc3RheXMgaW5zaWRlCiAgc3RhdGljLWhvc3RpbmcgbGltaXRzIGFuZCBsb2FkcyBmYXN0IG9uIEdvYW4gbW9iaWxlIG5ldHdvcmtzLgotICoqUm90YXRpbmcgY2xpZW50cyBhbmQgdXNlci1hZ2VudHMqKiDigJQgYSBzaW5nbGUgc2lnbmF0dXJlIGdldHMgcmF0ZS1saW1pdGVkIGFmdGVyIH4xMAogIGRvd25sb2Fkczsgcm90YXRpbmcgZm91ciBrZWVwcyBhIDEwMC1jbGlwIHJ1biBhbGl2ZS4KLSAqKkNsYWltLWJlZm9yZS1kb3dubG9hZCoqIOKAlCB0aGUgb25seSBzYWZlIHdheSB0byBydW4gNCBwYXJhbGxlbCB3b3JrZXJzIG9mZiBvbmUgcXVldWUuCi0gKipCdWlsZC10by10ZW1wIHRoZW4gYXRvbWljIHN3YXAqKiDigJQgYSBmYWlsZWQgcnVuIGNhbiBuZXZlciBsZWF2ZSB0aGUgbGl2ZSBzaXRlIHdpdGggYQogIGJyb2tlbiBvciBlbXB0eSB2aWRlbyBmb2xkZXIuCgotLS0KCiMjIDYuIExlZ2FsIG5vdGUKCk9ubHkgZG93bmxvYWQgZnJvbSBjaGFubmVscyB5b3Ugb3duIG9yIGhhdmUgZXhwbGljaXQgcGVybWlzc2lvbiBmcm9tLiBHb2EgU29jaWFsJ3MgY2hhbm5lbApsaXN0IGlzIGFkbWluLW1hbmFnZWQgZm9yIGV4YWN0bHkgdGhhdCByZWFzb24g4oCUIHRoZSBvcGVyYXRvciBjb25maXJtcyByaWdodHMgcGVyIGNoYW5uZWwKYmVmb3JlIGFkZGluZyBpdC4K
+# Goa Social — YouTube Shorts download pipeline
+
+This is the exact method Goa Social uses to pre-download YouTube Shorts onto its own
+hosting so the feed starts instantly instead of waiting on YouTube.
+
+Nothing runs in the browser. Everything happens inside a GitHub Actions runner during
+deploy, and the finished `.mp4` files are shipped as static assets on GitHub Pages.
+
+---
+
+## 1. The moving parts
+
+| Piece | Role |
+| --- | --- |
+| `yt-dlp` (nightly build) | lists a channel's newest Shorts and downloads them |
+| `deno` | JS runtime yt-dlp uses to solve YouTube's player challenges |
+| `ffmpeg` | re-encodes each clip to a tiny 360p file |
+| `scripts/cache-shorts.mjs` | the orchestrator (quotas, retries, dedupe, atomic swap) |
+| `.github/workflows/deploy.yml` | installs the tools, runs the script, caches the pool, deploys |
+| `public/cached/*.mp4` | the downloaded clips |
+| `public/cached-shorts.json` | manifest the site reads |
+| `public/cached-history.json` | per-day list of already-pulled video IDs |
+
+---
+
+## 2. Step-by-step method
+
+### Step A — read the channel list from the database
+Channels are admin-managed rows in the `youtube_channels` table
+(`name`, `url`, `icon`, `priority`, `weight`, `active`). The script fetches them over the
+REST API with the publishable key. If the DB is unreachable it falls back to a hardcoded list.
+
+### Step B — read the admin settings
+The `app_settings` row with key `shorts` can disable caching entirely (`cachedFirst: false`)
+or change the daily target (`maxCached`). Default target is **100 clips/day**.
+
+### Step C — work out how many clips each channel owes
+Every active channel is guaranteed at least its single latest Short. The remaining slots are
+split proportionally to each channel's `weight`:
+
+```js
+function quotas(channels, target) {
+  const n = channels.length;
+  if (n === 0) return [];
+  const base = Math.min(1, target);
+  const remaining = Math.max(0, target - base * n);
+  const totalWeight = channels.reduce((sum, c) => sum + Math.max(1, Number(c.weight) || 10), 0);
+  return channels.map((c) => {
+    const w = Math.max(1, Number(c.weight) || 10);
+    return { channel: c, quota: base + Math.ceil((remaining * w) / totalWeight) };
+  });
+}
+```
+
+So: few channels → many latest Shorts each. Many channels → one latest Short each.
+
+### Step D — list the newest Shorts per channel
+`yt-dlp --flat-playlist` on the channel's `/shorts` tab, newest first, with 3 attempts and a
+different player-client/user-agent signature on each attempt:
+
+```js
+async function latestIdsFor(channel, limit) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const { stdout } = await run("yt-dlp", [
+        "--flat-playlist",
+        "--playlist-end", String(limit),
+        ...ytArgs(attempt),
+        "--print", "%(id)s",
+        shortsUrl(channel.url),
+      ], { maxBuffer: 20 * 1024 * 1024 });
+      const ids = stdout.split("\n").map(s => s.trim()).filter(s => /^[\w-]{11}$/.test(s));
+      if (ids.length > 0) return ids;
+    } catch (e) {
+      console.warn(`list attempt ${attempt}/3 failed for ${channel.name}:`, e.message.split("\n")[0]);
+    }
+  }
+  return [];
+}
+```
+
+It deliberately over-fetches (`quota + 40`, capped at 150) so gaps left by a failing channel
+can be filled from another channel's 2nd/3rd/4th latest Short.
+
+### Step E — interleave into one queue
+Round-robin across channels so the cache is a mix rather than 40 clips from one creator:
+
+```js
+function interleave(lists, target) {
+  const out = [];
+  let i = 0, added = true;
+  const cap = target * 3;
+  while (added && out.length < cap) {
+    added = false;
+    for (const list of lists) {
+      if (list.items[i]) { out.push({ videoId: list.items[i], channel: list.channel }); added = true; }
+    }
+    i += 1;
+  }
+  return out;
+}
+```
+
+If channel listing fails completely, it falls back to IDs already in `public/videos.json`.
+
+### Step F — download, rotating signatures
+YouTube blocks a single client signature quickly, so each video is retried across four
+different player-client + user-agent combinations:
+
+```js
+const CLIENT_SETS = [
+  "youtube:player_client=web_safari,android_vr",
+  "youtube:player_client=tv_simply,web_embedded",
+  "youtube:player_client=ios,mweb",
+  "youtube:player_client=android_vr,web",
+];
+
+const UAS = [
+  "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+];
+
+function ytArgs(attempt = 0) {
+  return [
+    "--no-warnings", "--ignore-config",
+    "--retries", "5", "--fragment-retries", "5",
+    "--socket-timeout", "20", "--sleep-requests", "1",
+    "--js-runtimes", "deno",
+    "--remote-components", "ejs:github",
+    "--extractor-args", CLIENT_SETS[attempt % CLIENT_SETS.length],
+    "--user-agent", UAS[attempt % UAS.length],
+  ];
+}
+
+async function download(videoId) {
+  const raw = `${NEXT_DIR}/${videoId}.src.%(ext)s`;
+  let lastError;
+  for (let attempt = 0; attempt < CLIENT_SETS.length; attempt += 1) {
+    try {
+      await run("yt-dlp", [
+        "-f", "bv*[height<=480][ext=mp4]+ba[ext=m4a]/b[height<=480][ext=mp4]/b[ext=mp4]/b",
+        ...ytArgs(attempt),
+        "--no-playlist",
+        "--max-filesize", "40M",
+        "-o", raw,
+        `https://www.youtube.com/watch?v=${videoId}`,
+      ], { maxBuffer: 10 * 1024 * 1024 });
+      return raw;
+    } catch (e) { lastError = e; }
+  }
+  throw lastError ?? new Error("download failed");
+}
+```
+
+Two details that matter a lot:
+- `--js-runtimes deno` + `--remote-components ejs:github` let yt-dlp solve YouTube's
+  signature challenges — without these most downloads 403.
+- The format string caps source quality at 480p so the download is fast and small.
+
+### Step G — compress with ffmpeg
+Every clip is re-encoded to 360p H.264 baseline, mono 56 kbps AAC, first 60 seconds only,
+with `+faststart` so playback begins before the file finishes buffering:
+
+```js
+async function compress(input, output) {
+  await run("ffmpeg", [
+    "-y", "-i", input,
+    "-vf", "scale=-2:360",
+    "-c:v", "libx264", "-preset", "veryfast", "-crf", "31",
+    "-profile:v", "baseline", "-level", "3.0", "-pix_fmt", "yuv420p",
+    "-c:a", "aac", "-b:a", "56k", "-ac", "1",
+    "-movflags", "+faststart",
+    "-t", "60",
+    output,
+  ], { maxBuffer: 10 * 1024 * 1024 });
+}
+```
+
+Anything still larger than `MAX_BYTES` (2.2 MB) after compression is thrown away.
+
+### Step H — parallel workers with claim-based dedupe
+Four workers pull from the shared queue. A worker adds the ID to the history set *before*
+downloading, so two workers can never grab the same video:
+
+```js
+const CONCURRENCY = Number(process.env.CACHE_CONCURRENCY || 4);
+
+async function worker() {
+  while (manifest.length < needed) {
+    const item = queue[cursor++];
+    if (!item) return;
+    if (history.has(item.videoId)) continue;
+    history.add(item.videoId);          // claim it
+    // download -> compress -> size check -> push to manifest
+  }
+}
+
+await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
+```
+
+### Step I — daily reset, never the same short twice in a day
+`public/cached-history.json` stores `{ date: "YYYY-MM-DD", ids: [...] }`.
+- If the stored date is today, the existing clips are kept and the run only *tops up* to 100.
+- If it's a new UTC day, history is empty → full rebuild from the newest Shorts.
+- A video ID already in today's history is never downloaded again that day. Tomorrow it's
+  fair game again, so a channel that didn't upload anything new still contributes.
+
+### Step J — atomic swap, old files deleted only after verification
+Everything is built into `public/cached-next/`. Clips still valid from earlier today are copied
+in, then every manifest entry is `stat`-ed on disk. Only entries that really exist get written
+to the manifest, and only then is the old folder removed:
+
+```js
+await writeFile(NEXT_MANIFEST, `${JSON.stringify(verified, null, 2)}\n`);
+await rm(OUT_DIR, { recursive: true, force: true });
+await rename(NEXT_DIR, OUT_DIR);
+await copyFile(NEXT_MANIFEST, MANIFEST);
+await rm(NEXT_MANIFEST, { force: true });
+await saveHistory(history);
+```
+
+If zero new clips download, the previous cache is preserved rather than wiped — the site never
+ends up with an empty feed.
+
+---
+
+## 3. The GitHub Actions side
+
+```yaml
+- uses: denoland/setup-deno@v2
+  with:
+    deno-version: v2.x
+
+- name: Install media tools
+  run: |
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq ffmpeg
+    sudo curl --fail --retry 4 -sSL https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+    sudo chmod a+rx /usr/local/bin/yt-dlp
+
+- name: Today's date (UTC)
+  id: day
+  run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+# Cache key rolls over daily -> the 100 shorts reset each day,
+# while the 30-minute runs within a day just top the pool up.
+- name: Restore today's shorts pool
+  uses: actions/cache@v4
+  with:
+    path: |
+      public/cached
+      public/cached-shorts.json
+      public/cached-history.json
+    key: shorts-pool-${{ steps.day.outputs.date }}-${{ github.run_id }}
+    restore-keys: |
+      shorts-pool-${{ steps.day.outputs.date }}-
+
+- name: Download / top up today's 100 latest shorts
+  timeout-minutes: 120
+  run: bun run shorts:cache
+```
+
+The workflow runs on push and on a `*/30 * * * *` cron, so the pool tops itself up every
+30 minutes and fully resets each UTC day.
+
+Key points: **nightly** yt-dlp (the stable release goes stale fast against YouTube changes),
+`deno` installed before the script runs, and `actions/cache` keyed by date so a 30-minute run
+doesn't re-download the 90 clips it already has.
+
+---
+
+## 4. How the site consumes it
+
+`public/cached-shorts.json` is an array of:
+
+```json
+{
+  "videoId": "abc123XYZ00",
+  "src": "/cached/abc123XYZ00.mp4",
+  "poster": "https://i.ytimg.com/vi/abc123XYZ00/hq720.jpg",
+  "channelName": "Adventure Goa DK",
+  "channelIcon": "🌴",
+  "bytes": 796000
+}
+```
+
+`ShortsFeed` reads the manifest and renders those entries as native `<video>` elements with
+the poster as the placeholder — no YouTube iframe, no network round-trip to YouTube, so the
+first frame appears essentially instantly. Only when the cached pool runs out (or the admin
+has embeds enabled) does it fall back to a YouTube player.
+
+---
+
+## 5. Why each choice was made
+
+- **Downloading instead of embedding** — an iframe needs several YouTube round-trips before
+  the first frame; a 700 KB local MP4 starts in milliseconds.
+- **360p / CRF 31 / 60s cap** — keeps 100 clips around 70–100 MB total, which stays inside
+  static-hosting limits and loads fast on Goan mobile networks.
+- **Rotating clients and user-agents** — a single signature gets rate-limited after ~10
+  downloads; rotating four keeps a 100-clip run alive.
+- **Claim-before-download** — the only safe way to run 4 parallel workers off one queue.
+- **Build-to-temp then atomic swap** — a failed run can never leave the live site with a
+  broken or empty video folder.
+
+---
+
+## 6. Legal note
+
+Only download from channels you own or have explicit permission from. Goa Social's channel
+list is admin-managed for exactly that reason — the operator confirms rights per channel
+before adding it.

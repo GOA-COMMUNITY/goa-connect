@@ -1,1 +1,9 @@
-aW1wb3J0IHsgT3V0bGV0LCBjcmVhdGVGaWxlUm91dGUgfSBmcm9tICJAdGFuc3RhY2svcmVhY3Qtcm91dGVyIjsKCmV4cG9ydCBjb25zdCBSb3V0ZSA9IGNyZWF0ZUZpbGVSb3V0ZSgiL19hdXRoZW50aWNhdGVkL2NoYXRzIikoewogIGNvbXBvbmVudDogQ2hhdHNMYXlvdXQsCn0pOwoKZnVuY3Rpb24gQ2hhdHNMYXlvdXQoKSB7CiAgcmV0dXJuIDxPdXRsZXQgLz47Cn0=
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_authenticated/chats")({
+  component: ChatsLayout,
+});
+
+function ChatsLayout() {
+  return <Outlet />;
+}

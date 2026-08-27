@@ -1,1 +1,67 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCBMaW5rIH0gZnJvbSAiQHRhbnN0YWNrL3JlYWN0LXJvdXRlciI7CmltcG9ydCB7IEFycm93TGVmdCwgTG9hZGVyMiB9IGZyb20gImx1Y2lkZS1yZWFjdCI7CmltcG9ydCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICJyZWFjdCI7CmltcG9ydCB7IFNob3J0c0ZlZWQsIHR5cGUgU2hvcnQgfSBmcm9tICJAL2NvbXBvbmVudHMvU2hvcnRzRmVlZCI7CmltcG9ydCB7IGZldGNoVXBsb2FkZWRTaG9ydCwgaXNVcGxvYWRlZElkIH0gZnJvbSAiQC9saWIvdXNlci1zaG9ydHMiOwoKZXhwb3J0IGNvbnN0IFJvdXRlID0gY3JlYXRlRmlsZVJvdXRlKCIvcy8kaWQiKSh7CiAgaGVhZDogKCkgPT4gKHsKICAgIG1ldGE6IFsKICAgICAgeyB0aXRsZTogIldhdGNoIGEgU2hvcnQg4oCUIEdvYSBTb2NpYWwiIH0sCiAgICAgIHsgbmFtZTogImRlc2NyaXB0aW9uIiwgY29udGVudDogIldhdGNoIGFuZCBzaGFyZSB0aGlzIEdvYSBTb2NpYWwgc2hvcnQuIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6dGl0bGUiLCBjb250ZW50OiAiV2F0Y2ggYSBTaG9ydCDigJQgR29hIFNvY2lhbCIgfSwKICAgICAgeyBwcm9wZXJ0eTogIm9nOmRlc2NyaXB0aW9uIiwgY29udGVudDogIldhdGNoIGFuZCBzaGFyZSB0aGlzIEdvYSBTb2NpYWwgc2hvcnQuIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6dHlwZSIsIGNvbnRlbnQ6ICJ2aWRlby5vdGhlciIgfSwKICAgICAgeyBuYW1lOiAidHdpdHRlcjpjYXJkIiwgY29udGVudDogInN1bW1hcnlfbGFyZ2VfaW1hZ2UiIH0sCiAgICBdLAogIH0pLAogIGNvbXBvbmVudDogU2hhcmVkU2hvcnQsCn0pOwoKZnVuY3Rpb24gU2hhcmVkU2hvcnQoKSB7CiAgY29uc3QgeyBpZCB9ID0gUm91dGUudXNlUGFyYW1zKCk7CiAgY29uc3QgW3Nob3J0LCBzZXRTaG9ydF0gPSB1c2VTdGF0ZTxTaG9ydCB8IG51bGwgfCB1bmRlZmluZWQ+KHVuZGVmaW5lZCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBsZXQgYWN0aXZlID0gdHJ1ZTsKICAgIGFzeW5jIGZ1bmN0aW9uIGxvYWQoKSB7CiAgICAgIGlmIChpc1VwbG9hZGVkSWQoaWQpKSB7CiAgICAgICAgY29uc3QgaXRlbSA9IGF3YWl0IGZldGNoVXBsb2FkZWRTaG9ydChpZC5zbGljZSgyKSk7CiAgICAgICAgaWYgKGFjdGl2ZSkgc2V0U2hvcnQoaXRlbSk7CiAgICAgICAgcmV0dXJuOwogICAgICB9CiAgICAgIHRyeSB7CiAgICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaCgiL2NhY2hlZC1zaG9ydHMuanNvbiIsIHsgY2FjaGU6ICJuby1zdG9yZSIgfSk7CiAgICAgICAgY29uc3QgaXRlbXMgPSAoYXdhaXQgcmVzcG9uc2UuanNvbigpKSBhcyBTaG9ydFtdOwogICAgICAgIGNvbnN0IGl0ZW0gPSBBcnJheS5pc0FycmF5KGl0ZW1zKSA/IGl0ZW1zLmZpbmQoKGNhbmRpZGF0ZSkgPT4gY2FuZGlkYXRlLnZpZGVvSWQgPT09IGlkKSA6IHVuZGVmaW5lZDsKICAgICAgICBpZiAoYWN0aXZlKSBzZXRTaG9ydChpdGVtID8/IG51bGwpOwogICAgICB9IGNhdGNoIHsKICAgICAgICBpZiAoYWN0aXZlKSBzZXRTaG9ydChudWxsKTsKICAgICAgfQogICAgfQogICAgdm9pZCBsb2FkKCk7CiAgICByZXR1cm4gKCkgPT4geyBhY3RpdmUgPSBmYWxzZTsgfTsKICB9LCBbaWRdKTsKCiAgcmV0dXJuICgKICAgIDxtYWluIGNsYXNzTmFtZT0ibWluLWgtc2NyZWVuIGJnLWJhY2tncm91bmQgcHgtMiBwYi02IHB0LTIgc206cHgtNCI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJteC1hdXRvIG1heC13LXhsIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWItMiBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gcHgtMSI+CiAgICAgICAgICA8TGluayB0bz0iLyIgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiByb3VuZGVkLWZ1bGwgYmctY2FyZCBweC0zIHB5LTIgdGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtZm9yZWdyb3VuZCBzaGFkb3ctc29mdCI+CiAgICAgICAgICAgIDxBcnJvd0xlZnQgY2xhc3NOYW1lPSJoLTQgdy00IiAvPiBHb2EgU29jaWFsCiAgICAgICAgICA8L0xpbms+CiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LW11dGVkLWZvcmVncm91bmQiPlNoYXJlZCBTaG9ydDwvc3Bhbj4KICAgICAgICA8L2Rpdj4KICAgICAgICB7c2hvcnQgPT09IHVuZGVmaW5lZCAmJiA8ZGl2IGNsYXNzTmFtZT0iZmxleCBoLVs3MHN2aF0gaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIj48TG9hZGVyMiBjbGFzc05hbWU9ImgtNiB3LTYgYW5pbWF0ZS1zcGluIHRleHQtcHJpbWFyeSIgLz48L2Rpdj59CiAgICAgICAge3Nob3J0ICYmIDxTaG9ydHNGZWVkIHNob3J0cz17W3Nob3J0XX0gLz59CiAgICAgICAge3Nob3J0ID09PSBudWxsICYmICgKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0yMCB0ZXh0LWNlbnRlciI+CiAgICAgICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQteGwgZm9udC1ib2xkIHRleHQtZm9yZWdyb3VuZCI+VGhpcyBzaG9ydCBpcyBubyBsb25nZXIgYXZhaWxhYmxlPC9oMT4KICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJtdC0yIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5UaGUgZGFpbHkgcG9vbCBtYXkgaGF2ZSByZWZyZXNoZWQsIG9yIHRoZSBjcmVhdG9yIHJlbW92ZWQgaXQuPC9wPgogICAgICAgICAgICA8TGluayB0bz0iLyIgY2xhc3NOYW1lPSJtdC01IGlubGluZS1mbGV4IHJvdW5kZWQtZnVsbCBiZy1wcmltYXJ5IHB4LTUgcHktMi41IHRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LXByaW1hcnktZm9yZWdyb3VuZCI+V2F0Y2ggbGF0ZXN0IFNob3J0czwvTGluaz4KICAgICAgICAgIDwvZGl2PgogICAgICAgICl9CiAgICAgIDwvZGl2PgogICAgPC9tYWluPgogICk7Cn0=
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ShortsFeed, type Short } from "@/components/ShortsFeed";
+import { fetchUploadedShort, isUploadedId } from "@/lib/user-shorts";
+
+export const Route = createFileRoute("/s/$id")({
+  head: () => ({
+    meta: [
+      { title: "Watch a Short — Goa Social" },
+      { name: "description", content: "Watch and share this Goa Social short." },
+      { property: "og:title", content: "Watch a Short — Goa Social" },
+      { property: "og:description", content: "Watch and share this Goa Social short." },
+      { property: "og:type", content: "video.other" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: SharedShort,
+});
+
+function SharedShort() {
+  const { id } = Route.useParams();
+  const [short, setShort] = useState<Short | null | undefined>(undefined);
+
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      if (isUploadedId(id)) {
+        const item = await fetchUploadedShort(id.slice(2));
+        if (active) setShort(item);
+        return;
+      }
+      try {
+        const response = await fetch("/cached-shorts.json", { cache: "no-store" });
+        const items = (await response.json()) as Short[];
+        const item = Array.isArray(items) ? items.find((candidate) => candidate.videoId === id) : undefined;
+        if (active) setShort(item ?? null);
+      } catch {
+        if (active) setShort(null);
+      }
+    }
+    void load();
+    return () => { active = false; };
+  }, [id]);
+
+  return (
+    <main className="min-h-screen bg-background px-2 pb-6 pt-2 sm:px-4">
+      <div className="mx-auto max-w-xl">
+        <div className="mb-2 flex items-center justify-between px-1">
+          <Link to="/" className="flex items-center gap-2 rounded-full bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-soft">
+            <ArrowLeft className="h-4 w-4" /> Goa Social
+          </Link>
+          <span className="text-xs font-semibold text-muted-foreground">Shared Short</span>
+        </div>
+        {short === undefined && <div className="flex h-[70svh] items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}
+        {short && <ShortsFeed shorts={[short]} />}
+        {short === null && (
+          <div className="mt-20 text-center">
+            <h1 className="text-xl font-bold text-foreground">This short is no longer available</h1>
+            <p className="mt-2 text-sm text-muted-foreground">The daily pool may have refreshed, or the creator removed it.</p>
+            <Link to="/" className="mt-5 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Watch latest Shorts</Link>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

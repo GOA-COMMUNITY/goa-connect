@@ -1,1 +1,36 @@
-dHlwZSBMb3ZhYmxlRXJyb3JPcHRpb25zID0gewogIG1lY2hhbmlzbT86ICJtYW51YWwiIHwgIm9uZXJyb3IiIHwgInVuaGFuZGxlZHJlamVjdGlvbiIgfCAicmVhY3RfZXJyb3JfYm91bmRhcnkiOwogIGhhbmRsZWQ/OiBib29sZWFuOwogIHNldmVyaXR5PzogImVycm9yIiB8ICJ3YXJuaW5nIiB8ICJpbmZvIjsKfTsKCnR5cGUgTG92YWJsZUV2ZW50cyA9IHsKICBjYXB0dXJlRXhjZXB0aW9uPzogKAogICAgZXJyb3I6IHVua25vd24sCiAgICBjb250ZXh0PzogUmVjb3JkPHN0cmluZywgdW5rbm93bj4sCiAgICBvcHRpb25zPzogTG92YWJsZUVycm9yT3B0aW9ucywKICApID0+IHZvaWQ7Cn07CgpkZWNsYXJlIGdsb2JhbCB7CiAgaW50ZXJmYWNlIFdpbmRvdyB7CiAgICBfX2xvdmFibGVFdmVudHM/OiBMb3ZhYmxlRXZlbnRzOwogIH0KfQoKZXhwb3J0IGZ1bmN0aW9uIHJlcG9ydExvdmFibGVFcnJvcihlcnJvcjogdW5rbm93biwgY29udGV4dDogUmVjb3JkPHN0cmluZywgdW5rbm93bj4gPSB7fSkgewogIGlmICh0eXBlb2Ygd2luZG93ID09PSAidW5kZWZpbmVkIikgcmV0dXJuOwogIHdpbmRvdy5fX2xvdmFibGVFdmVudHM/LmNhcHR1cmVFeGNlcHRpb24/LigKICAgIGVycm9yLAogICAgewogICAgICBzb3VyY2U6ICJyZWFjdF9lcnJvcl9ib3VuZGFyeSIsCiAgICAgIHJvdXRlOiB3aW5kb3cubG9jYXRpb24ucGF0aG5hbWUsCiAgICAgIC4uLmNvbnRleHQsCiAgICB9LAogICAgewogICAgICBtZWNoYW5pc206ICJyZWFjdF9lcnJvcl9ib3VuZGFyeSIsCiAgICAgIGhhbmRsZWQ6IGZhbHNlLAogICAgICBzZXZlcml0eTogImVycm9yIiwKICAgIH0sCiAgKTsKfQo=
+type LovableErrorOptions = {
+  mechanism?: "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
+  handled?: boolean;
+  severity?: "error" | "warning" | "info";
+};
+
+type LovableEvents = {
+  captureException?: (
+    error: unknown,
+    context?: Record<string, unknown>,
+    options?: LovableErrorOptions,
+  ) => void;
+};
+
+declare global {
+  interface Window {
+    __lovableEvents?: LovableEvents;
+  }
+}
+
+export function reportLovableError(error: unknown, context: Record<string, unknown> = {}) {
+  if (typeof window === "undefined") return;
+  window.__lovableEvents?.captureException?.(
+    error,
+    {
+      source: "react_error_boundary",
+      route: window.location.pathname,
+      ...context,
+    },
+    {
+      mechanism: "react_error_boundary",
+      handled: false,
+      severity: "error",
+    },
+  );
+}

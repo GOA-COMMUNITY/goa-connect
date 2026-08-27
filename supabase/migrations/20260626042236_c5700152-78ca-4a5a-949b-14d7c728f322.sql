@@ -1,1 +1,15 @@
-Ci0tIExvY2sgZG93biBoYW5kbGVfbmV3X3VzZXI6IG9ubHkgdGhlIHNpZ251cCB0cmlnZ2VyIHNob3VsZCBjYWxsIGl0ClJFVk9LRSBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5oYW5kbGVfbmV3X3VzZXIoKSBGUk9NIFBVQkxJQywgYW5vbiwgYXV0aGVudGljYXRlZDsKCi0tIE1lbWJlcnNoaXAgY2hlY2sgY2FuIHJ1biBhcyB0aGUgY2FsbGVyOyBjb252ZXJzYXRpb25zIFJMUyBhbHJlYWR5IHBlcm1pdHMgbWVtYmVycyB0byByZWFkCkNSRUFURSBPUiBSRVBMQUNFIEZVTkNUSU9OIHB1YmxpYy5pc19jb252ZXJzYXRpb25fbWVtYmVyKF9jb252IHV1aWQsIF91c2VyIHV1aWQpClJFVFVSTlMgYm9vbGVhbiBMQU5HVUFHRSBzcWwgU1RBQkxFIFNFQ1VSSVRZIElOVk9LRVIgU0VUIHNlYXJjaF9wYXRoID0gcHVibGljIEFTICQkCiAgU0VMRUNUIEVYSVNUUyAoCiAgICBTRUxFQ1QgMSBGUk9NIHB1YmxpYy5jb252ZXJzYXRpb25zIGMKICAgIFdIRVJFIGMuaWQgPSBfY29udiBBTkQgKGMudXNlcl9hID0gX3VzZXIgT1IgYy51c2VyX2IgPSBfdXNlcikKICApOwokJDsKCi0tIHVwZGF0ZWRfYXQgdHJpZ2dlciBmbiBkb2Vzbid0IG5lZWQgdG8gYmUgY2FsbGFibGUgZGlyZWN0bHkKUkVWT0tFIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLnRnX3NldF91cGRhdGVkX2F0KCkgRlJPTSBQVUJMSUMsIGFub24sIGF1dGhlbnRpY2F0ZWQ7Cg==
+
+-- Lock down handle_new_user: only the signup trigger should call it
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
+
+-- Membership check can run as the caller; conversations RLS already permits members to read
+CREATE OR REPLACE FUNCTION public.is_conversation_member(_conv uuid, _user uuid)
+RETURNS boolean LANGUAGE sql STABLE SECURITY INVOKER SET search_path = public AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.conversations c
+    WHERE c.id = _conv AND (c.user_a = _user OR c.user_b = _user)
+  );
+$$;
+
+-- updated_at trigger fn doesn't need to be callable directly
+REVOKE EXECUTE ON FUNCTION public.tg_set_updated_at() FROM PUBLIC, anon, authenticated;

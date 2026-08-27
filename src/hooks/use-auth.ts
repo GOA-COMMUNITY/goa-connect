@@ -1,1 +1,49 @@
-aW1wb3J0IHsgdXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gInJlYWN0IjsKaW1wb3J0IHR5cGUgeyBVc2VyIH0gZnJvbSAiQHN1cGFiYXNlL3N1cGFiYXNlLWpzIjsKaW1wb3J0IHsgc3VwYWJhc2UgfSBmcm9tICJAL2ludGVncmF0aW9ucy9zdXBhYmFzZS9jbGllbnQiOwoKZXhwb3J0IGZ1bmN0aW9uIHVzZUF1dGgoKSB7CiAgY29uc3QgW3VzZXIsIHNldFVzZXJdID0gdXNlU3RhdGU8VXNlciB8IG51bGw+KG51bGwpOwogIGNvbnN0IFtpc0FkbWluLCBzZXRJc0FkbWluXSA9IHVzZVN0YXRlKGZhbHNlKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZSh0cnVlKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGxldCBtb3VudGVkID0gdHJ1ZTsKCiAgICBhc3luYyBmdW5jdGlvbiBsb2FkUm9sZSh1OiBVc2VyIHwgbnVsbCkgewogICAgICBpZiAoIXUpIHsKICAgICAgICBpZiAobW91bnRlZCkgc2V0SXNBZG1pbihmYWxzZSk7CiAgICAgICAgcmV0dXJuOwogICAgICB9CiAgICAgIGNvbnN0IHsgZGF0YSB9ID0gYXdhaXQgc3VwYWJhc2UKICAgICAgICAuZnJvbSgidXNlcl9yb2xlcyIpCiAgICAgICAgLnNlbGVjdCgicm9sZSIpCiAgICAgICAgLmVxKCJ1c2VyX2lkIiwgdS5pZCkKICAgICAgICAuZXEoInJvbGUiLCAiYWRtaW4iKQogICAgICAgIC5tYXliZVNpbmdsZSgpOwogICAgICBpZiAobW91bnRlZCkgc2V0SXNBZG1pbighIWRhdGEpOwogICAgfQoKICAgIHN1cGFiYXNlLmF1dGguZ2V0VXNlcigpLnRoZW4oYXN5bmMgKHsgZGF0YSB9KSA9PiB7CiAgICAgIGlmICghbW91bnRlZCkgcmV0dXJuOwogICAgICBjb25zdCB1ID0gZGF0YS51c2VyID8/IG51bGw7CiAgICAgIHNldFVzZXIodSk7CiAgICAgIGF3YWl0IGxvYWRSb2xlKHUpOwogICAgICBpZiAobW91bnRlZCkgc2V0TG9hZGluZyhmYWxzZSk7CiAgICB9KTsKCiAgICBjb25zdCB7IGRhdGE6IHN1YiB9ID0gc3VwYWJhc2UuYXV0aC5vbkF1dGhTdGF0ZUNoYW5nZShhc3luYyAoX2UsIHNlc3Npb24pID0+IHsKICAgICAgY29uc3QgdSA9IHNlc3Npb24/LnVzZXIgPz8gbnVsbDsKICAgICAgaWYgKCFtb3VudGVkKSByZXR1cm47CiAgICAgIHNldFVzZXIodSk7CiAgICAgIGF3YWl0IGxvYWRSb2xlKHUpOwogICAgfSk7CgogICAgcmV0dXJuICgpID0+IHsKICAgICAgbW91bnRlZCA9IGZhbHNlOwogICAgICBzdWIuc3Vic2NyaXB0aW9uLnVuc3Vic2NyaWJlKCk7CiAgICB9OwogIH0sIFtdKTsKCiAgcmV0dXJuIHsgdXNlciwgaXNBZG1pbiwgbG9hZGluZyB9Owp9Cg==
+import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadRole(u: User | null) {
+      if (!u) {
+        if (mounted) setIsAdmin(false);
+        return;
+      }
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", u.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (mounted) setIsAdmin(!!data);
+    }
+
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!mounted) return;
+      const u = data.user ?? null;
+      setUser(u);
+      await loadRole(u);
+      if (mounted) setLoading(false);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange(async (_e, session) => {
+      const u = session?.user ?? null;
+      if (!mounted) return;
+      setUser(u);
+      await loadRole(u);
+    });
+
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  return { user, isAdmin, loading };
+}

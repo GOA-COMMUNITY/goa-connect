@@ -1,1 +1,244 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCB1c2VOYXZpZ2F0ZSB9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1yb3V0ZXIiOwppbXBvcnQgeyBTdGFyLCBNYXBQaW4sIFBob25lLCBQbHVzLCBMb2FkZXIyLCBYLCBFeHRlcm5hbExpbmsgfSBmcm9tICJsdWNpZGUtcmVhY3QiOwppbXBvcnQgeyBBcHBMYXlvdXQgfSBmcm9tICJAL2NvbXBvbmVudHMvQXBwTGF5b3V0IjsKaW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICJyZWFjdCI7CmltcG9ydCB7IHVzZVF1ZXJ5LCB1c2VRdWVyeUNsaWVudCB9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1xdWVyeSI7CmltcG9ydCB7IHN1cGFiYXNlIH0gZnJvbSAiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvY2xpZW50IjsKaW1wb3J0IHsgdXNlQXV0aCB9IGZyb20gIkAvaG9va3MvdXNlLWF1dGgiOwppbXBvcnQgeyB0b2FzdCB9IGZyb20gInNvbm5lciI7CgpleHBvcnQgY29uc3QgUm91dGUgPSBjcmVhdGVGaWxlUm91dGUoIi9idXNpbmVzcyIpKHsKICBoZWFkOiAoKSA9PiAoewogICAgbWV0YTogWwogICAgICB7IHRpdGxlOiAiR29hIEJ1c2luZXNzIERpcmVjdG9yeSDigJQgR29hIFNvY2lhbCIgfSwKICAgICAgeyBuYW1lOiAiZGVzY3JpcHRpb24iLCBjb250ZW50OiAiRGlzY292ZXIgdGhlIGJlc3QgcmVzdGF1cmFudHMsIGNhZmVzLCBzdXJmIHNjaG9vbHMsIGFuZCBsb2NhbCBidXNpbmVzc2VzIGluIEdvYS4iIH0sCiAgICAgIHsgcHJvcGVydHk6ICJvZzp0aXRsZSIsIGNvbnRlbnQ6ICJHb2EgQnVzaW5lc3MgRGlyZWN0b3J5IOKAlCBHb2EgU29jaWFsIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6ZGVzY3JpcHRpb24iLCBjb250ZW50OiAiRGlzY292ZXIgdGhlIGJlc3QgcmVzdGF1cmFudHMsIGNhZmVzLCBzdXJmIHNjaG9vbHMsIGFuZCBsb2NhbCBidXNpbmVzc2VzIGluIEdvYS4iIH0sCiAgICAgIHsgcHJvcGVydHk6ICJvZzp0eXBlIiwgY29udGVudDogIndlYnNpdGUiIH0sCiAgICAgIHsgbmFtZTogInR3aXR0ZXI6Y2FyZCIsIGNvbnRlbnQ6ICJzdW1tYXJ5IiB9LAogICAgXSwKICB9KSwKICBjb21wb25lbnQ6IEJ1c2luZXNzLAp9KTsKCnR5cGUgQml6ID0gewogIGlkOiBzdHJpbmc7CiAgb3duZXJfaWQ6IHN0cmluZzsKICBuYW1lOiBzdHJpbmc7CiAgZGVzY3JpcHRpb246IHN0cmluZyB8IG51bGw7CiAgY2F0ZWdvcnk6IHN0cmluZyB8IG51bGw7CiAgYXJlYTogc3RyaW5nIHwgbnVsbDsKICBwaG9uZTogc3RyaW5nIHwgbnVsbDsKICByYXRpbmc6IG51bWJlciB8IG51bGw7Cn07Cgpjb25zdCBDQVRFR09SSUVTID0gWyJDYWZlIiwgIlJlc3RhdXJhbnQiLCAiQmFyIiwgIlN1cmYgU2Nob29sIiwgIkhvdGVsIiwgIlNob3AiLCAiQXJ0IiwgIlNlcnZpY2UiLCAiT3RoZXIiXTsKY29uc3QgQ0FURUdPUllfRU1PSkk6IFJlY29yZDxzdHJpbmcsIHN0cmluZz4gPSB7CiAgQ2FmZTogIuKYlSIsCiAgUmVzdGF1cmFudDogIvCfppAiLAogIEJhcjogIvCfjbkiLAogICJTdXJmIFNjaG9vbCI6ICLwn4+EIiwKICBIb3RlbDogIvCfj6giLAogIFNob3A6ICLwn5uN77iPIiwKICBBcnQ6ICLwn46oIiwKICBTZXJ2aWNlOiAi8J+boO+4jyIsCiAgT3RoZXI6ICLwn4y0IiwKfTsKCmZ1bmN0aW9uIEJ1c2luZXNzKCkgewogIGNvbnN0IHsgdXNlciB9ID0gdXNlQXV0aCgpOwogIGNvbnN0IG5hdmlnYXRlID0gdXNlTmF2aWdhdGUoKTsKICBjb25zdCBxYyA9IHVzZVF1ZXJ5Q2xpZW50KCk7CiAgY29uc3QgW29wZW4sIHNldE9wZW5dID0gdXNlU3RhdGUoZmFsc2UpOwoKICBjb25zdCB7IGRhdGE6IGJ1c2luZXNzZXMgPSBbXSwgaXNMb2FkaW5nIH0gPSB1c2VRdWVyeSh7CiAgICBxdWVyeUtleTogWyJidXNpbmVzc2VzIl0sCiAgICBxdWVyeUZuOiBhc3luYyAoKSA9PiB7CiAgICAgIGNvbnN0IHsgZGF0YSwgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAgICAgLmZyb20oImJ1c2luZXNzZXMiKQogICAgICAgIC5zZWxlY3QoIioiKQogICAgICAgIC5vcmRlcigiY3JlYXRlZF9hdCIsIHsgYXNjZW5kaW5nOiBmYWxzZSB9KTsKICAgICAgaWYgKGVycm9yKSB0aHJvdyBlcnJvcjsKICAgICAgcmV0dXJuIGRhdGEgYXMgQml6W107CiAgICB9LAogIH0pOwoKICBmdW5jdGlvbiBvcGVuTGlzdCgpIHsKICAgIGlmICghdXNlcikgcmV0dXJuIG5hdmlnYXRlKHsgdG86ICIvYXV0aCIgfSk7CiAgICBzZXRPcGVuKHRydWUpOwogIH0KCiAgcmV0dXJuICgKICAgIDxBcHBMYXlvdXQ+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTQgcC00Ij4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQtMnhsIGZvbnQtYm9sZCB0ZXh0LWZvcmVncm91bmQiPkdvYSBEaXJlY3Rvcnk8L2gxPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5IYW5kLXBpY2tlZCBsb2NhbCBidXNpbmVzc2VzPC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8YnV0dG9uCiAgICAgICAgICAgIG9uQ2xpY2s9e29wZW5MaXN0fQogICAgICAgICAgICBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgcm91bmRlZC1mdWxsIGJnLXByaW1hcnkgcHgtNCBweS0yIHRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LXByaW1hcnktZm9yZWdyb3VuZCBzaGFkb3ctc29mdCIKICAgICAgICAgID4KICAgICAgICAgICAgPFBsdXMgY2xhc3NOYW1lPSJoLTQgdy00IiAvPiBMaXN0CiAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAge2lzTG9hZGluZyAmJiAoCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBqdXN0aWZ5LWNlbnRlciBweS04Ij4KICAgICAgICAgICAgPExvYWRlcjIgY2xhc3NOYW1lPSJoLTYgdy02IGFuaW1hdGUtc3BpbiB0ZXh0LXByaW1hcnkiIC8+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApfQoKICAgICAgICB7IWlzTG9hZGluZyAmJiBidXNpbmVzc2VzLmxlbmd0aCA9PT0gMCAmJiAoCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icm91bmRlZC0zeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctY2FyZCBwLTggdGV4dC1jZW50ZXIiPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5ObyBidXNpbmVzc2VzIGxpc3RlZCB5ZXQuPC9wPgogICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9e29wZW5MaXN0fSBjbGFzc05hbWU9Im10LTQgcm91bmRlZC1mdWxsIGJnLXByaW1hcnkgcHgtNSBweS0yLjUgdGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtcHJpbWFyeS1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICBMaXN0IHlvdXIgYnVzaW5lc3MKICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICApfQoKICAgICAgICB7YnVzaW5lc3Nlcy5tYXAoKGIpID0+ICgKICAgICAgICAgIDxhcnRpY2xlIGtleT17Yi5pZH0gY2xhc3NOYW1lPSJvdmVyZmxvdy1oaWRkZW4gcm91bmRlZC0zeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctY2FyZCBzaGFkb3ctY2FyZCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJyZWxhdGl2ZSBoLTMyIGJnLWdyYWRpZW50LXByaW1hcnkiPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSByaWdodC00IHRvcC00IHRleHQtNXhsIG9wYWNpdHktOTAgZHJvcC1zaGFkb3ctc20iPgogICAgICAgICAgICAgICAge0NBVEVHT1JZX0VNT0pJW2IuY2F0ZWdvcnkgPz8gIk90aGVyIl0gPz8gIvCfjLQifQogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNvbHV0ZSBib3R0b20tMyBsZWZ0LTQgcmlnaHQtNCB0ZXh0LXdoaXRlIj4KICAgICAgICAgICAgICAgIDxoMyBjbGFzc05hbWU9InRleHQteGwgZm9udC1ib2xkIGRyb3Atc2hhZG93Ij57Yi5uYW1lfTwvaDM+CiAgICAgICAgICAgICAgICB7Yi5yYXRpbmcgIT0gbnVsbCAmJiBiLnJhdGluZyA+IDAgJiYgKAogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9Im10LTEgaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xIHJvdW5kZWQtZnVsbCBiZy13aGl0ZS8yNSBweC0yLjUgcHktMC41IHRleHQtWzExcHhdIGZvbnQtc2VtaWJvbGQgYmFja2Ryb3AtYmx1ciI+CiAgICAgICAgICAgICAgICAgICAgPFN0YXIgY2xhc3NOYW1lPSJoLTMgdy0zIGZpbGwtY3VycmVudCIgLz4ge2IucmF0aW5nfQogICAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICApfQogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtNCI+CiAgICAgICAgICAgICAge2IuZGVzY3JpcHRpb24gJiYgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+e2IuZGVzY3JpcHRpb259PC9wPn0KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMyBmbGV4IGZsZXgtd3JhcCBnYXAtMiI+CiAgICAgICAgICAgICAgICB7Yi5jYXRlZ29yeSAmJiAoCiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0icm91bmRlZC1mdWxsIGJnLXNlY29uZGFyeSBweC0zIHB5LTEgdGV4dC1bMTFweF0gZm9udC1tZWRpdW0gdGV4dC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICAgICAgICB7Yi5jYXRlZ29yeX0KICAgICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgKX0KICAgICAgICAgICAgICAgIHtiLmFyZWEgJiYgKAogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InJvdW5kZWQtZnVsbCBiZy1zZWNvbmRhcnkgcHgtMyBweS0xIHRleHQtWzExcHhdIGZvbnQtbWVkaXVtIHRleHQtZm9yZWdyb3VuZCI+CiAgICAgICAgICAgICAgICAgICAg8J+TjSB7Yi5hcmVhfQogICAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICApfQogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIHsoYi5waG9uZSB8fCBiLmFyZWEpICYmICgKICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC00IGZsZXggZ2FwLTIiPgogICAgICAgICAgICAgICAgICB7Yi5waG9uZSAmJiAoCiAgICAgICAgICAgICAgICAgICAgPGEKICAgICAgICAgICAgICAgICAgICAgIGhyZWY9e2B0ZWw6JHtiLnBob25lfWB9CiAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9ImZsZXggZmxleC0xIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBnYXAtMiByb3VuZGVkLWZ1bGwgYmctcHJpbWFyeSBweS0zIHRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LXByaW1hcnktZm9yZWdyb3VuZCIKICAgICAgICAgICAgICAgICAgICA+CiAgICAgICAgICAgICAgICAgICAgICA8UGhvbmUgY2xhc3NOYW1lPSJoLTQgdy00IiAvPiBDYWxsCiAgICAgICAgICAgICAgICAgICAgPC9hPgogICAgICAgICAgICAgICAgICApfQogICAgICAgICAgICAgICAgICB7Yi5hcmVhICYmICgKICAgICAgICAgICAgICAgICAgICA8YQogICAgICAgICAgICAgICAgICAgICAgaHJlZj17YGh0dHBzOi8vbWFwcy5nb29nbGUuY29tLz9xPSR7ZW5jb2RlVVJJQ29tcG9uZW50KGIubmFtZSArICIgIiArIGIuYXJlYSArICIgR29hIil9YH0KICAgICAgICAgICAgICAgICAgICAgIHRhcmdldD0iX2JsYW5rIgogICAgICAgICAgICAgICAgICAgICAgcmVsPSJub3JlZmVycmVyIgogICAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPSJmbGV4IGgtMTEgdy0xMSBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcm91bmRlZC1mdWxsIGJnLXNlY29uZGFyeSB0ZXh0LWZvcmVncm91bmQiCiAgICAgICAgICAgICAgICAgICAgICBhcmlhLWxhYmVsPXtgT3BlbiAke2IubmFtZX0gb24gR29vZ2xlIE1hcHNgfQogICAgICAgICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgICAgICAgIDxFeHRlcm5hbExpbmsgY2xhc3NOYW1lPSJoLTQgdy00IiAvPgogICAgICAgICAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgICAgICAgKX0KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICl9CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9hcnRpY2xlPgogICAgICAgICkpfQogICAgICA8L2Rpdj4KCiAgICAgIHtvcGVuICYmICgKICAgICAgICA8TGlzdERpYWxvZwogICAgICAgICAgb25DbG9zZT17KCkgPT4gc2V0T3BlbihmYWxzZSl9CiAgICAgICAgICBvbkNyZWF0ZWQ9eygpID0+IHsKICAgICAgICAgICAgc2V0T3BlbihmYWxzZSk7CiAgICAgICAgICAgIHFjLmludmFsaWRhdGVRdWVyaWVzKHsgcXVlcnlLZXk6IFsiYnVzaW5lc3NlcyJdIH0pOwogICAgICAgICAgICB0b2FzdC5zdWNjZXNzKCJCdXNpbmVzcyBsaXN0ZWQhIik7CiAgICAgICAgICB9fQogICAgICAgIC8+CiAgICAgICl9CiAgICA8L0FwcExheW91dD4KICApOwp9CgpmdW5jdGlvbiBMaXN0RGlhbG9nKHsgb25DbG9zZSwgb25DcmVhdGVkIH06IHsgb25DbG9zZTogKCkgPT4gdm9pZDsgb25DcmVhdGVkOiAoKSA9PiB2b2lkIH0pIHsKICBjb25zdCB7IHVzZXIgfSA9IHVzZUF1dGgoKTsKICBjb25zdCBbYnVzeSwgc2V0QnVzeV0gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW2Zvcm0sIHNldEZvcm1dID0gdXNlU3RhdGUoeyBuYW1lOiAiIiwgZGVzY3JpcHRpb246ICIiLCBjYXRlZ29yeTogIkNhZmUiLCBhcmVhOiAiIiwgcGhvbmU6ICIiIH0pOwoKICBhc3luYyBmdW5jdGlvbiBzdWJtaXQoZTogUmVhY3QuRm9ybUV2ZW50KSB7CiAgICBlLnByZXZlbnREZWZhdWx0KCk7CiAgICBpZiAoIXVzZXIpIHJldHVybjsKICAgIHNldEJ1c3kodHJ1ZSk7CiAgICBjb25zdCB7IGVycm9yIH0gPSBhd2FpdCBzdXBhYmFzZS5mcm9tKCJidXNpbmVzc2VzIikuaW5zZXJ0KHsgLi4uZm9ybSwgb3duZXJfaWQ6IHVzZXIuaWQgfSk7CiAgICBzZXRCdXN5KGZhbHNlKTsKICAgIGlmIChlcnJvcikgcmV0dXJuIHRvYXN0LmVycm9yKGVycm9yLm1lc3NhZ2UpOwogICAgb25DcmVhdGVkKCk7CiAgfQoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImZpeGVkIGluc2V0LTAgei1bMTAwXSBmbGV4IGl0ZW1zLWVuZCBqdXN0aWZ5LWNlbnRlciBiZy1ibGFjay81MCBzbTppdGVtcy1jZW50ZXIiIG9uQ2xpY2s9e29uQ2xvc2V9PgogICAgICA8ZGl2IG9uQ2xpY2s9eyhlKSA9PiBlLnN0b3BQcm9wYWdhdGlvbigpfSBjbGFzc05hbWU9InctZnVsbCBtYXgtdy1tZCByb3VuZGVkLXQtM3hsIGJnLWNhcmQgcC01IHNoYWRvdy1jYXJkIHNtOnJvdW5kZWQtM3hsIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWItNCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4iPgogICAgICAgICAgPGgyIGNsYXNzTmFtZT0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1mb3JlZ3JvdW5kIj5MaXN0IHlvdXIgYnVzaW5lc3M8L2gyPgogICAgICAgICAgPGJ1dHRvbiBvbkNsaWNrPXtvbkNsb3NlfSBjbGFzc05hbWU9InJvdW5kZWQtZnVsbCBwLTEgaG92ZXI6Ymctc2Vjb25kYXJ5Ij4KICAgICAgICAgICAgPFggY2xhc3NOYW1lPSJoLTUgdy01IiAvPgogICAgICAgICAgPC9idXR0b24+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGZvcm0gb25TdWJtaXQ9e3N1Ym1pdH0gY2xhc3NOYW1lPSJzcGFjZS15LTMiPgogICAgICAgICAgPGlucHV0CiAgICAgICAgICAgIHJlcXVpcmVkCiAgICAgICAgICAgIHBsYWNlaG9sZGVyPSJCdXNpbmVzcyBuYW1lIgogICAgICAgICAgICB2YWx1ZT17Zm9ybS5uYW1lfQogICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBuYW1lOiBlLnRhcmdldC52YWx1ZSB9KX0KICAgICAgICAgICAgY2xhc3NOYW1lPSJ3LWZ1bGwgcm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZCBweC00IHB5LTIuNSB0ZXh0LXNtIG91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItcHJpbWFyeSIKICAgICAgICAgIC8+CiAgICAgICAgICA8dGV4dGFyZWEKICAgICAgICAgICAgcm93cz17M30KICAgICAgICAgICAgcGxhY2Vob2xkZXI9IlNob3J0IGRlc2NyaXB0aW9uIgogICAgICAgICAgICB2YWx1ZT17Zm9ybS5kZXNjcmlwdGlvbn0KICAgICAgICAgICAgb25DaGFuZ2U9eyhlKSA9PiBzZXRGb3JtKHsgLi4uZm9ybSwgZGVzY3JpcHRpb246IGUudGFyZ2V0LnZhbHVlIH0pfQogICAgICAgICAgICBjbGFzc05hbWU9InctZnVsbCByb3VuZGVkLTJ4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1iYWNrZ3JvdW5kIHB4LTQgcHktMi41IHRleHQtc20gb3V0bGluZS1ub25lIGZvY3VzOmJvcmRlci1wcmltYXJ5IgogICAgICAgICAgLz4KICAgICAgICAgIDxzZWxlY3QKICAgICAgICAgICAgdmFsdWU9e2Zvcm0uY2F0ZWdvcnl9CiAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0Rm9ybSh7IC4uLmZvcm0sIGNhdGVnb3J5OiBlLnRhcmdldC52YWx1ZSB9KX0KICAgICAgICAgICAgY2xhc3NOYW1lPSJ3LWZ1bGwgcm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZCBweC00IHB5LTIuNSB0ZXh0LXNtIG91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItcHJpbWFyeSIKICAgICAgICAgID4KICAgICAgICAgICAge0NBVEVHT1JJRVMubWFwKChjKSA9PiAoCiAgICAgICAgICAgICAgPG9wdGlvbiBrZXk9e2N9IHZhbHVlPXtjfT57Y308L29wdGlvbj4KICAgICAgICAgICAgKSl9CiAgICAgICAgICA8L3NlbGVjdD4KICAgICAgICAgIDxpbnB1dAogICAgICAgICAgICBwbGFjZWhvbGRlcj0iQXJlYSAoZS5nLiBQYW5qaW0pIgogICAgICAgICAgICB2YWx1ZT17Zm9ybS5hcmVhfQogICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBhcmVhOiBlLnRhcmdldC52YWx1ZSB9KX0KICAgICAgICAgICAgY2xhc3NOYW1lPSJ3LWZ1bGwgcm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZCBweC00IHB5LTIuNSB0ZXh0LXNtIG91dGxpbmUtbm9uZSBmb2N1czpib3JkZXItcHJpbWFyeSIKICAgICAgICAgIC8+CiAgICAgICAgICA8aW5wdXQKICAgICAgICAgICAgcGxhY2Vob2xkZXI9IlBob25lIChvcHRpb25hbCkiCiAgICAgICAgICAgIHZhbHVlPXtmb3JtLnBob25lfQogICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldEZvcm0oeyAuLi5mb3JtLCBwaG9uZTogZS50YXJnZXQudmFsdWUgfSl9CiAgICAgICAgICAgIGNsYXNzTmFtZT0idy1mdWxsIHJvdW5kZWQtMnhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWJhY2tncm91bmQgcHgtNCBweS0yLjUgdGV4dC1zbSBvdXRsaW5lLW5vbmUgZm9jdXM6Ym9yZGVyLXByaW1hcnkiCiAgICAgICAgICAvPgogICAgICAgICAgPGJ1dHRvbgogICAgICAgICAgICB0eXBlPSJzdWJtaXQiCiAgICAgICAgICAgIGRpc2FibGVkPXtidXN5fQogICAgICAgICAgICBjbGFzc05hbWU9ImZsZXggdy1mdWxsIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBnYXAtMiByb3VuZGVkLWZ1bGwgYmctcHJpbWFyeSBweS0zIHRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LXByaW1hcnktZm9yZWdyb3VuZCBkaXNhYmxlZDpvcGFjaXR5LTYwIgogICAgICAgICAgPgogICAgICAgICAgICB7YnVzeSAmJiA8TG9hZGVyMiBjbGFzc05hbWU9ImgtNCB3LTQgYW5pbWF0ZS1zcGluIiAvPn0gUHVibGlzaAogICAgICAgICAgPC9idXR0b24+CiAgICAgICAgPC9mb3JtPgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0K
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Star, MapPin, Phone, Plus, Loader2, X, ExternalLink } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/business")({
+  head: () => ({
+    meta: [
+      { title: "Goa Business Directory — Goa Social" },
+      { name: "description", content: "Discover the best restaurants, cafes, surf schools, and local businesses in Goa." },
+      { property: "og:title", content: "Goa Business Directory — Goa Social" },
+      { property: "og:description", content: "Discover the best restaurants, cafes, surf schools, and local businesses in Goa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Business,
+});
+
+type Biz = {
+  id: string;
+  owner_id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  area: string | null;
+  phone: string | null;
+  rating: number | null;
+};
+
+const CATEGORIES = ["Cafe", "Restaurant", "Bar", "Surf School", "Hotel", "Shop", "Art", "Service", "Other"];
+const CATEGORY_EMOJI: Record<string, string> = {
+  Cafe: "☕",
+  Restaurant: "🦐",
+  Bar: "🍹",
+  "Surf School": "🏄",
+  Hotel: "🏨",
+  Shop: "🛍️",
+  Art: "🎨",
+  Service: "🛠️",
+  Other: "🌴",
+};
+
+function Business() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+
+  const { data: businesses = [], isLoading } = useQuery({
+    queryKey: ["businesses"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("businesses")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as Biz[];
+    },
+  });
+
+  function openList() {
+    if (!user) return navigate({ to: "/auth" });
+    setOpen(true);
+  }
+
+  return (
+    <AppLayout>
+      <div className="space-y-4 p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Goa Directory</h1>
+            <p className="text-sm text-muted-foreground">Hand-picked local businesses</p>
+          </div>
+          <button
+            onClick={openList}
+            className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft"
+          >
+            <Plus className="h-4 w-4" /> List
+          </button>
+        </div>
+
+        {isLoading && (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
+
+        {!isLoading && businesses.length === 0 && (
+          <div className="rounded-3xl border border-border bg-card p-8 text-center">
+            <p className="text-sm text-muted-foreground">No businesses listed yet.</p>
+            <button onClick={openList} className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+              List your business
+            </button>
+          </div>
+        )}
+
+        {businesses.map((b) => (
+          <article key={b.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+            <div className="relative h-32 bg-gradient-primary">
+              <div className="absolute right-4 top-4 text-5xl opacity-90 drop-shadow-sm">
+                {CATEGORY_EMOJI[b.category ?? "Other"] ?? "🌴"}
+              </div>
+              <div className="absolute bottom-3 left-4 right-4 text-white">
+                <h3 className="text-xl font-bold drop-shadow">{b.name}</h3>
+                {b.rating != null && b.rating > 0 && (
+                  <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur">
+                    <Star className="h-3 w-3 fill-current" /> {b.rating}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="p-4">
+              {b.description && <p className="text-sm text-muted-foreground">{b.description}</p>}
+              <div className="mt-3 flex flex-wrap gap-2">
+                {b.category && (
+                  <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-foreground">
+                    {b.category}
+                  </span>
+                )}
+                {b.area && (
+                  <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-foreground">
+                    📍 {b.area}
+                  </span>
+                )}
+              </div>
+              {(b.phone || b.area) && (
+                <div className="mt-4 flex gap-2">
+                  {b.phone && (
+                    <a
+                      href={`tel:${b.phone}`}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground"
+                    >
+                      <Phone className="h-4 w-4" /> Call
+                    </a>
+                  )}
+                  {b.area && (
+                    <a
+                      href={`https://maps.google.com/?q=${encodeURIComponent(b.name + " " + b.area + " Goa")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground"
+                      aria-label={`Open ${b.name} on Google Maps`}
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {open && (
+        <ListDialog
+          onClose={() => setOpen(false)}
+          onCreated={() => {
+            setOpen(false);
+            qc.invalidateQueries({ queryKey: ["businesses"] });
+            toast.success("Business listed!");
+          }}
+        />
+      )}
+    </AppLayout>
+  );
+}
+
+function ListDialog({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+  const { user } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({ name: "", description: "", category: "Cafe", area: "", phone: "" });
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user) return;
+    setBusy(true);
+    const { error } = await supabase.from("businesses").insert({ ...form, owner_id: user.id });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    onCreated();
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 sm:items-center" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-t-3xl bg-card p-5 shadow-card sm:rounded-3xl">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-foreground">List your business</h2>
+          <button onClick={onClose} className="rounded-full p-1 hover:bg-secondary">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <form onSubmit={submit} className="space-y-3">
+          <input
+            required
+            placeholder="Business name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <textarea
+            rows={3}
+            placeholder="Short description"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <select
+            value={form.category}
+            onChange={(e) => setForm({ ...form, category: e.target.value })}
+            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <input
+            placeholder="Area (e.g. Panjim)"
+            value={form.area}
+            onChange={(e) => setForm({ ...form, area: e.target.value })}
+            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <input
+            placeholder="Phone (optional)"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <button
+            type="submit"
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+          >
+            {busy && <Loader2 className="h-4 w-4 animate-spin" />} Publish
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

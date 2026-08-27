@@ -1,1 +1,95 @@
-aW1wb3J0IHsgTGluaywgY3JlYXRlRmlsZVJvdXRlIH0gZnJvbSAiQHRhbnN0YWNrL3JlYWN0LXJvdXRlciI7CmltcG9ydCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICJyZWFjdCI7CmltcG9ydCB7IEFycm93TGVmdCwgQnJhaW4sIENsb2NrLCBFeWUsIFRyYXNoMiB9IGZyb20gImx1Y2lkZS1yZWFjdCI7CmltcG9ydCB7IEFwcExheW91dCB9IGZyb20gIkAvY29tcG9uZW50cy9BcHBMYXlvdXQiOwppbXBvcnQgeyBjbGVhckNvbnRleHQsIGNvbnRleHRTdW1tYXJ5LCBDT05URVhUX1RUTF9EQVlTIH0gZnJvbSAiQC9saWIvdmlld2VyLWNvbnRleHQiOwppbXBvcnQgeyB0b2FzdCB9IGZyb20gInNvbm5lciI7CgpleHBvcnQgY29uc3QgUm91dGUgPSBjcmVhdGVGaWxlUm91dGUoIi9teS1mZWVkIikoewogIGhlYWQ6ICgpID0+ICh7CiAgICBtZXRhOiBbCiAgICAgIHsgdGl0bGU6ICJZb3VyIEZlZWQgQnJhaW4g4oCUIEdvYSBTb2NpYWwiIH0sCiAgICAgIHsgbmFtZTogImRlc2NyaXB0aW9uIiwgY29udGVudDogIlNlZSBob3cgR29hIFNvY2lhbCBwaWNrcyB5b3VyIFNob3J0czogdGhlIEdvYW4gY2hhbm5lbHMgeW91IHdhdGNoIG1vc3QsIHlvdXIgd2F0Y2ggdGltZSwgYW5kIG9uZS10YXAgcmVzZXQuIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6dGl0bGUiLCBjb250ZW50OiAiWW91ciBGZWVkIEJyYWluIOKAlCBHb2EgU29jaWFsIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6ZGVzY3JpcHRpb24iLCBjb250ZW50OiAiVGhlIGNoYW5uZWxzIHlvdSB3YXRjaCBtb3N0IGRlY2lkZSB3aGF0IHBsYXlzIGZpcnN0LiBQcml2YXRlLCBvbi1kZXZpY2UsIGF1dG8tZXJhc2VkLiIgfSwKICAgICAgeyBwcm9wZXJ0eTogIm9nOnR5cGUiLCBjb250ZW50OiAid2Vic2l0ZSIgfSwKICAgICAgeyBuYW1lOiAidHdpdHRlcjpjYXJkIiwgY29udGVudDogInN1bW1hcnkiIH0sCiAgICBdLAogIH0pLAogIGNvbXBvbmVudDogTXlGZWVkLAp9KTsKCmZ1bmN0aW9uIE15RmVlZCgpIHsKICBjb25zdCBbc3VtbWFyeSwgc2V0U3VtbWFyeV0gPSB1c2VTdGF0ZSgoKSA9PiAoeyBjaGFubmVsczogW10gYXMgUmV0dXJuVHlwZTx0eXBlb2YgY29udGV4dFN1bW1hcnk+WyJjaGFubmVscyJdLCB0b3RhbE1pbnV0ZXM6IDAsIHNlZW5Db3VudDogMCwgZXhwaXJlc0luRGF5czogQ09OVEVYVF9UVExfREFZUyB9KSk7CgogIHVzZUVmZmVjdCgoKSA9PiB7IHNldFN1bW1hcnkoY29udGV4dFN1bW1hcnkoKSk7IH0sIFtdKTsKCiAgY29uc3QgdG9wID0gc3VtbWFyeS5jaGFubmVscy5zbGljZSgwLCA4KTsKICBjb25zdCBtYXggPSBNYXRoLm1heCgxLCAuLi50b3AubWFwKChjKSA9PiBNYXRoLm1heCgxLCBjLnNjb3JlKSkpOwoKICByZXR1cm4gKAogICAgPEFwcExheW91dCBzaG93RXZlbnRCYW5uZXI9e2ZhbHNlfT4KICAgICAgPGRpdiBjbGFzc05hbWU9InB4LTQgcGItMTAgcHQtNCI+CiAgICAgICAgPExpbmsgdG89Ii8iIGNsYXNzTmFtZT0ibWItNCBpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEgdGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQiPgogICAgICAgICAgPEFycm93TGVmdCBjbGFzc05hbWU9ImgtNCB3LTQiIC8+IEJhY2sKICAgICAgICA8L0xpbms+CgogICAgICAgIDxoMSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHRleHQtMnhsIGZvbnQtYm9sZCI+CiAgICAgICAgICA8QnJhaW4gY2xhc3NOYW1lPSJoLTYgdy02IHRleHQtcHJpbWFyeSIgLz4gWW91ciBmZWVkIGJyYWluCiAgICAgICAgPC9oMT4KICAgICAgICA8cCBjbGFzc05hbWU9Im10LTEgdGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQiPgogICAgICAgICAgR29hIFNvY2lhbCBkb3dubG9hZHMgMTAwIGZyZXNoIEdvYW4gU2hvcnRzIGV2ZXJ5IGRheS4gVGhpcyBsaXR0bGUgb24tZGV2aWNlIHByb2ZpbGUgZGVjaWRlcwogICAgICAgICAgd2hpY2ggb2YgdGhlbSBwbGF5IGZpcnN0IGZvciB5b3UuIEl0IG5ldmVyIGxlYXZlcyB5b3VyIHBob25lIGFuZCBlcmFzZXMgaXRzZWxmIGFmdGVyIHtzdW1tYXJ5LmV4cGlyZXNJbkRheXN9IGRheXMuCiAgICAgICAgPC9wPgoKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNCBncmlkIGdyaWQtY29scy0yIGdhcC0zIj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJyb3VuZGVkLTJ4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1jYXJkIHAtNCI+CiAgICAgICAgICAgIDxDbG9jayBjbGFzc05hbWU9ImgtNSB3LTUgdGV4dC1wcmltYXJ5IiAvPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTIgdGV4dC14bCBmb250LWJvbGQiPntzdW1tYXJ5LnRvdGFsTWludXRlc31tPC9wPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtWzExcHhdIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+d2F0Y2hlZCByZWNlbnRseTwvcD4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQtMnhsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWNhcmQgcC00Ij4KICAgICAgICAgICAgPEV5ZSBjbGFzc05hbWU9ImgtNSB3LTUgdGV4dC1wcmltYXJ5IiAvPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9Im10LTIgdGV4dC14bCBmb250LWJvbGQiPntzdW1tYXJ5LnNlZW5Db3VudH08L3A+CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1bMTFweF0gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5zaG9ydHMgc2VlbiAod29uJ3QgcmVwZWF0IHNvb24pPC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT0ibXQtNSByb3VuZGVkLTN4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1jYXJkIHAtNSI+CiAgICAgICAgICA8aDIgY2xhc3NOYW1lPSJ0ZXh0LWJhc2UgZm9udC1zZW1pYm9sZCI+Q2hhbm5lbHMgeW91IGxpa2UgbW9zdDwvaDI+CiAgICAgICAgICB7dG9wLmxlbmd0aCA9PT0gMCA/ICgKICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJtdC0yIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICBXYXRjaCBhIGZldyBTaG9ydHMgYW5kIHlvdXIgdGFzdGUgd2lsbCBzaG93IHVwIGhlcmUuCiAgICAgICAgICAgIDwvcD4KICAgICAgICAgICkgOiAoCiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0zIHNwYWNlLXktMyI+CiAgICAgICAgICAgICAge3RvcC5tYXAoKGNoYW5uZWwpID0+ICgKICAgICAgICAgICAgICAgIDxkaXYga2V5PXtjaGFubmVsLm5hbWV9PgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIHRleHQtc20iPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idHJ1bmNhdGUgZm9udC1tZWRpdW0iPntjaGFubmVsLm5hbWV9PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTFweF0gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICAgICAgICAgIHtNYXRoLnJvdW5kKGNoYW5uZWwud2F0Y2hNcyAvIDYwMDAwKX1tIMK3IHtjaGFubmVsLmxpa2VzfSBsaWtlcwogICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtdC0xIGgtMiBvdmVyZmxvdy1oaWRkZW4gcm91bmRlZC1mdWxsIGJnLXNlY29uZGFyeSI+CiAgICAgICAgICAgICAgICAgICAgPGRpdgogICAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPSJoLWZ1bGwgcm91bmRlZC1mdWxsIGJnLWdyYWRpZW50LXByaW1hcnkiCiAgICAgICAgICAgICAgICAgICAgICBzdHlsZT17eyB3aWR0aDogYCR7TWF0aC5tYXgoNiwgKE1hdGgubWF4KDAsIGNoYW5uZWwuc2NvcmUpIC8gbWF4KSAqIDEwMCl9JWAgfX0KICAgICAgICAgICAgICAgICAgICAvPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICkpfQogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICl9CiAgICAgICAgPC9zZWN0aW9uPgoKICAgICAgICA8YnV0dG9uCiAgICAgICAgICBvbkNsaWNrPXsoKSA9PiB7IGNsZWFyQ29udGV4dCgpOyBzZXRTdW1tYXJ5KGNvbnRleHRTdW1tYXJ5KCkpOyB0b2FzdC5zdWNjZXNzKCJGZWVkIGJyYWluIHJlc2V0Iik7IH19CiAgICAgICAgICBjbGFzc05hbWU9Im10LTUgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgcm91bmRlZC1mdWxsIGJvcmRlciBib3JkZXItZGVzdHJ1Y3RpdmUvNDAgcHgtNSBweS0yIHRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LWRlc3RydWN0aXZlIgogICAgICAgID4KICAgICAgICAgIDxUcmFzaDIgY2xhc3NOYW1lPSJoLTQgdy00IiAvPiBSZXNldCBteSBmZWVkIGJyYWluCiAgICAgICAgPC9idXR0b24+CiAgICAgIDwvZGl2PgogICAgPC9BcHBMYXlvdXQ+CiAgKTsKfQo=
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Brain, Clock, Eye, Trash2 } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import { clearContext, contextSummary, CONTEXT_TTL_DAYS } from "@/lib/viewer-context";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/my-feed")({
+  head: () => ({
+    meta: [
+      { title: "Your Feed Brain — Goa Social" },
+      { name: "description", content: "See how Goa Social picks your Shorts: the Goan channels you watch most, your watch time, and one-tap reset." },
+      { property: "og:title", content: "Your Feed Brain — Goa Social" },
+      { property: "og:description", content: "The channels you watch most decide what plays first. Private, on-device, auto-erased." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: MyFeed,
+});
+
+function MyFeed() {
+  const [summary, setSummary] = useState(() => ({ channels: [] as ReturnType<typeof contextSummary>["channels"], totalMinutes: 0, seenCount: 0, expiresInDays: CONTEXT_TTL_DAYS }));
+
+  useEffect(() => { setSummary(contextSummary()); }, []);
+
+  const top = summary.channels.slice(0, 8);
+  const max = Math.max(1, ...top.map((c) => Math.max(1, c.score)));
+
+  return (
+    <AppLayout showEventBanner={false}>
+      <div className="px-4 pb-10 pt-4">
+        <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground">
+          <ArrowLeft className="h-4 w-4" /> Back
+        </Link>
+
+        <h1 className="flex items-center gap-2 text-2xl font-bold">
+          <Brain className="h-6 w-6 text-primary" /> Your feed brain
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Goa Social downloads 100 fresh Goan Shorts every day. This little on-device profile decides
+          which of them play first for you. It never leaves your phone and erases itself after {summary.expiresInDays} days.
+        </p>
+
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <Clock className="h-5 w-5 text-primary" />
+            <p className="mt-2 text-xl font-bold">{summary.totalMinutes}m</p>
+            <p className="text-[11px] text-muted-foreground">watched recently</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <Eye className="h-5 w-5 text-primary" />
+            <p className="mt-2 text-xl font-bold">{summary.seenCount}</p>
+            <p className="text-[11px] text-muted-foreground">shorts seen (won't repeat soon)</p>
+          </div>
+        </div>
+
+        <section className="mt-5 rounded-3xl border border-border bg-card p-5">
+          <h2 className="text-base font-semibold">Channels you like most</h2>
+          {top.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Watch a few Shorts and your taste will show up here.
+            </p>
+          ) : (
+            <div className="mt-3 space-y-3">
+              {top.map((channel) => (
+                <div key={channel.name}>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="truncate font-medium">{channel.name}</span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {Math.round(channel.watchMs / 60000)}m · {channel.likes} likes
+                    </span>
+                  </div>
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-secondary">
+                    <div
+                      className="h-full rounded-full bg-gradient-primary"
+                      style={{ width: `${Math.max(6, (Math.max(0, channel.score) / max) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <button
+          onClick={() => { clearContext(); setSummary(contextSummary()); toast.success("Feed brain reset"); }}
+          className="mt-5 flex items-center gap-2 rounded-full border border-destructive/40 px-5 py-2 text-sm font-semibold text-destructive"
+        >
+          <Trash2 className="h-4 w-4" /> Reset my feed brain
+        </button>
+      </div>
+    </AppLayout>
+  );
+}

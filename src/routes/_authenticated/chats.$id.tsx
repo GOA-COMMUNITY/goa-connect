@@ -1,1 +1,22 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCByZWRpcmVjdCB9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1yb3V0ZXIiOwoKZXhwb3J0IGNvbnN0IFJvdXRlID0gY3JlYXRlRmlsZVJvdXRlKCIvX2F1dGhlbnRpY2F0ZWQvY2hhdHMvJGlkIikoewogIGJlZm9yZUxvYWQ6ICh7IHBhcmFtcyB9KSA9PiB7CiAgICB0aHJvdyByZWRpcmVjdCh7CiAgICAgIHRvOiAiL2NoYXRzIiwKICAgICAgc2VhcmNoOiB7IGNvbnZlcnNhdGlvbjogcGFyYW1zLmlkIH0sCiAgICAgIHJlcGxhY2U6IHRydWUsCiAgICB9KTsKICB9LAogIGhlYWQ6ICgpID0+ICh7CiAgICBtZXRhOiBbCiAgICAgIHsgdGl0bGU6ICJDaGF0IOKAlCBHb2EgU29jaWFsIiB9LAogICAgICB7IG5hbWU6ICJkZXNjcmlwdGlvbiIsIGNvbnRlbnQ6ICJBIHByaXZhdGUgR29hIFNvY2lhbCBjb252ZXJzYXRpb24uIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6dGl0bGUiLCBjb250ZW50OiAiQ2hhdCDigJQgR29hIFNvY2lhbCIgfSwKICAgICAgeyBwcm9wZXJ0eTogIm9nOmRlc2NyaXB0aW9uIiwgY29udGVudDogIkEgcHJpdmF0ZSBHb2EgU29jaWFsIGNvbnZlcnNhdGlvbi4iIH0sCiAgICAgIHsgcHJvcGVydHk6ICJvZzp0eXBlIiwgY29udGVudDogIndlYnNpdGUiIH0sCiAgICAgIHsgbmFtZTogInR3aXR0ZXI6Y2FyZCIsIGNvbnRlbnQ6ICJzdW1tYXJ5IiB9LAogICAgXSwKICB9KSwKICBjb21wb25lbnQ6ICgpID0+IG51bGwsCn0pOwo=
+import { createFileRoute, redirect } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_authenticated/chats/$id")({
+  beforeLoad: ({ params }) => {
+    throw redirect({
+      to: "/chats",
+      search: { conversation: params.id },
+      replace: true,
+    });
+  },
+  head: () => ({
+    meta: [
+      { title: "Chat — Goa Social" },
+      { name: "description", content: "A private Goa Social conversation." },
+      { property: "og:title", content: "Chat — Goa Social" },
+      { property: "og:description", content: "A private Goa Social conversation." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: () => null,
+});

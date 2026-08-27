@@ -1,1 +1,164 @@
-WwogIHsKICAgICJuYW1lIjogIvCfmoAgVEVTVCBFVkVOVCAtIEdvYSBTb2NpYWwgTGF1bmNoIiwKICAgICJkYXRlIjogIjIwMjYtMDMtMTQiLAogICAgImljb24iOiAiZmEtcm9ja2V0IiwKICAgICJkZXNjcmlwdGlvbiI6ICJUZXN0aW5nIHRoZSBldmVudCBiYW5uZXIgc3lzdGVtISIKICB9LAogIHsKICAgICJuYW1lIjogIkd1ZGkgUGFkd2EiLAogICAgImRhdGUiOiAiMjAyNS0wMy0zMCIsCiAgICAiaWNvbiI6ICJmYS1jYWxlbmRhci1hbHQiLAogICAgImRlc2NyaXB0aW9uIjogIk1haGFyYXNodHJpYW4gTmV3IFllYXIiCiAgfSwKICB7CiAgICAibmFtZSI6ICJHb29kIEZyaWRheSIsCiAgICAiZGF0ZSI6ICIyMDI1LTA0LTE4IiwKICAgICJpY29uIjogImZhLWNyb3NzIiwKICAgICJkZXNjcmlwdGlvbiI6ICJDaHJpc3RpYW4gaG9saWRheSIKICB9LAogIHsKICAgICJuYW1lIjogIkVhc3RlciIsCiAgICAiZGF0ZSI6ICIyMDI1LTA0LTIwIiwKICAgICJpY29uIjogImZhLWVnZyIsCiAgICAiZGVzY3JpcHRpb24iOiAiRWFzdGVyIFN1bmRheSIKICB9LAogIHsKICAgICJuYW1lIjogIklkLXVsLUZpdHIiLAogICAgImRhdGUiOiAiMjAyNS0wNC0yMSIsCiAgICAiaWNvbiI6ICJmYS1tb29uIiwKICAgICJkZXNjcmlwdGlvbiI6ICJSYW1hZGFuIGVuZGluZyIKICB9LAogIHsKICAgICJuYW1lIjogIkxhYm91cnMgRGF5IiwKICAgICJkYXRlIjogIjIwMjUtMDUtMDEiLAogICAgImljb24iOiAiZmEtYnJpZWZjYXNlIiwKICAgICJkZXNjcmlwdGlvbiI6ICJJbnRlcm5hdGlvbmFsIFdvcmtlcnMnIERheSIKICB9LAogIHsKICAgICJuYW1lIjogIkJ1ZGRoYSBQdXJuaW1hIiwKICAgICJkYXRlIjogIjIwMjUtMDUtMTIiLAogICAgImljb24iOiAiZmEtcGFnb2RhIiwKICAgICJkZXNjcmlwdGlvbiI6ICJCdWRkaGEncyBiaXJ0aCIKICB9LAogIHsKICAgICJuYW1lIjogIklkLXVsLVp1aGEiLAogICAgImRhdGUiOiAiMjAyNS0wNi0yOCIsCiAgICAiaWNvbiI6ICJmYS1tb29uIiwKICAgICJkZXNjcmlwdGlvbiI6ICJCYWtyaWQiCiAgfSwKICB7CiAgICAibmFtZSI6ICJNdWhhcnJhbSIsCiAgICAiZGF0ZSI6ICIyMDI1LTA3LTE4IiwKICAgICJpY29uIjogImZhLW1vb24iLAogICAgImRlc2NyaXB0aW9uIjogIklzbGFtaWMgTmV3IFllYXIiCiAgfSwKICB7CiAgICAibmFtZSI6ICJJbmRlcGVuZGVuY2UgRGF5IiwKICAgICJkYXRlIjogIjIwMjUtMDgtMTUiLAogICAgImljb24iOiAiZmEtZmxhZy1pbmRpYSIsCiAgICAiZGVzY3JpcHRpb24iOiAiSW5kaWEncyBJbmRlcGVuZGVuY2UgRGF5IgogIH0sCiAgewogICAgIm5hbWUiOiAiUGFyc2kgTmV3IFllYXIiLAogICAgImRhdGUiOiAiMjAyNS0wOC0xNiIsCiAgICAiaWNvbiI6ICJmYS1maXJlIiwKICAgICJkZXNjcmlwdGlvbiI6ICJOYXZyb3oiCiAgfSwKICB7CiAgICAibmFtZSI6ICJHYW5lc2ggQ2hhdHVydGhpIiwKICAgICJkYXRlIjogIjIwMjUtMDgtMjciLAogICAgImljb24iOiAiZmEtZWxlcGhhbnQiLAogICAgImRlc2NyaXB0aW9uIjogIjEwLWRheSBmZXN0aXZhbCBzdGFydHMiCiAgfSwKICB7CiAgICAibmFtZSI6ICJNaWxhZC11bi1OYWJpIiwKICAgICJkYXRlIjogIjIwMjUtMDktMTYiLAogICAgImljb24iOiAiZmEtbW9zcXVlIiwKICAgICJkZXNjcmlwdGlvbiI6ICJQcm9waGV0J3MgYmlydGhkYXkiCiAgfSwKICB7CiAgICAibmFtZSI6ICJHYW5kaGkgSmF5YW50aSIsCiAgICAiZGF0ZSI6ICIyMDI1LTEwLTAyIiwKICAgICJpY29uIjogImZhLWRvdmUiLAogICAgImRlc2NyaXB0aW9uIjogIk1haGF0bWEgR2FuZGhpJ3MgYmlydGhkYXkiCiAgfSwKICB7CiAgICAibmFtZSI6ICJEdXNzZWhyYSIsCiAgICAiZGF0ZSI6ICIyMDI1LTEwLTAyIiwKICAgICJpY29uIjogImZhLWJvdy1hcnJvdyIsCiAgICAiZGVzY3JpcHRpb24iOiAiVmljdG9yeSBvZiBnb29kIG92ZXIgZXZpbCIKICB9LAogIHsKICAgICJuYW1lIjogIkRpd2FsaSIsCiAgICAiZGF0ZSI6ICIyMDI1LTEwLTIwIiwKICAgICJpY29uIjogImZhLWRpeWEiLAogICAgImRlc2NyaXB0aW9uIjogIkZlc3RpdmFsIG9mIExpZ2h0cyIKICB9LAogIHsKICAgICJuYW1lIjogIkdvdmFyZGhhbiBQdWphIiwKICAgICJkYXRlIjogIjIwMjUtMTAtMjIiLAogICAgImljb24iOiAiZmEtbW91bnRhaW4iLAogICAgImRlc2NyaXB0aW9uIjogIkFubmFrdXQiCiAgfSwKICB7CiAgICAibmFtZSI6ICJCaGFpIERvb2oiLAogICAgImRhdGUiOiAiMjAyNS0xMC0yMyIsCiAgICAiaWNvbiI6ICJmYS1oYW5kLWhvbGRpbmctaGVhcnQiLAogICAgImRlc2NyaXB0aW9uIjogIkJyb3RoZXItc2lzdGVyIGJvbmQiCiAgfSwKICB7CiAgICAibmFtZSI6ICJHdXJ1IE5hbmFrIEpheWFudGkiLAogICAgImRhdGUiOiAiMjAyNS0xMS0wNSIsCiAgICAiaWNvbiI6ICJmYS1wcmF5IiwKICAgICJkZXNjcmlwdGlvbiI6ICJHdXJ1IE5hbmFrJ3MgYmlydGhkYXkiCiAgfSwKICB7CiAgICAibmFtZSI6ICJDaHJpc3RtYXMiLAogICAgImRhdGUiOiAiMjAyNS0xMi0yNSIsCiAgICAiaWNvbiI6ICJmYS1jYW5keS1jYW5lIiwKICAgICJkZXNjcmlwdGlvbiI6ICJDaHJpc3RtYXMgRGF5IgogIH0sCiAgewogICAgIm5hbWUiOiAiTmV3IFllYXIncyBFdmUiLAogICAgImRhdGUiOiAiMjAyNS0xMi0zMSIsCiAgICAiaWNvbiI6ICJmYS1jaGFtcGFnbmUtZ2xhc3NlcyIsCiAgICAiZGVzY3JpcHRpb24iOiAiTmV3IFllYXIncyBFdmUiCiAgfSwKICB7CiAgICAibmFtZSI6ICJOZXcgWWVhcidzIERheSIsCiAgICAiZGF0ZSI6ICIyMDI2LTAxLTAxIiwKICAgICJpY29uIjogImZhLXBhcnR5LWhvcm4iLAogICAgImRlc2NyaXB0aW9uIjogIk5ldyBZZWFyJ3MgRGF5IgogIH0sCiAgewogICAgIm5hbWUiOiAiUmVwdWJsaWMgRGF5IiwKICAgICJkYXRlIjogIjIwMjYtMDEtMjYiLAogICAgImljb24iOiAiZmEtZmxhZy1pbmRpYSIsCiAgICAiZGVzY3JpcHRpb24iOiAiSW5kaWEncyBSZXB1YmxpYyBEYXkiCiAgfSwKICB7CiAgICAibmFtZSI6ICJWYXNhbnQgUGFuY2hhbWkiLAogICAgImRhdGUiOiAiMjAyNi0wMS0yMyIsCiAgICAiaWNvbiI6ICJmYS1sZWFmIiwKICAgICJkZXNjcmlwdGlvbiI6ICJTYXJhc3dhdGkgUHVqYSIKICB9LAogIHsKICAgICJuYW1lIjogIk1haGEgU2hpdnJhdHJpIiwKICAgICJkYXRlIjogIjIwMjYtMDItMTUiLAogICAgImljb24iOiAiZmEtb20iLAogICAgImRlc2NyaXB0aW9uIjogIk5pZ2h0IG9mIFNoaXZhIgogIH0sCiAgewogICAgIm5hbWUiOiAiR29hIENhcm5pdmFsIiwKICAgICJkYXRlIjogIjIwMjYtMDItMTQiLAogICAgImljb24iOiAiZmEtbWFzayIsCiAgICAiZGVzY3JpcHRpb24iOiAiR29hJ3MgYmlnZ2VzdCBmZXN0aXZhbCIKICB9LAogIHsKICAgICJuYW1lIjogIkhvbGkiLAogICAgImRhdGUiOiAiMjAyNi0wMy0wMyIsCiAgICAiaWNvbiI6ICJmYS1wYWludC1icnVzaCIsCiAgICAiZGVzY3JpcHRpb24iOiAiRmVzdGl2YWwgb2YgQ29sb3JzIgogIH0KXQo=
+[
+  {
+    "name": "🚀 TEST EVENT - Goa Social Launch",
+    "date": "2026-03-14",
+    "icon": "fa-rocket",
+    "description": "Testing the event banner system!"
+  },
+  {
+    "name": "Gudi Padwa",
+    "date": "2025-03-30",
+    "icon": "fa-calendar-alt",
+    "description": "Maharashtrian New Year"
+  },
+  {
+    "name": "Good Friday",
+    "date": "2025-04-18",
+    "icon": "fa-cross",
+    "description": "Christian holiday"
+  },
+  {
+    "name": "Easter",
+    "date": "2025-04-20",
+    "icon": "fa-egg",
+    "description": "Easter Sunday"
+  },
+  {
+    "name": "Id-ul-Fitr",
+    "date": "2025-04-21",
+    "icon": "fa-moon",
+    "description": "Ramadan ending"
+  },
+  {
+    "name": "Labours Day",
+    "date": "2025-05-01",
+    "icon": "fa-briefcase",
+    "description": "International Workers' Day"
+  },
+  {
+    "name": "Buddha Purnima",
+    "date": "2025-05-12",
+    "icon": "fa-pagoda",
+    "description": "Buddha's birth"
+  },
+  {
+    "name": "Id-ul-Zuha",
+    "date": "2025-06-28",
+    "icon": "fa-moon",
+    "description": "Bakrid"
+  },
+  {
+    "name": "Muharram",
+    "date": "2025-07-18",
+    "icon": "fa-moon",
+    "description": "Islamic New Year"
+  },
+  {
+    "name": "Independence Day",
+    "date": "2025-08-15",
+    "icon": "fa-flag-india",
+    "description": "India's Independence Day"
+  },
+  {
+    "name": "Parsi New Year",
+    "date": "2025-08-16",
+    "icon": "fa-fire",
+    "description": "Navroz"
+  },
+  {
+    "name": "Ganesh Chaturthi",
+    "date": "2025-08-27",
+    "icon": "fa-elephant",
+    "description": "10-day festival starts"
+  },
+  {
+    "name": "Milad-un-Nabi",
+    "date": "2025-09-16",
+    "icon": "fa-mosque",
+    "description": "Prophet's birthday"
+  },
+  {
+    "name": "Gandhi Jayanti",
+    "date": "2025-10-02",
+    "icon": "fa-dove",
+    "description": "Mahatma Gandhi's birthday"
+  },
+  {
+    "name": "Dussehra",
+    "date": "2025-10-02",
+    "icon": "fa-bow-arrow",
+    "description": "Victory of good over evil"
+  },
+  {
+    "name": "Diwali",
+    "date": "2025-10-20",
+    "icon": "fa-diya",
+    "description": "Festival of Lights"
+  },
+  {
+    "name": "Govardhan Puja",
+    "date": "2025-10-22",
+    "icon": "fa-mountain",
+    "description": "Annakut"
+  },
+  {
+    "name": "Bhai Dooj",
+    "date": "2025-10-23",
+    "icon": "fa-hand-holding-heart",
+    "description": "Brother-sister bond"
+  },
+  {
+    "name": "Guru Nanak Jayanti",
+    "date": "2025-11-05",
+    "icon": "fa-pray",
+    "description": "Guru Nanak's birthday"
+  },
+  {
+    "name": "Christmas",
+    "date": "2025-12-25",
+    "icon": "fa-candy-cane",
+    "description": "Christmas Day"
+  },
+  {
+    "name": "New Year's Eve",
+    "date": "2025-12-31",
+    "icon": "fa-champagne-glasses",
+    "description": "New Year's Eve"
+  },
+  {
+    "name": "New Year's Day",
+    "date": "2026-01-01",
+    "icon": "fa-party-horn",
+    "description": "New Year's Day"
+  },
+  {
+    "name": "Republic Day",
+    "date": "2026-01-26",
+    "icon": "fa-flag-india",
+    "description": "India's Republic Day"
+  },
+  {
+    "name": "Vasant Panchami",
+    "date": "2026-01-23",
+    "icon": "fa-leaf",
+    "description": "Saraswati Puja"
+  },
+  {
+    "name": "Maha Shivratri",
+    "date": "2026-02-15",
+    "icon": "fa-om",
+    "description": "Night of Shiva"
+  },
+  {
+    "name": "Goa Carnival",
+    "date": "2026-02-14",
+    "icon": "fa-mask",
+    "description": "Goa's biggest festival"
+  },
+  {
+    "name": "Holi",
+    "date": "2026-03-03",
+    "icon": "fa-paint-brush",
+    "description": "Festival of Colors"
+  }
+]

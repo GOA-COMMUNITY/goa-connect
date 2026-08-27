@@ -1,1 +1,91 @@
-LyoqCiAqIE1lbWJlci11cGxvYWRlZCBzaG9ydHMuIFVubGlrZSB0aGUgZGFpbHkgWW91VHViZSBwb29sICh3aGljaCByb3RhdGVzIGFuZCBpcwogKiBkZWxldGVkKSwgdGhlc2UgYXJlIHBlcm1hbmVudCBHb2EgU29jaWFsIGNvbnRlbnQgd2l0aCByZWFsIGxpa2UgY291bnRzLgogKi8KaW1wb3J0IHsgc3VwYWJhc2UgfSBmcm9tICJAL2ludGVncmF0aW9ucy9zdXBhYmFzZS9jbGllbnQiOwppbXBvcnQgdHlwZSB7IFNob3J0IH0gZnJvbSAiQC9jb21wb25lbnRzL1Nob3J0c0ZlZWQiOwoKY29uc3QgU0lHTkVEX1RUTCA9IDYwICogNjAgKiAyNCAqIDc7CgpleHBvcnQgdHlwZSBVc2VyU2hvcnRSb3cgPSB7CiAgaWQ6IHN0cmluZzsKICB1c2VyX2lkOiBzdHJpbmc7CiAgY2FwdGlvbjogc3RyaW5nOwogIHZpZGVvX3BhdGg6IHN0cmluZzsKICBwb3N0ZXJfcGF0aDogc3RyaW5nIHwgbnVsbDsKICBhcmVhOiBzdHJpbmcgfCBudWxsOwogIGNyZWF0ZWRfYXQ6IHN0cmluZzsKfTsKCmV4cG9ydCBjb25zdCB1cGxvYWRlZFZpZGVvSWQgPSAoaWQ6IHN0cmluZykgPT4gYHVfJHtpZH1gOwpleHBvcnQgY29uc3QgaXNVcGxvYWRlZElkID0gKHZpZGVvSWQ6IHN0cmluZykgPT4gdmlkZW9JZC5zdGFydHNXaXRoKCJ1XyIpOwpleHBvcnQgY29uc3QgdXBsb2FkUm93SWQgPSAodmlkZW9JZDogc3RyaW5nKSA9PiB2aWRlb0lkLnJlcGxhY2UoL151Xy8sICIiKTsKCmFzeW5jIGZ1bmN0aW9uIHNpZ25BbGwocGF0aHM6IHN0cmluZ1tdKSB7CiAgY29uc3QgbWFwID0gbmV3IE1hcDxzdHJpbmcsIHN0cmluZz4oKTsKICBjb25zdCB3YW50ZWQgPSBwYXRocy5maWx0ZXIoQm9vbGVhbik7CiAgaWYgKHdhbnRlZC5sZW5ndGggPT09IDApIHJldHVybiBtYXA7CiAgY29uc3QgeyBkYXRhIH0gPSBhd2FpdCBzdXBhYmFzZS5zdG9yYWdlLmZyb20oInNob3J0cyIpLmNyZWF0ZVNpZ25lZFVybHMod2FudGVkLCBTSUdORURfVFRMKTsKICAoZGF0YSA/PyBbXSkuZm9yRWFjaCgoZW50cnkpID0+IHsKICAgIGlmIChlbnRyeS5wYXRoICYmIGVudHJ5LnNpZ25lZFVybCkgbWFwLnNldChlbnRyeS5wYXRoLCBlbnRyeS5zaWduZWRVcmwpOwogIH0pOwogIHJldHVybiBtYXA7Cn0KCmFzeW5jIGZ1bmN0aW9uIHRvU2hvcnRzKHJvd3M6IFVzZXJTaG9ydFJvd1tdKTogUHJvbWlzZTxTaG9ydFtdPiB7CiAgaWYgKHJvd3MubGVuZ3RoID09PSAwKSByZXR1cm4gW107CiAgY29uc3QgYXV0aG9ySWRzID0gQXJyYXkuZnJvbShuZXcgU2V0KHJvd3MubWFwKChyb3cpID0+IHJvdy51c2VyX2lkKSkpOwogIGNvbnN0IFt7IGRhdGE6IHByb2ZpbGVzIH0sIHNpZ25lZF0gPSBhd2FpdCBQcm9taXNlLmFsbChbCiAgICBzdXBhYmFzZS5mcm9tKCJwcm9maWxlcyIpLnNlbGVjdCgiaWQsIGRpc3BsYXlfbmFtZSwgYXZhdGFyX2Vtb2ppIikuaW4oImlkIiwgYXV0aG9ySWRzKSwKICAgIHNpZ25BbGwoWy4uLnJvd3MubWFwKChyKSA9PiByLnZpZGVvX3BhdGgpLCAuLi5yb3dzLm1hcCgocikgPT4gci5wb3N0ZXJfcGF0aCA/PyAiIildKSwKICBdKTsKICBjb25zdCBhdXRob3JzID0gbmV3IE1hcCgocHJvZmlsZXMgPz8gW10pLm1hcCgocCkgPT4gW3AuaWQsIHBdKSk7CiAgcmV0dXJuIHJvd3MKICAgIC5tYXAoKHJvdykgPT4gewogICAgICBjb25zdCBzcmMgPSBzaWduZWQuZ2V0KHJvdy52aWRlb19wYXRoKTsKICAgICAgaWYgKCFzcmMpIHJldHVybiBudWxsOwogICAgICBjb25zdCBhdXRob3IgPSBhdXRob3JzLmdldChyb3cudXNlcl9pZCk7CiAgICAgIHJldHVybiB7CiAgICAgICAgdmlkZW9JZDogdXBsb2FkZWRWaWRlb0lkKHJvdy5pZCksCiAgICAgICAgY2hhbm5lbE5hbWU6IGF1dGhvcj8uZGlzcGxheV9uYW1lID8/ICJHb2EgU29jaWFsIG1lbWJlciIsCiAgICAgICAgY2hhbm5lbEljb246IGF1dGhvcj8uYXZhdGFyX2Vtb2ppID8/ICLwn4y0IiwKICAgICAgICBzcmMsCiAgICAgICAgcG9zdGVyOiByb3cucG9zdGVyX3BhdGggPyBzaWduZWQuZ2V0KHJvdy5wb3N0ZXJfcGF0aCkgOiB1bmRlZmluZWQsCiAgICAgICAgc291cmNlOiAidXBsb2FkIiBhcyBjb25zdCwKICAgICAgICBjYXB0aW9uOiByb3cuY2FwdGlvbiwKICAgICAgICB1cGxvYWRlcklkOiByb3cudXNlcl9pZCwKICAgICAgICBjcmVhdGVkQXQ6IHJvdy5jcmVhdGVkX2F0LAogICAgICB9IHNhdGlzZmllcyBTaG9ydDsKICAgIH0pCiAgICAuZmlsdGVyKEJvb2xlYW4pIGFzIFNob3J0W107Cn0KCmV4cG9ydCBhc3luYyBmdW5jdGlvbiBmZXRjaFVwbG9hZGVkU2hvcnRzKGxpbWl0ID0gNDApOiBQcm9taXNlPFNob3J0W10+IHsKICBjb25zdCB7IGRhdGEgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAuZnJvbSgidXNlcl9zaG9ydHMiKQogICAgLnNlbGVjdCgiaWQsIHVzZXJfaWQsIGNhcHRpb24sIHZpZGVvX3BhdGgsIHBvc3Rlcl9wYXRoLCBhcmVhLCBjcmVhdGVkX2F0IikKICAgIC5lcSgiaXNfYWN0aXZlIiwgdHJ1ZSkKICAgIC5vcmRlcigiY3JlYXRlZF9hdCIsIHsgYXNjZW5kaW5nOiBmYWxzZSB9KQogICAgLmxpbWl0KGxpbWl0KTsKICByZXR1cm4gdG9TaG9ydHMoKGRhdGEgPz8gW10pIGFzIFVzZXJTaG9ydFJvd1tdKTsKfQoKZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGZldGNoVXBsb2FkZWRTaG9ydChpZDogc3RyaW5nKTogUHJvbWlzZTxTaG9ydCB8IG51bGw+IHsKICBjb25zdCB7IGRhdGEgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAuZnJvbSgidXNlcl9zaG9ydHMiKQogICAgLnNlbGVjdCgiaWQsIHVzZXJfaWQsIGNhcHRpb24sIHZpZGVvX3BhdGgsIHBvc3Rlcl9wYXRoLCBhcmVhLCBjcmVhdGVkX2F0IikKICAgIC5lcSgiaWQiLCBpZCkKICAgIC5tYXliZVNpbmdsZSgpOwogIGlmICghZGF0YSkgcmV0dXJuIG51bGw7CiAgY29uc3QgW3Nob3J0XSA9IGF3YWl0IHRvU2hvcnRzKFtkYXRhIGFzIFVzZXJTaG9ydFJvd10pOwogIHJldHVybiBzaG9ydCA/PyBudWxsOwp9CgpleHBvcnQgYXN5bmMgZnVuY3Rpb24gZmV0Y2hNeVNob3J0cyh1c2VySWQ6IHN0cmluZyk6IFByb21pc2U8U2hvcnRbXT4gewogIGNvbnN0IHsgZGF0YSB9ID0gYXdhaXQgc3VwYWJhc2UKICAgIC5mcm9tKCJ1c2VyX3Nob3J0cyIpCiAgICAuc2VsZWN0KCJpZCwgdXNlcl9pZCwgY2FwdGlvbiwgdmlkZW9fcGF0aCwgcG9zdGVyX3BhdGgsIGFyZWEsIGNyZWF0ZWRfYXQiKQogICAgLmVxKCJ1c2VyX2lkIiwgdXNlcklkKQogICAgLm9yZGVyKCJjcmVhdGVkX2F0IiwgeyBhc2NlbmRpbmc6IGZhbHNlIH0pOwogIHJldHVybiB0b1Nob3J0cygoZGF0YSA/PyBbXSkgYXMgVXNlclNob3J0Um93W10pOwp9Cg==
+/**
+ * Member-uploaded shorts. Unlike the daily YouTube pool (which rotates and is
+ * deleted), these are permanent Goa Social content with real like counts.
+ */
+import { supabase } from "@/integrations/supabase/client";
+import type { Short } from "@/components/ShortsFeed";
+
+const SIGNED_TTL = 60 * 60 * 24 * 7;
+
+export type UserShortRow = {
+  id: string;
+  user_id: string;
+  caption: string;
+  video_path: string;
+  poster_path: string | null;
+  area: string | null;
+  created_at: string;
+};
+
+export const uploadedVideoId = (id: string) => `u_${id}`;
+export const isUploadedId = (videoId: string) => videoId.startsWith("u_");
+export const uploadRowId = (videoId: string) => videoId.replace(/^u_/, "");
+
+async function signAll(paths: string[]) {
+  const map = new Map<string, string>();
+  const wanted = paths.filter(Boolean);
+  if (wanted.length === 0) return map;
+  const { data } = await supabase.storage.from("shorts").createSignedUrls(wanted, SIGNED_TTL);
+  (data ?? []).forEach((entry) => {
+    if (entry.path && entry.signedUrl) map.set(entry.path, entry.signedUrl);
+  });
+  return map;
+}
+
+async function toShorts(rows: UserShortRow[]): Promise<Short[]> {
+  if (rows.length === 0) return [];
+  const authorIds = Array.from(new Set(rows.map((row) => row.user_id)));
+  const [{ data: profiles }, signed] = await Promise.all([
+    supabase.from("profiles").select("id, display_name, avatar_emoji").in("id", authorIds),
+    signAll([...rows.map((r) => r.video_path), ...rows.map((r) => r.poster_path ?? "")]),
+  ]);
+  const authors = new Map((profiles ?? []).map((p) => [p.id, p]));
+  return rows
+    .map((row) => {
+      const src = signed.get(row.video_path);
+      if (!src) return null;
+      const author = authors.get(row.user_id);
+      return {
+        videoId: uploadedVideoId(row.id),
+        channelName: author?.display_name ?? "Goa Social member",
+        channelIcon: author?.avatar_emoji ?? "🌴",
+        src,
+        poster: row.poster_path ? signed.get(row.poster_path) : undefined,
+        source: "upload" as const,
+        caption: row.caption,
+        uploaderId: row.user_id,
+        createdAt: row.created_at,
+      } satisfies Short;
+    })
+    .filter(Boolean) as Short[];
+}
+
+export async function fetchUploadedShorts(limit = 40): Promise<Short[]> {
+  const { data } = await supabase
+    .from("user_shorts")
+    .select("id, user_id, caption, video_path, poster_path, area, created_at")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return toShorts((data ?? []) as UserShortRow[]);
+}
+
+export async function fetchUploadedShort(id: string): Promise<Short | null> {
+  const { data } = await supabase
+    .from("user_shorts")
+    .select("id, user_id, caption, video_path, poster_path, area, created_at")
+    .eq("id", id)
+    .maybeSingle();
+  if (!data) return null;
+  const [short] = await toShorts([data as UserShortRow]);
+  return short ?? null;
+}
+
+export async function fetchMyShorts(userId: string): Promise<Short[]> {
+  const { data } = await supabase
+    .from("user_shorts")
+    .select("id, user_id, caption, video_path, poster_path, area, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  return toShorts((data ?? []) as UserShortRow[]);
+}

@@ -1,1 +1,244 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCBMaW5rLCB1c2VOYXZpZ2F0ZSB9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1yb3V0ZXIiOwppbXBvcnQgeyBTZWFyY2gsIEVkaXQzLCBMb2FkZXIyLCBNZXNzYWdlQ2lyY2xlIH0gZnJvbSAibHVjaWRlLXJlYWN0IjsKaW1wb3J0IHsgQXBwTGF5b3V0IH0gZnJvbSAiQC9jb21wb25lbnRzL0FwcExheW91dCI7CmltcG9ydCB7IHVzZVN0YXRlIH0gZnJvbSAicmVhY3QiOwppbXBvcnQgeyB1c2VRdWVyeSwgdXNlUXVlcnlDbGllbnQgfSBmcm9tICJAdGFuc3RhY2svcmVhY3QtcXVlcnkiOwppbXBvcnQgeyBzdXBhYmFzZSB9IGZyb20gIkAvaW50ZWdyYXRpb25zL3N1cGFiYXNlL2NsaWVudCI7CmltcG9ydCB7IHVzZUF1dGggfSBmcm9tICJAL2hvb2tzL3VzZS1hdXRoIjsKaW1wb3J0IHsgUHJvZmlsZUF2YXRhciB9IGZyb20gIkAvY29tcG9uZW50cy9Qcm9maWxlQXZhdGFyIjsKaW1wb3J0IHsgZ2V0T3JDcmVhdGVDb252ZXJzYXRpb24gfSBmcm9tICJAL2xpYi9jaGF0IjsKaW1wb3J0IHsgZm9ybWF0RGlzdGFuY2VUb05vd1N0cmljdCB9IGZyb20gImRhdGUtZm5zIjsKaW1wb3J0IHsgdG9hc3QgfSBmcm9tICJzb25uZXIiOwppbXBvcnQgeyBDaGF0Um9vbSB9IGZyb20gIkAvY29tcG9uZW50cy9DaGF0Um9vbSI7CgpleHBvcnQgY29uc3QgUm91dGUgPSBjcmVhdGVGaWxlUm91dGUoIi9fYXV0aGVudGljYXRlZC9jaGF0cy8iKSh7CiAgdmFsaWRhdGVTZWFyY2g6IChzZWFyY2g6IFJlY29yZDxzdHJpbmcsIHVua25vd24+KSA9PiAoewogICAgY29udmVyc2F0aW9uOiB0eXBlb2Ygc2VhcmNoLmNvbnZlcnNhdGlvbiA9PT0gInN0cmluZyIgPyBzZWFyY2guY29udmVyc2F0aW9uIDogdW5kZWZpbmVkLAogIH0pLAogIGhlYWQ6ICgpID0+ICh7CiAgICBtZXRhOiBbCiAgICAgIHsgdGl0bGU6ICJNZXNzYWdlcyDigJQgR29hIFNvY2lhbCIgfSwKICAgICAgeyBuYW1lOiAiZGVzY3JpcHRpb24iLCBjb250ZW50OiAiUHJpdmF0ZSBHb2EgU29jaWFsIGNvbnZlcnNhdGlvbnMgYW5kIGxvY2FsIGNvbm5lY3Rpb25zLiIgfSwKICAgICAgeyBwcm9wZXJ0eTogIm9nOnRpdGxlIiwgY29udGVudDogIk1lc3NhZ2VzIOKAlCBHb2EgU29jaWFsIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6ZGVzY3JpcHRpb24iLCBjb250ZW50OiAiUHJpdmF0ZSBHb2EgU29jaWFsIGNvbnZlcnNhdGlvbnMgYW5kIGxvY2FsIGNvbm5lY3Rpb25zLiIgfSwKICAgICAgeyBwcm9wZXJ0eTogIm9nOnR5cGUiLCBjb250ZW50OiAid2Vic2l0ZSIgfSwKICAgICAgeyBuYW1lOiAidHdpdHRlcjpjYXJkIiwgY29udGVudDogInN1bW1hcnkiIH0sCiAgICBdLAogIH0pLAogIGNvbXBvbmVudDogQ2hhdHMsCn0pOwoKdHlwZSBDb252ID0gewogIGlkOiBzdHJpbmc7CiAgdXNlcl9hOiBzdHJpbmc7CiAgdXNlcl9iOiBzdHJpbmc7CiAgbGFzdF9tZXNzYWdlOiBzdHJpbmcgfCBudWxsOwogIGxhc3RfbWVzc2FnZV9hdDogc3RyaW5nOwp9OwoKZnVuY3Rpb24gQ2hhdHMoKSB7CiAgY29uc3QgeyBjb252ZXJzYXRpb24gfSA9IFJvdXRlLnVzZVNlYXJjaCgpOwogIGNvbnN0IHsgdXNlciB9ID0gdXNlQXV0aCgpOwogIGNvbnN0IG5hdmlnYXRlID0gdXNlTmF2aWdhdGUoKTsKICBjb25zdCBxYyA9IHVzZVF1ZXJ5Q2xpZW50KCk7CiAgY29uc3QgW3EsIHNldFFdID0gdXNlU3RhdGUoIiIpOwogIGNvbnN0IFtzdGFydGluZywgc2V0U3RhcnRpbmddID0gdXNlU3RhdGU8c3RyaW5nIHwgbnVsbD4obnVsbCk7CgogIGNvbnN0IHsgZGF0YTogY29udmVyc2F0aW9ucyA9IFtdLCBpc0xvYWRpbmcgfSA9IHVzZVF1ZXJ5KHsKICAgIHF1ZXJ5S2V5OiBbImNvbnZlcnNhdGlvbnMiLCB1c2VyPy5pZF0sCiAgICBlbmFibGVkOiAhIXVzZXIsCiAgICBxdWVyeUZuOiBhc3luYyAoKSA9PiB7CiAgICAgIGNvbnN0IHsgZGF0YSwgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAgICAgLmZyb20oImNvbnZlcnNhdGlvbnMiKQogICAgICAgIC5zZWxlY3QoIioiKQogICAgICAgIC5vcmRlcigibGFzdF9tZXNzYWdlX2F0IiwgeyBhc2NlbmRpbmc6IGZhbHNlIH0pOwogICAgICBpZiAoZXJyb3IpIHRocm93IGVycm9yOwogICAgICByZXR1cm4gZGF0YSBhcyBDb252W107CiAgICB9LAogIH0pOwoKICBjb25zdCBvdGhlcklkcyA9IEFycmF5LmZyb20oCiAgICBuZXcgU2V0KGNvbnZlcnNhdGlvbnMubWFwKChjKSA9PiAoYy51c2VyX2EgPT09IHVzZXI/LmlkID8gYy51c2VyX2IgOiBjLnVzZXJfYSkpKSwKICApOwoKICBjb25zdCB7IGRhdGE6IHByb2ZpbGVzID0gW10gfSA9IHVzZVF1ZXJ5KHsKICAgIHF1ZXJ5S2V5OiBbInByb2ZpbGVzLWJ1bGsiLCBvdGhlcklkcy5zb3J0KCkuam9pbigiLCIpXSwKICAgIGVuYWJsZWQ6IG90aGVySWRzLmxlbmd0aCA+IDAsCiAgICBxdWVyeUZuOiBhc3luYyAoKSA9PiB7CiAgICAgIGNvbnN0IHsgZGF0YSwgZXJyb3IgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAgICAgLmZyb20oInByb2ZpbGVzIikKICAgICAgICAuc2VsZWN0KCJpZCwgZGlzcGxheV9uYW1lLCBhdmF0YXJfZW1vamksIGF2YXRhcl91cmwsIGFyZWEiKQogICAgICAgIC5pbigiaWQiLCBvdGhlcklkcyk7CiAgICAgIGlmIChlcnJvcikgdGhyb3cgZXJyb3I7CiAgICAgIHJldHVybiBkYXRhOwogICAgfSwKICB9KTsKCiAgLy8gIlN0YXJ0IGEgY2hhdCIgcmFpbCDigJQgcGVvcGxlIHlvdSBoYXZlbid0IG1lc3NhZ2VkIHlldC4KICBjb25zdCB7IGRhdGE6IHN1Z2dlc3Rpb25zID0gW10gfSA9IHVzZVF1ZXJ5KHsKICAgIHF1ZXJ5S2V5OiBbImNoYXQtc3VnZ2VzdGlvbnMiLCB1c2VyPy5pZCwgb3RoZXJJZHMubGVuZ3RoXSwKICAgIGVuYWJsZWQ6ICEhdXNlciwKICAgIHF1ZXJ5Rm46IGFzeW5jICgpID0+IHsKICAgICAgY29uc3QgeyBkYXRhLCBlcnJvciB9ID0gYXdhaXQgc3VwYWJhc2UKICAgICAgICAuZnJvbSgicHJvZmlsZXMiKQogICAgICAgIC5zZWxlY3QoImlkLCBkaXNwbGF5X25hbWUsIGF2YXRhcl9lbW9qaSwgYXZhdGFyX3VybCwgYXJlYSIpCiAgICAgICAgLmVxKCJpc19hY3RpdmUiLCB0cnVlKQogICAgICAgIC5saW1pdCgzMCk7CiAgICAgIGlmIChlcnJvcikgdGhyb3cgZXJyb3I7CiAgICAgIGNvbnN0IHNlZW4gPSBuZXcgU2V0KFsuLi5vdGhlcklkcywgdXNlciEuaWRdKTsKICAgICAgcmV0dXJuIChkYXRhID8/IFtdKS5maWx0ZXIoKHApID0+ICFzZWVuLmhhcyhwLmlkKSkuc2xpY2UoMCwgMTIpOwogICAgfSwKICB9KTsKCiAgY29uc3QgcG1hcCA9IG5ldyBNYXAocHJvZmlsZXMubWFwKChwKSA9PiBbcC5pZCwgcF0pKTsKICBjb25zdCBmaWx0ZXJlZENvbnZlcnNhdGlvbnMgPSBjb252ZXJzYXRpb25zLmZpbHRlcigoYykgPT4gewogICAgY29uc3Qgb3RoZXJJZCA9IGMudXNlcl9hID09PSB1c2VyPy5pZCA/IGMudXNlcl9iIDogYy51c2VyX2E7CiAgICBjb25zdCBwID0gcG1hcC5nZXQob3RoZXJJZCk7CiAgICBjb25zdCBoYXlzdGFjayA9IGAke3A/LmRpc3BsYXlfbmFtZSA/PyAiIn0gJHtwPy5hcmVhID8/ICIifSAke2MubGFzdF9tZXNzYWdlID8/ICIifWAudG9Mb3dlckNhc2UoKTsKICAgIHJldHVybiAhcSB8fCBoYXlzdGFjay5pbmNsdWRlcyhxLnRvTG93ZXJDYXNlKCkpOwogIH0pOwoKICBhc3luYyBmdW5jdGlvbiBvcGVuQ2hhdCh0YXJnZXRJZDogc3RyaW5nKSB7CiAgICBpZiAoIXVzZXIpIHJldHVybjsKICAgIHNldFN0YXJ0aW5nKHRhcmdldElkKTsKICAgIHRyeSB7CiAgICAgIGNvbnN0IGlkID0gYXdhaXQgZ2V0T3JDcmVhdGVDb252ZXJzYXRpb24odXNlci5pZCwgdGFyZ2V0SWQpOwogICAgICBxYy5zZXRRdWVyeURhdGEoWyJjb252ZXJzYXRpb24iLCBpZCwgdXNlci5pZF0sIHsKICAgICAgICBpZCwKICAgICAgICB1c2VyX2E6IFt1c2VyLmlkLCB0YXJnZXRJZF0uc29ydCgpWzBdLAogICAgICAgIHVzZXJfYjogW3VzZXIuaWQsIHRhcmdldElkXS5zb3J0KClbMV0sCiAgICAgIH0pOwogICAgICB2b2lkIHFjLmludmFsaWRhdGVRdWVyaWVzKHsgcXVlcnlLZXk6IFsiY29udmVyc2F0aW9ucyIsIHVzZXIuaWRdIH0pOwogICAgICBhd2FpdCBuYXZpZ2F0ZSh7IHRvOiAiL2NoYXRzIiwgc2VhcmNoOiB7IGNvbnZlcnNhdGlvbjogaWQgfSB9KTsKICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgIHRvYXN0LmVycm9yKChlcnJvciBhcyBFcnJvcikubWVzc2FnZSk7CiAgICB9IGZpbmFsbHkgewogICAgICBzZXRTdGFydGluZyhudWxsKTsKICAgIH0KICB9CgogIGlmIChjb252ZXJzYXRpb24pIHJldHVybiA8Q2hhdFJvb20gY29udmVyc2F0aW9uSWQ9e2NvbnZlcnNhdGlvbn0gLz47CgogIHJldHVybiAoCiAgICA8QXBwTGF5b3V0PgogICAgICA8ZGl2IGNsYXNzTmFtZT0ic3BhY2UteS00IHBiLTQiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzdGlja3kgdG9wLTAgei0yMCBzcGFjZS15LTMgYm9yZGVyLWIgYm9yZGVyLWJvcmRlciBiZy1iYWNrZ3JvdW5kLzg1IHB4LTQgcGItMyBwdC00IGJhY2tkcm9wLWJsdXIteGwiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiI+CiAgICAgICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQtMnhsIGZvbnQtYm9sZCB0cmFja2luZy10aWdodCB0ZXh0LWZvcmVncm91bmQiPk1lc3NhZ2VzPC9oMT4KICAgICAgICAgICAgPExpbmsKICAgICAgICAgICAgICB0bz0iL2V4cGxvcmUiCiAgICAgICAgICAgICAgY2xhc3NOYW1lPSJmbGV4IGgtMTAgdy0xMCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcm91bmRlZC1mdWxsIGJnLXByaW1hcnkgdGV4dC1wcmltYXJ5LWZvcmVncm91bmQgc2hhZG93LXNvZnQiCiAgICAgICAgICAgICAgYXJpYS1sYWJlbD0iRmluZCBwZW9wbGUgdG8gY2hhdCB3aXRoIgogICAgICAgICAgICA+CiAgICAgICAgICAgICAgPEVkaXQzIGNsYXNzTmFtZT0iaC00IHctNCIgLz4KICAgICAgICAgICAgPC9MaW5rPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgcm91bmRlZC1mdWxsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWNhcmQgcHgtNSBweS0yLjUgc2hhZG93LXNvZnQiPgogICAgICAgICAgICA8U2VhcmNoIGNsYXNzTmFtZT0iaC00LjUgdy00LjUgdGV4dC1wcmltYXJ5IiAvPgogICAgICAgICAgICA8aW5wdXQKICAgICAgICAgICAgICB2YWx1ZT17cX0KICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldFEoZS50YXJnZXQudmFsdWUpfQogICAgICAgICAgICAgIHBsYWNlaG9sZGVyPSJTZWFyY2ggY2hhdHPigKYiCiAgICAgICAgICAgICAgY2xhc3NOYW1lPSJmbGV4LTEgYmctdHJhbnNwYXJlbnQgdGV4dC1zbSBvdXRsaW5lLW5vbmUgcGxhY2Vob2xkZXI6dGV4dC1tdXRlZC1mb3JlZ3JvdW5kIgogICAgICAgICAgICAvPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIHtzdWdnZXN0aW9ucy5sZW5ndGggPiAwICYmICgKICAgICAgICAgIDxzZWN0aW9uPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InB4LTQgdGV4dC1bMTFweF0gZm9udC1zZW1pYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctWzAuMThlbV0gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICBTdGFydCBhIGNoYXQKICAgICAgICAgICAgPC9wPgogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic2Nyb2xsYmFyLWhpZGUgbXQtMiBmbGV4IGdhcC00IG92ZXJmbG93LXgtYXV0byBweC00Ij4KICAgICAgICAgICAgICB7c3VnZ2VzdGlvbnMubWFwKChwKSA9PiAoCiAgICAgICAgICAgICAgICA8YnV0dG9uCiAgICAgICAgICAgICAgICAgIGtleT17cC5pZH0KICAgICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gb3BlbkNoYXQocC5pZCl9CiAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT0idy0xNiBzaHJpbmstMCB0ZXh0LWNlbnRlciIKICAgICAgICAgICAgICAgICAgYXJpYS1sYWJlbD17YE1lc3NhZ2UgJHtwLmRpc3BsYXlfbmFtZX1gfQogICAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InJlbGF0aXZlIGJsb2NrIj4KICAgICAgICAgICAgICAgICAgICA8UHJvZmlsZUF2YXRhcgogICAgICAgICAgICAgICAgICAgICAgdXJsPXtwLmF2YXRhcl91cmx9CiAgICAgICAgICAgICAgICAgICAgICBlbW9qaT17cC5hdmF0YXJfZW1vaml9CiAgICAgICAgICAgICAgICAgICAgICBuYW1lPXtwLmRpc3BsYXlfbmFtZX0KICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT0ibXgtYXV0byBoLTE2IHctMTYgcmluZy0yIHJpbmctcHJpbWFyeS80MCIKICAgICAgICAgICAgICAgICAgICAvPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0iYWJzb2x1dGUgYm90dG9tLTAgcmlnaHQtMSBmbGV4IGgtNSB3LTUgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtZnVsbCBiZy1wcmltYXJ5IHRleHQtcHJpbWFyeS1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICAgICAgICAgIHtzdGFydGluZyA9PT0gcC5pZCA/ICgKICAgICAgICAgICAgICAgICAgICAgICAgPExvYWRlcjIgY2xhc3NOYW1lPSJoLTMgdy0zIGFuaW1hdGUtc3BpbiIgLz4KICAgICAgICAgICAgICAgICAgICAgICkgOiAoCiAgICAgICAgICAgICAgICAgICAgICAgIDxNZXNzYWdlQ2lyY2xlIGNsYXNzTmFtZT0iaC0zIHctMyIgLz4KICAgICAgICAgICAgICAgICAgICAgICl9CiAgICAgICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMSB0cnVuY2F0ZSB0ZXh0LVsxMXB4XSB0ZXh0LW11dGVkLWZvcmVncm91bmQiPntwLmRpc3BsYXlfbmFtZX08L3A+CiAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICApKX0KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8L3NlY3Rpb24+CiAgICAgICAgKX0KCiAgICAgICAgPGRpdiBjbGFzc05hbWU9InB4LTQiPgogICAgICAgICAge2lzTG9hZGluZyAmJiAoCiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGp1c3RpZnktY2VudGVyIHJvdW5kZWQtM3hsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWNhcmQgcC04Ij4KICAgICAgICAgICAgICA8TG9hZGVyMiBjbGFzc05hbWU9ImgtNSB3LTUgYW5pbWF0ZS1zcGluIHRleHQtcHJpbWFyeSIgLz4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApfQoKICAgICAgICAgIHshaXNMb2FkaW5nICYmIGNvbnZlcnNhdGlvbnMubGVuZ3RoID09PSAwICYmICgKICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InJvdW5kZWQtM3hsIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWNhcmQgcC04IHRleHQtY2VudGVyIj4KICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj5ObyBjb252ZXJzYXRpb25zIHlldC48L3A+CiAgICAgICAgICAgICAgPExpbmsKICAgICAgICAgICAgICAgIHRvPSIvZXhwbG9yZSIKICAgICAgICAgICAgICAgIGNsYXNzTmFtZT0ibXQtNCBpbmxpbmUtZmxleCByb3VuZGVkLWZ1bGwgYmctcHJpbWFyeSBweC01IHB5LTIuNSB0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1wcmltYXJ5LWZvcmVncm91bmQiCiAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAgRmluZCBHb2FucyB0byBtZXNzYWdlCiAgICAgICAgICAgICAgPC9MaW5rPgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICl9CgogICAgICAgICAgeyFpc0xvYWRpbmcgJiYgY29udmVyc2F0aW9ucy5sZW5ndGggPiAwICYmIGZpbHRlcmVkQ29udmVyc2F0aW9ucy5sZW5ndGggPT09IDAgJiYgKAogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icm91bmRlZC0zeGwgYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctY2FyZCBwLTggdGV4dC1jZW50ZXIgdGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQiPgogICAgICAgICAgICAgIE5vIGNoYXRzIG1hdGNoIHlvdXIgc2VhcmNoLgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICl9CgogICAgICAgICAge2ZpbHRlcmVkQ29udmVyc2F0aW9ucy5sZW5ndGggPiAwICYmICgKICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9Im92ZXJmbG93LWhpZGRlbiByb3VuZGVkLTN4bCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1jYXJkIHNoYWRvdy1jYXJkIj4KICAgICAgICAgICAgICB7ZmlsdGVyZWRDb252ZXJzYXRpb25zLm1hcCgoYywgaSkgPT4gewogICAgICAgICAgICAgICAgY29uc3Qgb3RoZXJJZCA9IGMudXNlcl9hID09PSB1c2VyPy5pZCA/IGMudXNlcl9iIDogYy51c2VyX2E7CiAgICAgICAgICAgICAgICBjb25zdCBwID0gcG1hcC5nZXQob3RoZXJJZCk7CiAgICAgICAgICAgICAgICByZXR1cm4gKAogICAgICAgICAgICAgICAgICA8TGluawogICAgICAgICAgICAgICAgICAgIGtleT17Yy5pZH0KICAgICAgICAgICAgICAgICAgICB0bz0iL2NoYXRzIgogICAgICAgICAgICAgICAgICAgIHNlYXJjaD17eyBjb252ZXJzYXRpb246IGMuaWQgfX0KICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2BmbGV4IHctZnVsbCBpdGVtcy1jZW50ZXIgZ2FwLTMgcHgtNCBweS0zLjUgdGV4dC1sZWZ0IHRyYW5zaXRpb24tY29sb3JzIGFjdGl2ZTpiZy1zZWNvbmRhcnkvNzAgaG92ZXI6Ymctc2Vjb25kYXJ5LzYwICR7CiAgICAgICAgICAgICAgICAgICAgICBpIDwgZmlsdGVyZWRDb252ZXJzYXRpb25zLmxlbmd0aCAtIDEgPyAiYm9yZGVyLWIgYm9yZGVyLWJvcmRlciIgOiAiIgogICAgICAgICAgICAgICAgICAgIH1gfQogICAgICAgICAgICAgICAgICA+CiAgICAgICAgICAgICAgICAgICAgPFByb2ZpbGVBdmF0YXIgdXJsPXtwPy5hdmF0YXJfdXJsfSBlbW9qaT17cD8uYXZhdGFyX2Vtb2ppfSBuYW1lPXtwPy5kaXNwbGF5X25hbWV9IGNsYXNzTmFtZT0iaC0xMyB3LTEzIiAvPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4tdy0wIGZsZXgtMSI+CiAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0cnVuY2F0ZSBmb250LXNlbWlib2xkIHRleHQtZm9yZWdyb3VuZCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAge3A/LmRpc3BsYXlfbmFtZSA/PyAiR29hbiJ9CiAgICAgICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJtbC0yIHNocmluay0wIHRleHQtWzExcHhdIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAge2Zvcm1hdERpc3RhbmNlVG9Ob3dTdHJpY3QobmV3IERhdGUoYy5sYXN0X21lc3NhZ2VfYXQpKX0KICAgICAgICAgICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRydW5jYXRlIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICAgICAgICAgICAge2MubGFzdF9tZXNzYWdlID8/ICJTYXkgaGkg8J+RiyJ9CiAgICAgICAgICAgICAgICAgICAgICA8L3A+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgIDwvTGluaz4KICAgICAgICAgICAgICAgICk7CiAgICAgICAgICAgICAgfSl9CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKX0KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L0FwcExheW91dD4KICApOwp9Cg==
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Search, Edit3, Loader2, MessageCircle } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { ProfileAvatar } from "@/components/ProfileAvatar";
+import { getOrCreateConversation } from "@/lib/chat";
+import { formatDistanceToNowStrict } from "date-fns";
+import { toast } from "sonner";
+import { ChatRoom } from "@/components/ChatRoom";
+
+export const Route = createFileRoute("/_authenticated/chats/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    conversation: typeof search.conversation === "string" ? search.conversation : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: "Messages — Goa Social" },
+      { name: "description", content: "Private Goa Social conversations and local connections." },
+      { property: "og:title", content: "Messages — Goa Social" },
+      { property: "og:description", content: "Private Goa Social conversations and local connections." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Chats,
+});
+
+type Conv = {
+  id: string;
+  user_a: string;
+  user_b: string;
+  last_message: string | null;
+  last_message_at: string;
+};
+
+function Chats() {
+  const { conversation } = Route.useSearch();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [q, setQ] = useState("");
+  const [starting, setStarting] = useState<string | null>(null);
+
+  const { data: conversations = [], isLoading } = useQuery({
+    queryKey: ["conversations", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("conversations")
+        .select("*")
+        .order("last_message_at", { ascending: false });
+      if (error) throw error;
+      return data as Conv[];
+    },
+  });
+
+  const otherIds = Array.from(
+    new Set(conversations.map((c) => (c.user_a === user?.id ? c.user_b : c.user_a))),
+  );
+
+  const { data: profiles = [] } = useQuery({
+    queryKey: ["profiles-bulk", otherIds.sort().join(",")],
+    enabled: otherIds.length > 0,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name, avatar_emoji, avatar_url, area")
+        .in("id", otherIds);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // "Start a chat" rail — people you haven't messaged yet.
+  const { data: suggestions = [] } = useQuery({
+    queryKey: ["chat-suggestions", user?.id, otherIds.length],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name, avatar_emoji, avatar_url, area")
+        .eq("is_active", true)
+        .limit(30);
+      if (error) throw error;
+      const seen = new Set([...otherIds, user!.id]);
+      return (data ?? []).filter((p) => !seen.has(p.id)).slice(0, 12);
+    },
+  });
+
+  const pmap = new Map(profiles.map((p) => [p.id, p]));
+  const filteredConversations = conversations.filter((c) => {
+    const otherId = c.user_a === user?.id ? c.user_b : c.user_a;
+    const p = pmap.get(otherId);
+    const haystack = `${p?.display_name ?? ""} ${p?.area ?? ""} ${c.last_message ?? ""}`.toLowerCase();
+    return !q || haystack.includes(q.toLowerCase());
+  });
+
+  async function openChat(targetId: string) {
+    if (!user) return;
+    setStarting(targetId);
+    try {
+      const id = await getOrCreateConversation(user.id, targetId);
+      qc.setQueryData(["conversation", id, user.id], {
+        id,
+        user_a: [user.id, targetId].sort()[0],
+        user_b: [user.id, targetId].sort()[1],
+      });
+      void qc.invalidateQueries({ queryKey: ["conversations", user.id] });
+      await navigate({ to: "/chats", search: { conversation: id } });
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setStarting(null);
+    }
+  }
+
+  if (conversation) return <ChatRoom conversationId={conversation} />;
+
+  return (
+    <AppLayout>
+      <div className="space-y-4 pb-4">
+        <div className="sticky top-0 z-20 space-y-3 border-b border-border bg-background/85 px-4 pb-3 pt-4 backdrop-blur-xl">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Messages</h1>
+            <Link
+              to="/explore"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft"
+              aria-label="Find people to chat with"
+            >
+              <Edit3 className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="flex items-center gap-3 rounded-full border border-border bg-card px-5 py-2.5 shadow-soft">
+            <Search className="h-4.5 w-4.5 text-primary" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search chats…"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
+          </div>
+        </div>
+
+        {suggestions.length > 0 && (
+          <section>
+            <p className="px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              Start a chat
+            </p>
+            <div className="scrollbar-hide mt-2 flex gap-4 overflow-x-auto px-4">
+              {suggestions.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => openChat(p.id)}
+                  className="w-16 shrink-0 text-center"
+                  aria-label={`Message ${p.display_name}`}
+                >
+                  <span className="relative block">
+                    <ProfileAvatar
+                      url={p.avatar_url}
+                      emoji={p.avatar_emoji}
+                      name={p.display_name}
+                      className="mx-auto h-16 w-16 ring-2 ring-primary/40"
+                    />
+                    <span className="absolute bottom-0 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      {starting === p.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <MessageCircle className="h-3 w-3" />
+                      )}
+                    </span>
+                  </span>
+                  <p className="mt-1 truncate text-[11px] text-muted-foreground">{p.display_name}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className="px-4">
+          {isLoading && (
+            <div className="flex justify-center rounded-3xl border border-border bg-card p-8">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            </div>
+          )}
+
+          {!isLoading && conversations.length === 0 && (
+            <div className="rounded-3xl border border-border bg-card p-8 text-center">
+              <p className="text-sm text-muted-foreground">No conversations yet.</p>
+              <Link
+                to="/explore"
+                className="mt-4 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+              >
+                Find Goans to message
+              </Link>
+            </div>
+          )}
+
+          {!isLoading && conversations.length > 0 && filteredConversations.length === 0 && (
+            <div className="rounded-3xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+              No chats match your search.
+            </div>
+          )}
+
+          {filteredConversations.length > 0 && (
+            <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+              {filteredConversations.map((c, i) => {
+                const otherId = c.user_a === user?.id ? c.user_b : c.user_a;
+                const p = pmap.get(otherId);
+                return (
+                  <Link
+                    key={c.id}
+                    to="/chats"
+                    search={{ conversation: c.id }}
+                    className={`flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-secondary/70 hover:bg-secondary/60 ${
+                      i < filteredConversations.length - 1 ? "border-b border-border" : ""
+                    }`}
+                  >
+                    <ProfileAvatar url={p?.avatar_url} emoji={p?.avatar_emoji} name={p?.display_name} className="h-13 w-13" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="truncate font-semibold text-foreground">
+                          {p?.display_name ?? "Goan"}
+                        </span>
+                        <span className="ml-2 shrink-0 text-[11px] text-muted-foreground">
+                          {formatDistanceToNowStrict(new Date(c.last_message_at))}
+                        </span>
+                      </div>
+                      <p className="truncate text-sm text-muted-foreground">
+                        {c.last_message ?? "Say hi 👋"}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}

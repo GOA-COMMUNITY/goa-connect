@@ -1,1 +1,81 @@
-IyBHb2EgU29jaWFsCgpDb21tdW5pdHkgYXBwIGZvciBHb2Eg4oCUIHNob3J0cyBmZWVkLCBwZW9wbGUgZGlzY292ZXJ5LCBjaGF0LCBidXNpbmVzcyBsaXN0aW5ncy4KTGl2ZSBhdCAqKmh0dHBzOi8vZ29hc29jaWFsLmluKiogKEdpdEh1YiBQYWdlcyksIHJlcG8gKipHT0EtQ09NTVVOSVRZL2dvYS1jb25uZWN0KiouCgpUaGlzIHByb2plY3QgaXMgKipub3QgbG9ja2VkIHRvIGFueSBzaW5nbGUgQUkgdG9vbCoqLiBJdCBpcyBhIHBsYWluClZpdGUgKyBSZWFjdCArIFR5cGVTY3JpcHQgYXBwIGluIGEgbm9ybWFsIEdpdCByZXBvLiBBbnkgYWdlbnQgKEJvbHQsIEN1cnNvciwKTWFudXMsIENsYXVkZSBDb2RlLCBhIGh1bWFuIGRldikgY2FuIGNsb25lIGl0IGFuZCB3b3JrIG9uIGl0LgoKIyMgU3RhY2sKCi0gUmVhY3QgMTkgKyBUeXBlU2NyaXB0Ci0gVGFuU3RhY2sgUm91dGVyIChmaWxlLWJhc2VkIHJvdXRpbmcsIGBzcmMvcm91dGVzL2ApICsgVGFuU3RhY2sgUXVlcnkKLSBUYWlsd2luZCBDU1MgdjQgKGBzcmMvc3R5bGVzLmNzc2ApCi0gVml0ZSA3LCBidWlsdCBhcyBhICoqc3RhdGljIFNQQSoqIChgdml0ZS5jb25maWcudHNgLCBgbml0cm86IGZhbHNlYCkKLSBCYWNrZW5kOiBTdXBhYmFzZSAoUG9zdGdyZXMgKyBBdXRoICsgUmVhbHRpbWUgKyBTdG9yYWdlICsgRWRnZSBGdW5jdGlvbnMpCi0gRGVwbG95OiBHaXRIdWIgQWN0aW9ucyDihpIgR2l0SHViIFBhZ2VzIChgLmdpdGh1Yi93b3JrZmxvd3MvZGVwbG95LnltbGApCgojIyBMb2NhbCBkZXZlbG9wbWVudAoKYGBgYmFzaApidW4gaW5zdGFsbCAgICAgIyBvcjogbnBtIGluc3RhbGwKYnVuIHJ1biBkZXYgICAgICMgaHR0cDovL2xvY2FsaG9zdDo4MDgwCmJ1biBydW4gYnVpbGQgICAjIHN0YXRpYyBvdXRwdXQgaW4gZGlzdC9jbGllbnQKYGBgCgojIyBFbnZpcm9ubWVudCB2YXJpYWJsZXMgKGAuZW52YCkKCmBgYApWSVRFX1NVUEFCQVNFX1VSTD1odHRwczovL2ttd3diamVkdnN4cW9iZmNnc2Z4LnN1cGFiYXNlLmNvClZJVEVfU1VQQUJBU0VfUFVCTElTSEFCTEVfS0VZPTxhbm9uL3B1Ymxpc2hhYmxlIGtleT4KVklURV9TVVBBQkFTRV9QUk9KRUNUX0lEPWttd3diamVkdnN4cW9iZmNnc2Z4CmBgYAoKVGhlIHB1Ymxpc2hhYmxlIGtleSBpcyBzYWZlIGluIHRoZSBjbGllbnQ7IGV2ZXJ5IHRhYmxlIGlzIHByb3RlY3RlZCBieQpSb3cgTGV2ZWwgU2VjdXJpdHkuIFNlcnZpY2Utcm9sZSBrZXlzIGFyZSBuZXZlciB1c2VkIGluIHRoZSBicm93c2VyLgoKIyMgUHJvamVjdCBtYXAKCmBgYApzcmMvcm91dGVzLyAgICAgICAgICAgICAgICAgcGFnZXMgKGZpbGUtYmFzZWQgcm91dGluZykKICBpbmRleC50c3ggICAgICAgICAgICAgICAgIGhvbWUgKyBzaG9ydHMgZmVlZAogIGV4cGxvcmUudHN4ICAgICAgICAgICAgICAgZGlzY292ZXIgcGVvcGxlLCBmb2xsb3csIHN0YXJ0IGNoYXQKICBidXNpbmVzcy50c3ggICAgICAgICAgICAgIGxvY2FsIGJ1c2luZXNzZXMKICBteS1mZWVkLnRzeCAgICAgICAgICAgICAgIHBlcnNvbmFsaXNlZCBmZWVkIHZpZXcKICBzLiRpZC50c3ggICAgICAgICAgICAgICAgIHB1YmxpYyBzaGFyZSBwYWdlIGZvciBvbmUgc2hvcnQKICBhdXRoLnRzeCAgICAgICAgICAgICAgICAgIHNpZ24gaW4gLyBzaWduIHVwIC8gZ3Vlc3QgYWNjb3VudAogIF9hdXRoZW50aWNhdGVkLyAgICAgICAgICAgcm91dGVzIHRoYXQgcmVxdWlyZSBhIHNlc3Npb24KICAgIGNoYXRzLnRzeCAgICAgICAgICAgICAgIGxheW91dCAocmVuZGVycyA8T3V0bGV0IC8+KQogICAgY2hhdHMuaW5kZXgudHN4ICAgICAgICAgY2hhdCBsaXN0ICAoL2NoYXRzKQogICAgY2hhdHMuJGlkLnRzeCAgICAgICAgICAgY2hhdCByb29tICAoL2NoYXRzLzppZCkKICAgIHByb2ZpbGUudHN4ICAgICAgICAgICAgIHByb2ZpbGUgZWRpdG9yCiAgICBhZG1pbi50c3ggICAgICAgICAgICAgICBhZG1pbiBkYXNoYm9hcmQKc3JjL2NvbXBvbmVudHMvICAgICAgICAgICAgIFNob3J0c0ZlZWQsIFNob3J0VXBsb2FkLCBBcHBMYXlvdXQsIFNwbGFzaFNjcmVlbuKApgpzcmMvbGliLyAgICAgICAgICAgICAgICAgICAgY2hhdCwgc2hvcnRzIGNhY2hpbmcsIHZpZXdlciBjb250ZXh0LCBzZXR0aW5ncwpzY3JpcHRzLyAgICAgICAgICAgICAgICAgICAgY2FjaGUtc2hvcnRzLm1qcywgdXBkYXRlLXZpZGVvcy5tanMgKENJIGNvbnRlbnQgam9icykKc3VwYWJhc2UvZnVuY3Rpb25zL2FpLXJlcGx5IEdlbWluaS1wb3dlcmVkIHJlcGxpZXMgZm9yIGNvbW11bml0eSBib3RzCmBgYAoKIyMgSG93IGNvbnRlbnQgd29ya3MKCmBzY3JpcHRzL3VwZGF0ZS12aWRlb3MubWpzYCByZWZyZXNoZXMgdGhlIGxhdGVzdCBzaG9ydHMgbGlzdCBmcm9tIHRoZSBjaGFubmVscwpjb25maWd1cmVkIGluIHRoZSBhZG1pbiBkYXNoYm9hcmQ7IGBzY3JpcHRzL2NhY2hlLXNob3J0cy5tanNgIGRvd25sb2FkcyBhbmQKY29tcHJlc3NlcyB1cCB0byAxMDAgY2xpcHMgcGVyIGRheSBpbnRvIGBwdWJsaWMvY2FjaGVkL2Agc28gcGxheWJhY2sgaXMgaW5zdGFudC4KQm90aCBydW4gaW4gdGhlIGRlcGxveSB3b3JrZmxvdyAoZXZlcnkgMzAgbWludXRlcykg4oCUIHNlZQpgZG9jcy9zaG9ydHMtZG93bmxvYWQtcGlwZWxpbmUubWRgLgoKIyMgRGVwbG95bWVudAoKUHVzaCB0byBgbWFpbmAg4oaSIEdpdEh1YiBBY3Rpb24gYnVpbGRzIGFuZCBwdWJsaXNoZXMgYGRpc3QvY2xpZW50YCB0byBHaXRIdWIKUGFnZXMuIFRoZSB3b3JrZmxvdyBjb3BpZXMgYHB1YmxpYy9DTkFNRWAgYW5kIGR1cGxpY2F0ZXMgYGluZGV4Lmh0bWxgIHRvCmA0MDQuaHRtbGAgc28gY2xpZW50LXNpZGUgZGVlcCBsaW5rcyAoZS5nLiBgL2NoYXRzLzxpZD5gKSB3b3JrIG9uIGhhcmQgcmVmcmVzaC4KClJlcG8gdmlzaWJpbGl0eSwgY3VzdG9tIGRvbWFpbiAoYGdvYXNvY2lhbC5pbmApIGFuZCBQYWdlcyBzZXR0aW5ncyBhcmUgbWFuYWdlZAppbiB0aGUgR2l0SHViIHJlcG9zaXRvcnkgc2V0dGluZ3MuCgojIyBIYW5kaW5nIHRoaXMgcHJvamVjdCB0byBhbm90aGVyIEFJIGFnZW50CgpHaXZlIHRoZW06IHRoZSByZXBvIFVSTCwgdGhlIGAuZW52YCB2YWx1ZXMgYWJvdmUsIGFuZCB0aGlzIFJFQURNRS4gRXZlcnl0aGluZwplbHNlIChyb3V0ZXMsIHN0eWxlcywgZGF0YWJhc2Ugc2NoZW1hIHR5cGVzIGluCmBzcmMvaW50ZWdyYXRpb25zL3N1cGFiYXNlL3R5cGVzLnRzYCkgaXMgaW4gdGhlIHJlcG8uCg==
+# Goa Social
+
+Community app for Goa — shorts feed, people discovery, chat, business listings.
+Live at **https://goasocial.in** (GitHub Pages), repo **GOA-COMMUNITY/goa-connect**.
+
+This project is **not locked to any single AI tool**. It is a plain
+Vite + React + TypeScript app in a normal Git repo. Any agent (Bolt, Cursor,
+Manus, Claude Code, a human dev) can clone it and work on it.
+
+## Stack
+
+- React 19 + TypeScript
+- TanStack Router (file-based routing, `src/routes/`) + TanStack Query
+- Tailwind CSS v4 (`src/styles.css`)
+- Vite 7, built as a **static SPA** (`vite.config.ts`, `nitro: false`)
+- Backend: Supabase (Postgres + Auth + Realtime + Storage + Edge Functions)
+- Deploy: GitHub Actions → GitHub Pages (`.github/workflows/deploy.yml`)
+
+## Local development
+
+```bash
+bun install     # or: npm install
+bun run dev     # http://localhost:8080
+bun run build   # static output in dist/client
+```
+
+## Environment variables (`.env`)
+
+```
+VITE_SUPABASE_URL=https://kmwwbjedvsxqobfcgsfx.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<anon/publishable key>
+VITE_SUPABASE_PROJECT_ID=kmwwbjedvsxqobfcgsfx
+```
+
+The publishable key is safe in the client; every table is protected by
+Row Level Security. Service-role keys are never used in the browser.
+
+## Project map
+
+```
+src/routes/                 pages (file-based routing)
+  index.tsx                 home + shorts feed
+  explore.tsx               discover people, follow, start chat
+  business.tsx              local businesses
+  my-feed.tsx               personalised feed view
+  s.$id.tsx                 public share page for one short
+  auth.tsx                  sign in / sign up / guest account
+  _authenticated/           routes that require a session
+    chats.tsx               layout (renders <Outlet />)
+    chats.index.tsx         chat list  (/chats)
+    chats.$id.tsx           chat room  (/chats/:id)
+    profile.tsx             profile editor
+    admin.tsx               admin dashboard
+src/components/             ShortsFeed, ShortUpload, AppLayout, SplashScreen…
+src/lib/                    chat, shorts caching, viewer context, settings
+scripts/                    cache-shorts.mjs, update-videos.mjs (CI content jobs)
+supabase/functions/ai-reply Gemini-powered replies for community bots
+```
+
+## How content works
+
+`scripts/update-videos.mjs` refreshes the latest shorts list from the channels
+configured in the admin dashboard; `scripts/cache-shorts.mjs` downloads and
+compresses up to 100 clips per day into `public/cached/` so playback is instant.
+Both run in the deploy workflow (every 30 minutes) — see
+`docs/shorts-download-pipeline.md`.
+
+## Deployment
+
+Push to `main` → GitHub Action builds and publishes `dist/client` to GitHub
+Pages. The workflow copies `public/CNAME` and duplicates `index.html` to
+`404.html` so client-side deep links (e.g. `/chats/<id>`) work on hard refresh.
+
+Repo visibility, custom domain (`goasocial.in`) and Pages settings are managed
+in the GitHub repository settings.
+
+## Handing this project to another AI agent
+
+Give them: the repo URL, the `.env` values above, and this README. Everything
+else (routes, styles, database schema types in
+`src/integrations/supabase/types.ts`) is in the repo.

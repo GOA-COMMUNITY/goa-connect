@@ -1,1 +1,360 @@
-InVzZSBjbGllbnQiOwoKaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAiQC9jb21wb25lbnRzL3VpL2J1dHRvbiI7CmltcG9ydCB7CiAgQnV0dG9uR3JvdXAsCiAgQnV0dG9uR3JvdXBUZXh0LAp9IGZyb20gIkAvY29tcG9uZW50cy91aS9idXR0b24tZ3JvdXAiOwppbXBvcnQgewogIFRvb2x0aXAsCiAgVG9vbHRpcENvbnRlbnQsCiAgVG9vbHRpcFByb3ZpZGVyLAogIFRvb2x0aXBUcmlnZ2VyLAp9IGZyb20gIkAvY29tcG9uZW50cy91aS90b29sdGlwIjsKaW1wb3J0IHsgY24gfSBmcm9tICJAL2xpYi91dGlscyI7CmltcG9ydCB7IGNqayB9IGZyb20gIkBzdHJlYW1kb3duL2NqayI7CmltcG9ydCB7IGNvZGUgfSBmcm9tICJAc3RyZWFtZG93bi9jb2RlIjsKaW1wb3J0IHsgbWF0aCB9IGZyb20gIkBzdHJlYW1kb3duL21hdGgiOwppbXBvcnQgeyBtZXJtYWlkIH0gZnJvbSAiQHN0cmVhbWRvd24vbWVybWFpZCI7CmltcG9ydCB0eXBlIHsgVUlNZXNzYWdlIH0gZnJvbSAiYWkiOwppbXBvcnQgeyBDaGV2cm9uTGVmdEljb24sIENoZXZyb25SaWdodEljb24gfSBmcm9tICJsdWNpZGUtcmVhY3QiOwppbXBvcnQgdHlwZSB7IENvbXBvbmVudFByb3BzLCBIVE1MQXR0cmlidXRlcywgUmVhY3RFbGVtZW50IH0gZnJvbSAicmVhY3QiOwppbXBvcnQgewogIGNyZWF0ZUNvbnRleHQsCiAgbWVtbywKICB1c2VDYWxsYmFjaywKICB1c2VDb250ZXh0LAogIHVzZUVmZmVjdCwKICB1c2VNZW1vLAogIHVzZVN0YXRlLAp9IGZyb20gInJlYWN0IjsKaW1wb3J0IHsgU3RyZWFtZG93biB9IGZyb20gInN0cmVhbWRvd24iOwoKZXhwb3J0IHR5cGUgTWVzc2FnZVByb3BzID0gSFRNTEF0dHJpYnV0ZXM8SFRNTERpdkVsZW1lbnQ+ICYgewogIGZyb206IFVJTWVzc2FnZVsicm9sZSJdOwp9OwoKZXhwb3J0IGNvbnN0IE1lc3NhZ2UgPSAoeyBjbGFzc05hbWUsIGZyb20sIC4uLnByb3BzIH06IE1lc3NhZ2VQcm9wcykgPT4gKAogIDxkaXYKICAgIGNsYXNzTmFtZT17Y24oCiAgICAgICJncm91cCBmbGV4IHctZnVsbCBtYXgtdy1bOTUlXSBmbGV4LWNvbCBnYXAtMiIsCiAgICAgIGZyb20gPT09ICJ1c2VyIiA/ICJpcy11c2VyIG1sLWF1dG8ganVzdGlmeS1lbmQiIDogImlzLWFzc2lzdGFudCIsCiAgICAgIGNsYXNzTmFtZQogICAgKX0KICAgIHsuLi5wcm9wc30KICAvPgopOwoKZXhwb3J0IHR5cGUgTWVzc2FnZUNvbnRlbnRQcm9wcyA9IEhUTUxBdHRyaWJ1dGVzPEhUTUxEaXZFbGVtZW50PjsKCmV4cG9ydCBjb25zdCBNZXNzYWdlQ29udGVudCA9ICh7CiAgY2hpbGRyZW4sCiAgY2xhc3NOYW1lLAogIC4uLnByb3BzCn06IE1lc3NhZ2VDb250ZW50UHJvcHMpID0+ICgKICA8ZGl2CiAgICBjbGFzc05hbWU9e2NuKAogICAgICAiaXMtdXNlcjpkYXJrIGZsZXggdy1maXQgbWluLXctMCBtYXgtdy1mdWxsIGZsZXgtY29sIGdhcC0yIG92ZXJmbG93LWhpZGRlbiB0ZXh0LXNtIiwKICAgICAgImdyb3VwLVsuaXMtdXNlcl06bWwtYXV0byBncm91cC1bLmlzLXVzZXJdOnJvdW5kZWQtbGcgZ3JvdXAtWy5pcy11c2VyXTpiZy1zZWNvbmRhcnkgZ3JvdXAtWy5pcy11c2VyXTpweC00IGdyb3VwLVsuaXMtdXNlcl06cHktMyBncm91cC1bLmlzLXVzZXJdOnRleHQtZm9yZWdyb3VuZCIsCiAgICAgICJncm91cC1bLmlzLWFzc2lzdGFudF06dGV4dC1mb3JlZ3JvdW5kIiwKICAgICAgY2xhc3NOYW1lCiAgICApfQogICAgey4uLnByb3BzfQogID4KICAgIHtjaGlsZHJlbn0KICA8L2Rpdj4KKTsKCmV4cG9ydCB0eXBlIE1lc3NhZ2VBY3Rpb25zUHJvcHMgPSBDb21wb25lbnRQcm9wczwiZGl2Ij47CgpleHBvcnQgY29uc3QgTWVzc2FnZUFjdGlvbnMgPSAoewogIGNsYXNzTmFtZSwKICBjaGlsZHJlbiwKICAuLi5wcm9wcwp9OiBNZXNzYWdlQWN0aW9uc1Byb3BzKSA9PiAoCiAgPGRpdiBjbGFzc05hbWU9e2NuKCJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSIsIGNsYXNzTmFtZSl9IHsuLi5wcm9wc30+CiAgICB7Y2hpbGRyZW59CiAgPC9kaXY+Cik7CgpleHBvcnQgdHlwZSBNZXNzYWdlQWN0aW9uUHJvcHMgPSBDb21wb25lbnRQcm9wczx0eXBlb2YgQnV0dG9uPiAmIHsKICB0b29sdGlwPzogc3RyaW5nOwogIGxhYmVsPzogc3RyaW5nOwp9OwoKZXhwb3J0IGNvbnN0IE1lc3NhZ2VBY3Rpb24gPSAoewogIHRvb2x0aXAsCiAgY2hpbGRyZW4sCiAgbGFiZWwsCiAgdmFyaWFudCA9ICJnaG9zdCIsCiAgc2l6ZSA9ICJpY29uLXNtIiwKICAuLi5wcm9wcwp9OiBNZXNzYWdlQWN0aW9uUHJvcHMpID0+IHsKICBjb25zdCBidXR0b24gPSAoCiAgICA8QnV0dG9uIHNpemU9e3NpemV9IHR5cGU9ImJ1dHRvbiIgdmFyaWFudD17dmFyaWFudH0gey4uLnByb3BzfT4KICAgICAge2NoaWxkcmVufQogICAgICA8c3BhbiBjbGFzc05hbWU9InNyLW9ubHkiPntsYWJlbCB8fCB0b29sdGlwfTwvc3Bhbj4KICAgIDwvQnV0dG9uPgogICk7CgogIGlmICh0b29sdGlwKSB7CiAgICByZXR1cm4gKAogICAgICA8VG9vbHRpcFByb3ZpZGVyPgogICAgICAgIDxUb29sdGlwPgogICAgICAgICAgPFRvb2x0aXBUcmlnZ2VyIGFzQ2hpbGQ+e2J1dHRvbn08L1Rvb2x0aXBUcmlnZ2VyPgogICAgICAgICAgPFRvb2x0aXBDb250ZW50PgogICAgICAgICAgICA8cD57dG9vbHRpcH08L3A+CiAgICAgICAgICA8L1Rvb2x0aXBDb250ZW50PgogICAgICAgIDwvVG9vbHRpcD4KICAgICAgPC9Ub29sdGlwUHJvdmlkZXI+CiAgICApOwogIH0KCiAgcmV0dXJuIGJ1dHRvbjsKfTsKCmludGVyZmFjZSBNZXNzYWdlQnJhbmNoQ29udGV4dFR5cGUgewogIGN1cnJlbnRCcmFuY2g6IG51bWJlcjsKICB0b3RhbEJyYW5jaGVzOiBudW1iZXI7CiAgZ29Ub1ByZXZpb3VzOiAoKSA9PiB2b2lkOwogIGdvVG9OZXh0OiAoKSA9PiB2b2lkOwogIGJyYW5jaGVzOiBSZWFjdEVsZW1lbnRbXTsKICBzZXRCcmFuY2hlczogKGJyYW5jaGVzOiBSZWFjdEVsZW1lbnRbXSkgPT4gdm9pZDsKfQoKY29uc3QgTWVzc2FnZUJyYW5jaENvbnRleHQgPSBjcmVhdGVDb250ZXh0PE1lc3NhZ2VCcmFuY2hDb250ZXh0VHlwZSB8IG51bGw+KAogIG51bGwKKTsKCmNvbnN0IHVzZU1lc3NhZ2VCcmFuY2ggPSAoKSA9PiB7CiAgY29uc3QgY29udGV4dCA9IHVzZUNvbnRleHQoTWVzc2FnZUJyYW5jaENvbnRleHQpOwoKICBpZiAoIWNvbnRleHQpIHsKICAgIHRocm93IG5ldyBFcnJvcigKICAgICAgIk1lc3NhZ2VCcmFuY2ggY29tcG9uZW50cyBtdXN0IGJlIHVzZWQgd2l0aGluIE1lc3NhZ2VCcmFuY2giCiAgICApOwogIH0KCiAgcmV0dXJuIGNvbnRleHQ7Cn07CgpleHBvcnQgdHlwZSBNZXNzYWdlQnJhbmNoUHJvcHMgPSBIVE1MQXR0cmlidXRlczxIVE1MRGl2RWxlbWVudD4gJiB7CiAgZGVmYXVsdEJyYW5jaD86IG51bWJlcjsKICBvbkJyYW5jaENoYW5nZT86IChicmFuY2hJbmRleDogbnVtYmVyKSA9PiB2b2lkOwp9OwoKZXhwb3J0IGNvbnN0IE1lc3NhZ2VCcmFuY2ggPSAoewogIGRlZmF1bHRCcmFuY2ggPSAwLAogIG9uQnJhbmNoQ2hhbmdlLAogIGNsYXNzTmFtZSwKICAuLi5wcm9wcwp9OiBNZXNzYWdlQnJhbmNoUHJvcHMpID0+IHsKICBjb25zdCBbY3VycmVudEJyYW5jaCwgc2V0Q3VycmVudEJyYW5jaF0gPSB1c2VTdGF0ZShkZWZhdWx0QnJhbmNoKTsKICBjb25zdCBbYnJhbmNoZXMsIHNldEJyYW5jaGVzXSA9IHVzZVN0YXRlPFJlYWN0RWxlbWVudFtdPihbXSk7CgogIGNvbnN0IGhhbmRsZUJyYW5jaENoYW5nZSA9IHVzZUNhbGxiYWNrKAogICAgKG5ld0JyYW5jaDogbnVtYmVyKSA9PiB7CiAgICAgIHNldEN1cnJlbnRCcmFuY2gobmV3QnJhbmNoKTsKICAgICAgb25CcmFuY2hDaGFuZ2U/LihuZXdCcmFuY2gpOwogICAgfSwKICAgIFtvbkJyYW5jaENoYW5nZV0KICApOwoKICBjb25zdCBnb1RvUHJldmlvdXMgPSB1c2VDYWxsYmFjaygoKSA9PiB7CiAgICBjb25zdCBuZXdCcmFuY2ggPQogICAgICBjdXJyZW50QnJhbmNoID4gMCA/IGN1cnJlbnRCcmFuY2ggLSAxIDogYnJhbmNoZXMubGVuZ3RoIC0gMTsKICAgIGhhbmRsZUJyYW5jaENoYW5nZShuZXdCcmFuY2gpOwogIH0sIFtjdXJyZW50QnJhbmNoLCBicmFuY2hlcy5sZW5ndGgsIGhhbmRsZUJyYW5jaENoYW5nZV0pOwoKICBjb25zdCBnb1RvTmV4dCA9IHVzZUNhbGxiYWNrKCgpID0+IHsKICAgIGNvbnN0IG5ld0JyYW5jaCA9CiAgICAgIGN1cnJlbnRCcmFuY2ggPCBicmFuY2hlcy5sZW5ndGggLSAxID8gY3VycmVudEJyYW5jaCArIDEgOiAwOwogICAgaGFuZGxlQnJhbmNoQ2hhbmdlKG5ld0JyYW5jaCk7CiAgfSwgW2N1cnJlbnRCcmFuY2gsIGJyYW5jaGVzLmxlbmd0aCwgaGFuZGxlQnJhbmNoQ2hhbmdlXSk7CgogIGNvbnN0IGNvbnRleHRWYWx1ZSA9IHVzZU1lbW88TWVzc2FnZUJyYW5jaENvbnRleHRUeXBlPigKICAgICgpID0+ICh7CiAgICAgIGJyYW5jaGVzLAogICAgICBjdXJyZW50QnJhbmNoLAogICAgICBnb1RvTmV4dCwKICAgICAgZ29Ub1ByZXZpb3VzLAogICAgICBzZXRCcmFuY2hlcywKICAgICAgdG90YWxCcmFuY2hlczogYnJhbmNoZXMubGVuZ3RoLAogICAgfSksCiAgICBbYnJhbmNoZXMsIGN1cnJlbnRCcmFuY2gsIGdvVG9OZXh0LCBnb1RvUHJldmlvdXNdCiAgKTsKCiAgcmV0dXJuICgKICAgIDxNZXNzYWdlQnJhbmNoQ29udGV4dC5Qcm92aWRlciB2YWx1ZT17Y29udGV4dFZhbHVlfT4KICAgICAgPGRpdgogICAgICAgIGNsYXNzTmFtZT17Y24oImdyaWQgdy1mdWxsIGdhcC0yIFsmPmRpdl06cGItMCIsIGNsYXNzTmFtZSl9CiAgICAgICAgey4uLnByb3BzfQogICAgICAvPgogICAgPC9NZXNzYWdlQnJhbmNoQ29udGV4dC5Qcm92aWRlcj4KICApOwp9OwoKZXhwb3J0IHR5cGUgTWVzc2FnZUJyYW5jaENvbnRlbnRQcm9wcyA9IEhUTUxBdHRyaWJ1dGVzPEhUTUxEaXZFbGVtZW50PjsKCmV4cG9ydCBjb25zdCBNZXNzYWdlQnJhbmNoQ29udGVudCA9ICh7CiAgY2hpbGRyZW4sCiAgLi4ucHJvcHMKfTogTWVzc2FnZUJyYW5jaENvbnRlbnRQcm9wcykgPT4gewogIGNvbnN0IHsgY3VycmVudEJyYW5jaCwgc2V0QnJhbmNoZXMsIGJyYW5jaGVzIH0gPSB1c2VNZXNzYWdlQnJhbmNoKCk7CiAgY29uc3QgY2hpbGRyZW5BcnJheSA9IHVzZU1lbW8oCiAgICAoKSA9PiAoQXJyYXkuaXNBcnJheShjaGlsZHJlbikgPyBjaGlsZHJlbiA6IFtjaGlsZHJlbl0pLAogICAgW2NoaWxkcmVuXQogICk7CgogIC8vIFVzZSB1c2VFZmZlY3QgdG8gdXBkYXRlIGJyYW5jaGVzIHdoZW4gdGhleSBjaGFuZ2UKICB1c2VFZmZlY3QoKCkgPT4gewogICAgaWYgKGJyYW5jaGVzLmxlbmd0aCAhPT0gY2hpbGRyZW5BcnJheS5sZW5ndGgpIHsKICAgICAgc2V0QnJhbmNoZXMoY2hpbGRyZW5BcnJheSk7CiAgICB9CiAgfSwgW2NoaWxkcmVuQXJyYXksIGJyYW5jaGVzLCBzZXRCcmFuY2hlc10pOwoKICByZXR1cm4gY2hpbGRyZW5BcnJheS5tYXAoKGJyYW5jaCwgaW5kZXgpID0+ICgKICAgIDxkaXYKICAgICAgY2xhc3NOYW1lPXtjbigKICAgICAgICAiZ3JpZCBnYXAtMiBvdmVyZmxvdy1oaWRkZW4gWyY+ZGl2XTpwYi0wIiwKICAgICAgICBpbmRleCA9PT0gY3VycmVudEJyYW5jaCA/ICJibG9jayIgOiAiaGlkZGVuIgogICAgICApfQogICAgICBrZXk9e2JyYW5jaC5rZXl9CiAgICAgIHsuLi5wcm9wc30KICAgID4KICAgICAge2JyYW5jaH0KICAgIDwvZGl2PgogICkpOwp9OwoKZXhwb3J0IHR5cGUgTWVzc2FnZUJyYW5jaFNlbGVjdG9yUHJvcHMgPSBDb21wb25lbnRQcm9wczx0eXBlb2YgQnV0dG9uR3JvdXA+OwoKZXhwb3J0IGNvbnN0IE1lc3NhZ2VCcmFuY2hTZWxlY3RvciA9ICh7CiAgY2xhc3NOYW1lLAogIC4uLnByb3BzCn06IE1lc3NhZ2VCcmFuY2hTZWxlY3RvclByb3BzKSA9PiB7CiAgY29uc3QgeyB0b3RhbEJyYW5jaGVzIH0gPSB1c2VNZXNzYWdlQnJhbmNoKCk7CgogIC8vIERvbid0IHJlbmRlciBpZiB0aGVyZSdzIG9ubHkgb25lIGJyYW5jaAogIGlmICh0b3RhbEJyYW5jaGVzIDw9IDEpIHsKICAgIHJldHVybiBudWxsOwogIH0KCiAgcmV0dXJuICgKICAgIDxCdXR0b25Hcm91cAogICAgICBjbGFzc05hbWU9e2NuKAogICAgICAgICJbJj4qOm5vdCg6Zmlyc3QtY2hpbGQpXTpyb3VuZGVkLWwtbWQgWyY+Kjpub3QoOmxhc3QtY2hpbGQpXTpyb3VuZGVkLXItbWQiLAogICAgICAgIGNsYXNzTmFtZQogICAgICApfQogICAgICBvcmllbnRhdGlvbj0iaG9yaXpvbnRhbCIKICAgICAgey4uLnByb3BzfQogICAgLz4KICApOwp9OwoKZXhwb3J0IHR5cGUgTWVzc2FnZUJyYW5jaFByZXZpb3VzUHJvcHMgPSBDb21wb25lbnRQcm9wczx0eXBlb2YgQnV0dG9uPjsKCmV4cG9ydCBjb25zdCBNZXNzYWdlQnJhbmNoUHJldmlvdXMgPSAoewogIGNoaWxkcmVuLAogIC4uLnByb3BzCn06IE1lc3NhZ2VCcmFuY2hQcmV2aW91c1Byb3BzKSA9PiB7CiAgY29uc3QgeyBnb1RvUHJldmlvdXMsIHRvdGFsQnJhbmNoZXMgfSA9IHVzZU1lc3NhZ2VCcmFuY2goKTsKCiAgcmV0dXJuICgKICAgIDxCdXR0b24KICAgICAgYXJpYS1sYWJlbD0iUHJldmlvdXMgYnJhbmNoIgogICAgICBkaXNhYmxlZD17dG90YWxCcmFuY2hlcyA8PSAxfQogICAgICBvbkNsaWNrPXtnb1RvUHJldmlvdXN9CiAgICAgIHNpemU9Imljb24tc20iCiAgICAgIHR5cGU9ImJ1dHRvbiIKICAgICAgdmFyaWFudD0iZ2hvc3QiCiAgICAgIHsuLi5wcm9wc30KICAgID4KICAgICAge2NoaWxkcmVuID8/IDxDaGV2cm9uTGVmdEljb24gc2l6ZT17MTR9IC8+fQogICAgPC9CdXR0b24+CiAgKTsKfTsKCmV4cG9ydCB0eXBlIE1lc3NhZ2VCcmFuY2hOZXh0UHJvcHMgPSBDb21wb25lbnRQcm9wczx0eXBlb2YgQnV0dG9uPjsKCmV4cG9ydCBjb25zdCBNZXNzYWdlQnJhbmNoTmV4dCA9ICh7CiAgY2hpbGRyZW4sCiAgLi4ucHJvcHMKfTogTWVzc2FnZUJyYW5jaE5leHRQcm9wcykgPT4gewogIGNvbnN0IHsgZ29Ub05leHQsIHRvdGFsQnJhbmNoZXMgfSA9IHVzZU1lc3NhZ2VCcmFuY2goKTsKCiAgcmV0dXJuICgKICAgIDxCdXR0b24KICAgICAgYXJpYS1sYWJlbD0iTmV4dCBicmFuY2giCiAgICAgIGRpc2FibGVkPXt0b3RhbEJyYW5jaGVzIDw9IDF9CiAgICAgIG9uQ2xpY2s9e2dvVG9OZXh0fQogICAgICBzaXplPSJpY29uLXNtIgogICAgICB0eXBlPSJidXR0b24iCiAgICAgIHZhcmlhbnQ9Imdob3N0IgogICAgICB7Li4ucHJvcHN9CiAgICA+CiAgICAgIHtjaGlsZHJlbiA/PyA8Q2hldnJvblJpZ2h0SWNvbiBzaXplPXsxNH0gLz59CiAgICA8L0J1dHRvbj4KICApOwp9OwoKZXhwb3J0IHR5cGUgTWVzc2FnZUJyYW5jaFBhZ2VQcm9wcyA9IEhUTUxBdHRyaWJ1dGVzPEhUTUxTcGFuRWxlbWVudD47CgpleHBvcnQgY29uc3QgTWVzc2FnZUJyYW5jaFBhZ2UgPSAoewogIGNsYXNzTmFtZSwKICAuLi5wcm9wcwp9OiBNZXNzYWdlQnJhbmNoUGFnZVByb3BzKSA9PiB7CiAgY29uc3QgeyBjdXJyZW50QnJhbmNoLCB0b3RhbEJyYW5jaGVzIH0gPSB1c2VNZXNzYWdlQnJhbmNoKCk7CgogIHJldHVybiAoCiAgICA8QnV0dG9uR3JvdXBUZXh0CiAgICAgIGNsYXNzTmFtZT17Y24oCiAgICAgICAgImJvcmRlci1ub25lIGJnLXRyYW5zcGFyZW50IHRleHQtbXV0ZWQtZm9yZWdyb3VuZCBzaGFkb3ctbm9uZSIsCiAgICAgICAgY2xhc3NOYW1lCiAgICAgICl9CiAgICAgIHsuLi5wcm9wc30KICAgID4KICAgICAge2N1cnJlbnRCcmFuY2ggKyAxfSBvZiB7dG90YWxCcmFuY2hlc30KICAgIDwvQnV0dG9uR3JvdXBUZXh0PgogICk7Cn07CgpleHBvcnQgdHlwZSBNZXNzYWdlUmVzcG9uc2VQcm9wcyA9IENvbXBvbmVudFByb3BzPHR5cGVvZiBTdHJlYW1kb3duPjsKCmNvbnN0IHN0cmVhbWRvd25QbHVnaW5zID0geyBjamssIGNvZGUsIG1hdGgsIG1lcm1haWQgfTsKCmV4cG9ydCBjb25zdCBNZXNzYWdlUmVzcG9uc2UgPSBtZW1vKAogICh7IGNsYXNzTmFtZSwgLi4ucHJvcHMgfTogTWVzc2FnZVJlc3BvbnNlUHJvcHMpID0+ICgKICAgIDxTdHJlYW1kb3duCiAgICAgIGNsYXNzTmFtZT17Y24oCiAgICAgICAgInNpemUtZnVsbCBbJj4qOmZpcnN0LWNoaWxkXTptdC0wIFsmPio6bGFzdC1jaGlsZF06bWItMCIsCiAgICAgICAgY2xhc3NOYW1lCiAgICAgICl9CiAgICAgIHBsdWdpbnM9e3N0cmVhbWRvd25QbHVnaW5zfQogICAgICB7Li4ucHJvcHN9CiAgICAvPgogICksCiAgKHByZXZQcm9wcywgbmV4dFByb3BzKSA9PgogICAgcHJldlByb3BzLmNoaWxkcmVuID09PSBuZXh0UHJvcHMuY2hpbGRyZW4gJiYKICAgIG5leHRQcm9wcy5pc0FuaW1hdGluZyA9PT0gcHJldlByb3BzLmlzQW5pbWF0aW5nCik7CgpNZXNzYWdlUmVzcG9uc2UuZGlzcGxheU5hbWUgPSAiTWVzc2FnZVJlc3BvbnNlIjsKCmV4cG9ydCB0eXBlIE1lc3NhZ2VUb29sYmFyUHJvcHMgPSBDb21wb25lbnRQcm9wczwiZGl2Ij47CgpleHBvcnQgY29uc3QgTWVzc2FnZVRvb2xiYXIgPSAoewogIGNsYXNzTmFtZSwKICBjaGlsZHJlbiwKICAuLi5wcm9wcwp9OiBNZXNzYWdlVG9vbGJhclByb3BzKSA9PiAoCiAgPGRpdgogICAgY2xhc3NOYW1lPXtjbigKICAgICAgIm10LTQgZmxleCB3LWZ1bGwgaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBnYXAtNCIsCiAgICAgIGNsYXNzTmFtZQogICAgKX0KICAgIHsuLi5wcm9wc30KICA+CiAgICB7Y2hpbGRyZW59CiAgPC9kaXY+Cik7Cg==
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  ButtonGroup,
+  ButtonGroupText,
+} from "@/components/ui/button-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { cjk } from "@streamdown/cjk";
+import { code } from "@streamdown/code";
+import { math } from "@streamdown/math";
+import { mermaid } from "@streamdown/mermaid";
+import type { UIMessage } from "ai";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Streamdown } from "streamdown";
+
+export type MessageProps = HTMLAttributes<HTMLDivElement> & {
+  from: UIMessage["role"];
+};
+
+export const Message = ({ className, from, ...props }: MessageProps) => (
+  <div
+    className={cn(
+      "group flex w-full max-w-[95%] flex-col gap-2",
+      from === "user" ? "is-user ml-auto justify-end" : "is-assistant",
+      className
+    )}
+    {...props}
+  />
+);
+
+export type MessageContentProps = HTMLAttributes<HTMLDivElement>;
+
+export const MessageContent = ({
+  children,
+  className,
+  ...props
+}: MessageContentProps) => (
+  <div
+    className={cn(
+      "is-user:dark flex w-fit min-w-0 max-w-full flex-col gap-2 overflow-hidden text-sm",
+      "group-[.is-user]:ml-auto group-[.is-user]:rounded-lg group-[.is-user]:bg-secondary group-[.is-user]:px-4 group-[.is-user]:py-3 group-[.is-user]:text-foreground",
+      "group-[.is-assistant]:text-foreground",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+export type MessageActionsProps = ComponentProps<"div">;
+
+export const MessageActions = ({
+  className,
+  children,
+  ...props
+}: MessageActionsProps) => (
+  <div className={cn("flex items-center gap-1", className)} {...props}>
+    {children}
+  </div>
+);
+
+export type MessageActionProps = ComponentProps<typeof Button> & {
+  tooltip?: string;
+  label?: string;
+};
+
+export const MessageAction = ({
+  tooltip,
+  children,
+  label,
+  variant = "ghost",
+  size = "icon-sm",
+  ...props
+}: MessageActionProps) => {
+  const button = (
+    <Button size={size} type="button" variant={variant} {...props}>
+      {children}
+      <span className="sr-only">{label || tooltip}</span>
+    </Button>
+  );
+
+  if (tooltip) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>{button}</TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltip}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return button;
+};
+
+interface MessageBranchContextType {
+  currentBranch: number;
+  totalBranches: number;
+  goToPrevious: () => void;
+  goToNext: () => void;
+  branches: ReactElement[];
+  setBranches: (branches: ReactElement[]) => void;
+}
+
+const MessageBranchContext = createContext<MessageBranchContextType | null>(
+  null
+);
+
+const useMessageBranch = () => {
+  const context = useContext(MessageBranchContext);
+
+  if (!context) {
+    throw new Error(
+      "MessageBranch components must be used within MessageBranch"
+    );
+  }
+
+  return context;
+};
+
+export type MessageBranchProps = HTMLAttributes<HTMLDivElement> & {
+  defaultBranch?: number;
+  onBranchChange?: (branchIndex: number) => void;
+};
+
+export const MessageBranch = ({
+  defaultBranch = 0,
+  onBranchChange,
+  className,
+  ...props
+}: MessageBranchProps) => {
+  const [currentBranch, setCurrentBranch] = useState(defaultBranch);
+  const [branches, setBranches] = useState<ReactElement[]>([]);
+
+  const handleBranchChange = useCallback(
+    (newBranch: number) => {
+      setCurrentBranch(newBranch);
+      onBranchChange?.(newBranch);
+    },
+    [onBranchChange]
+  );
+
+  const goToPrevious = useCallback(() => {
+    const newBranch =
+      currentBranch > 0 ? currentBranch - 1 : branches.length - 1;
+    handleBranchChange(newBranch);
+  }, [currentBranch, branches.length, handleBranchChange]);
+
+  const goToNext = useCallback(() => {
+    const newBranch =
+      currentBranch < branches.length - 1 ? currentBranch + 1 : 0;
+    handleBranchChange(newBranch);
+  }, [currentBranch, branches.length, handleBranchChange]);
+
+  const contextValue = useMemo<MessageBranchContextType>(
+    () => ({
+      branches,
+      currentBranch,
+      goToNext,
+      goToPrevious,
+      setBranches,
+      totalBranches: branches.length,
+    }),
+    [branches, currentBranch, goToNext, goToPrevious]
+  );
+
+  return (
+    <MessageBranchContext.Provider value={contextValue}>
+      <div
+        className={cn("grid w-full gap-2 [&>div]:pb-0", className)}
+        {...props}
+      />
+    </MessageBranchContext.Provider>
+  );
+};
+
+export type MessageBranchContentProps = HTMLAttributes<HTMLDivElement>;
+
+export const MessageBranchContent = ({
+  children,
+  ...props
+}: MessageBranchContentProps) => {
+  const { currentBranch, setBranches, branches } = useMessageBranch();
+  const childrenArray = useMemo(
+    () => (Array.isArray(children) ? children : [children]),
+    [children]
+  );
+
+  // Use useEffect to update branches when they change
+  useEffect(() => {
+    if (branches.length !== childrenArray.length) {
+      setBranches(childrenArray);
+    }
+  }, [childrenArray, branches, setBranches]);
+
+  return childrenArray.map((branch, index) => (
+    <div
+      className={cn(
+        "grid gap-2 overflow-hidden [&>div]:pb-0",
+        index === currentBranch ? "block" : "hidden"
+      )}
+      key={branch.key}
+      {...props}
+    >
+      {branch}
+    </div>
+  ));
+};
+
+export type MessageBranchSelectorProps = ComponentProps<typeof ButtonGroup>;
+
+export const MessageBranchSelector = ({
+  className,
+  ...props
+}: MessageBranchSelectorProps) => {
+  const { totalBranches } = useMessageBranch();
+
+  // Don't render if there's only one branch
+  if (totalBranches <= 1) {
+    return null;
+  }
+
+  return (
+    <ButtonGroup
+      className={cn(
+        "[&>*:not(:first-child)]:rounded-l-md [&>*:not(:last-child)]:rounded-r-md",
+        className
+      )}
+      orientation="horizontal"
+      {...props}
+    />
+  );
+};
+
+export type MessageBranchPreviousProps = ComponentProps<typeof Button>;
+
+export const MessageBranchPrevious = ({
+  children,
+  ...props
+}: MessageBranchPreviousProps) => {
+  const { goToPrevious, totalBranches } = useMessageBranch();
+
+  return (
+    <Button
+      aria-label="Previous branch"
+      disabled={totalBranches <= 1}
+      onClick={goToPrevious}
+      size="icon-sm"
+      type="button"
+      variant="ghost"
+      {...props}
+    >
+      {children ?? <ChevronLeftIcon size={14} />}
+    </Button>
+  );
+};
+
+export type MessageBranchNextProps = ComponentProps<typeof Button>;
+
+export const MessageBranchNext = ({
+  children,
+  ...props
+}: MessageBranchNextProps) => {
+  const { goToNext, totalBranches } = useMessageBranch();
+
+  return (
+    <Button
+      aria-label="Next branch"
+      disabled={totalBranches <= 1}
+      onClick={goToNext}
+      size="icon-sm"
+      type="button"
+      variant="ghost"
+      {...props}
+    >
+      {children ?? <ChevronRightIcon size={14} />}
+    </Button>
+  );
+};
+
+export type MessageBranchPageProps = HTMLAttributes<HTMLSpanElement>;
+
+export const MessageBranchPage = ({
+  className,
+  ...props
+}: MessageBranchPageProps) => {
+  const { currentBranch, totalBranches } = useMessageBranch();
+
+  return (
+    <ButtonGroupText
+      className={cn(
+        "border-none bg-transparent text-muted-foreground shadow-none",
+        className
+      )}
+      {...props}
+    >
+      {currentBranch + 1} of {totalBranches}
+    </ButtonGroupText>
+  );
+};
+
+export type MessageResponseProps = ComponentProps<typeof Streamdown>;
+
+const streamdownPlugins = { cjk, code, math, mermaid };
+
+export const MessageResponse = memo(
+  ({ className, ...props }: MessageResponseProps) => (
+    <Streamdown
+      className={cn(
+        "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+        className
+      )}
+      plugins={streamdownPlugins}
+      {...props}
+    />
+  ),
+  (prevProps, nextProps) =>
+    prevProps.children === nextProps.children &&
+    nextProps.isAnimating === prevProps.isAnimating
+);
+
+MessageResponse.displayName = "MessageResponse";
+
+export type MessageToolbarProps = ComponentProps<"div">;
+
+export const MessageToolbar = ({
+  className,
+  children,
+  ...props
+}: MessageToolbarProps) => (
+  <div
+    className={cn(
+      "mt-4 flex w-full items-center justify-between gap-4",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);

@@ -1,1 +1,136 @@
-aW1wb3J0IHsgUXVlcnlDbGllbnQsIFF1ZXJ5Q2xpZW50UHJvdmlkZXIgfSBmcm9tICJAdGFuc3RhY2svcmVhY3QtcXVlcnkiOwppbXBvcnQgewogIE91dGxldCwKICBMaW5rLAogIGNyZWF0ZVJvb3RSb3V0ZVdpdGhDb250ZXh0LAogIHVzZVJvdXRlciwKICBIZWFkQ29udGVudCwKICBTY3JpcHRzLAp9IGZyb20gIkB0YW5zdGFjay9yZWFjdC1yb3V0ZXIiOwppbXBvcnQgeyB1c2VFZmZlY3QsIHR5cGUgUmVhY3ROb2RlIH0gZnJvbSAicmVhY3QiOwppbXBvcnQgeyBUb2FzdGVyIH0gZnJvbSAic29ubmVyIjsKCmltcG9ydCBhcHBDc3MgZnJvbSAiLi4vc3R5bGVzLmNzcz91cmwiOwppbXBvcnQgeyByZXBvcnRMb3ZhYmxlRXJyb3IgfSBmcm9tICIuLi9saWIvbG92YWJsZS1lcnJvci1yZXBvcnRpbmciOwppbXBvcnQgeyBzdXBhYmFzZSB9IGZyb20gIkAvaW50ZWdyYXRpb25zL3N1cGFiYXNlL2NsaWVudCI7CgpmdW5jdGlvbiBOb3RGb3VuZENvbXBvbmVudCgpIHsKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9ImZsZXggbWluLWgtc2NyZWVuIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBiZy1iYWNrZ3JvdW5kIHB4LTQiPgogICAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctbWQgdGV4dC1jZW50ZXIiPgogICAgICAgIDxoMSBjbGFzc05hbWU9InRleHQtN3hsIGZvbnQtYm9sZCB0ZXh0LWZvcmVncm91bmQiPjQwNDwvaDE+CiAgICAgICAgPGgyIGNsYXNzTmFtZT0ibXQtNCB0ZXh0LXhsIGZvbnQtc2VtaWJvbGQgdGV4dC1mb3JlZ3JvdW5kIj5QYWdlIG5vdCBmb3VuZDwvaDI+CiAgICAgICAgPHAgY2xhc3NOYW1lPSJtdC0yIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgIFRoZSBwYWdlIHlvdSdyZSBsb29raW5nIGZvciBkb2Vzbid0IGV4aXN0IG9yIGhhcyBiZWVuIG1vdmVkLgogICAgICAgIDwvcD4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNiI+CiAgICAgICAgICA8TGluawogICAgICAgICAgICB0bz0iLyIKICAgICAgICAgICAgY2xhc3NOYW1lPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcm91bmRlZC1tZCBiZy1wcmltYXJ5IHB4LTQgcHktMiB0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtcHJpbWFyeS1mb3JlZ3JvdW5kIHRyYW5zaXRpb24tY29sb3JzIGhvdmVyOmJnLXByaW1hcnkvOTAiCiAgICAgICAgICA+CiAgICAgICAgICAgIEdvIGhvbWUKICAgICAgICAgIDwvTGluaz4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApOwp9CgpmdW5jdGlvbiBFcnJvckNvbXBvbmVudCh7IGVycm9yLCByZXNldCB9OiB7IGVycm9yOiBFcnJvcjsgcmVzZXQ6ICgpID0+IHZvaWQgfSkgewogIGNvbnNvbGUuZXJyb3IoZXJyb3IpOwogIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpOwogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICByZXBvcnRMb3ZhYmxlRXJyb3IoZXJyb3IsIHsgYm91bmRhcnk6ICJ0YW5zdGFja19yb290X2Vycm9yX2NvbXBvbmVudCIgfSk7CiAgfSwgW2Vycm9yXSk7CgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBtaW4taC1zY3JlZW4gaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIGJnLWJhY2tncm91bmQgcHgtNCI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgtdy1tZCB0ZXh0LWNlbnRlciI+CiAgICAgICAgPGgxIGNsYXNzTmFtZT0idGV4dC14bCBmb250LXNlbWlib2xkIHRyYWNraW5nLXRpZ2h0IHRleHQtZm9yZWdyb3VuZCI+CiAgICAgICAgICBUaGlzIHBhZ2UgZGlkbid0IGxvYWQKICAgICAgICA8L2gxPgogICAgICAgIDxwIGNsYXNzTmFtZT0ibXQtMiB0ZXh0LXNtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+CiAgICAgICAgICBTb21ldGhpbmcgd2VudCB3cm9uZyBvbiBvdXIgZW5kLiBZb3UgY2FuIHRyeSByZWZyZXNoaW5nIG9yIGhlYWQgYmFjayBob21lLgogICAgICAgIDwvcD4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtNiBmbGV4IGZsZXgtd3JhcCBqdXN0aWZ5LWNlbnRlciBnYXAtMiI+CiAgICAgICAgICA8YnV0dG9uCiAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHsKICAgICAgICAgICAgICByb3V0ZXIuaW52YWxpZGF0ZSgpOwogICAgICAgICAgICAgIHJlc2V0KCk7CiAgICAgICAgICAgIH19CiAgICAgICAgICAgIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtbWQgYmctcHJpbWFyeSBweC00IHB5LTIgdGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LXByaW1hcnktZm9yZWdyb3VuZCB0cmFuc2l0aW9uLWNvbG9ycyBob3ZlcjpiZy1wcmltYXJ5LzkwIgogICAgICAgICAgPgogICAgICAgICAgICBUcnkgYWdhaW4KICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgPGEKICAgICAgICAgICAgaHJlZj0iLyIKICAgICAgICAgICAgY2xhc3NOYW1lPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcm91bmRlZC1tZCBib3JkZXIgYm9yZGVyLWlucHV0IGJnLWJhY2tncm91bmQgcHgtNCBweS0yIHRleHQtc20gZm9udC1tZWRpdW0gdGV4dC1mb3JlZ3JvdW5kIHRyYW5zaXRpb24tY29sb3JzIGhvdmVyOmJnLWFjY2VudCIKICAgICAgICAgID4KICAgICAgICAgICAgR28gaG9tZQogICAgICAgICAgPC9hPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICk7Cn0KCmV4cG9ydCBjb25zdCBSb3V0ZSA9IGNyZWF0ZVJvb3RSb3V0ZVdpdGhDb250ZXh0PHsgcXVlcnlDbGllbnQ6IFF1ZXJ5Q2xpZW50IH0+KCkoewogIGhlYWQ6ICgpID0+ICh7CiAgICBtZXRhOiBbCiAgICAgIHsgY2hhclNldDogInV0Zi04IiB9LAogICAgICB7IG5hbWU6ICJ2aWV3cG9ydCIsIGNvbnRlbnQ6ICJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MSwgdmlld3BvcnQtZml0PWNvdmVyIiB9LAogICAgICB7IHRpdGxlOiAiR29hIFNvY2lhbCDigJQgQ29tbXVuaXR5IG9mIEdvYSIgfSwKICAgICAgeyBuYW1lOiAiZGVzY3JpcHRpb24iLCBjb250ZW50OiAiR29hJ3Mgb3duIHNvY2lhbCBuZXR3b3JrLiBDb25uZWN0IHdpdGggdmVyaWZpZWQgR29hbnMsIGRpc2NvdmVyIGxvY2FsIGJ1c2luZXNzZXMsIGV2ZW50cyBhbmQgc3Rvcmllcy4iIH0sCiAgICAgIHsgbmFtZTogInRoZW1lLWNvbG9yIiwgY29udGVudDogIiMxODc3ZjIiIH0sCiAgICAgIHsgcHJvcGVydHk6ICJvZzp0aXRsZSIsIGNvbnRlbnQ6ICJHb2EgU29jaWFsIOKAlCBDb21tdW5pdHkgb2YgR29hIiB9LAogICAgICB7IHByb3BlcnR5OiAib2c6ZGVzY3JpcHRpb24iLCBjb250ZW50OiAiR29hJ3Mgb3duIHNvY2lhbCBuZXR3b3JrLiBDb25uZWN0IHdpdGggdmVyaWZpZWQgR29hbnMsIGRpc2NvdmVyIGxvY2FsIGJ1c2luZXNzZXMsIGV2ZW50cyBhbmQgc3Rvcmllcy4iIH0sCiAgICAgIHsgcHJvcGVydHk6ICJvZzp0eXBlIiwgY29udGVudDogIndlYnNpdGUiIH0sCiAgICAgIHsgbmFtZTogInR3aXR0ZXI6Y2FyZCIsIGNvbnRlbnQ6ICJzdW1tYXJ5X2xhcmdlX2ltYWdlIiB9LAogICAgXSwKICAgIGxpbmtzOiBbCiAgICAgIHsgcmVsOiAic3R5bGVzaGVldCIsIGhyZWY6IGFwcENzcyB9LAogICAgICB7IHJlbDogIm1hbmlmZXN0IiwgaHJlZjogIi9tYW5pZmVzdC5qc29uIiB9LAogICAgICB7IHJlbDogImljb24iLCBocmVmOiAiL2xvZ28ucG5nIiB9LAogICAgICB7IHJlbDogImFwcGxlLXRvdWNoLWljb24iLCBocmVmOiAiL2xvZ28ucG5nIiB9LAogICAgXSwKICB9KSwKICBzaGVsbENvbXBvbmVudDogUm9vdFNoZWxsLAogIGNvbXBvbmVudDogUm9vdENvbXBvbmVudCwKICBub3RGb3VuZENvbXBvbmVudDogTm90Rm91bmRDb21wb25lbnQsCiAgZXJyb3JDb21wb25lbnQ6IEVycm9yQ29tcG9uZW50LAp9KTsKCmZ1bmN0aW9uIFJvb3RTaGVsbCh7IGNoaWxkcmVuIH06IHsgY2hpbGRyZW46IFJlYWN0Tm9kZSB9KSB7CiAgcmV0dXJuICgKICAgIDxodG1sIGxhbmc9ImVuIj4KICAgICAgPGhlYWQ+CiAgICAgICAgPEhlYWRDb250ZW50IC8+CiAgICAgIDwvaGVhZD4KICAgICAgPGJvZHk+CiAgICAgICAge2NoaWxkcmVufQogICAgICAgIDxTY3JpcHRzIC8+CiAgICAgIDwvYm9keT4KICAgIDwvaHRtbD4KICApOwp9CgpmdW5jdGlvbiBSb290Q29tcG9uZW50KCkgewogIGNvbnN0IHsgcXVlcnlDbGllbnQgfSA9IFJvdXRlLnVzZVJvdXRlQ29udGV4dCgpOwogIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpOwoKICB1c2VFZmZlY3QoKCkgPT4gewogICAgY29uc3QgeyBkYXRhOiBzdWIgfSA9IHN1cGFiYXNlLmF1dGgub25BdXRoU3RhdGVDaGFuZ2UoKGV2ZW50KSA9PiB7CiAgICAgIGlmIChldmVudCAhPT0gIlNJR05FRF9JTiIgJiYgZXZlbnQgIT09ICJTSUdORURfT1VUIiAmJiBldmVudCAhPT0gIlVTRVJfVVBEQVRFRCIpIHJldHVybjsKICAgICAgcm91dGVyLmludmFsaWRhdGUoKTsKICAgICAgaWYgKGV2ZW50ICE9PSAiU0lHTkVEX09VVCIpIHF1ZXJ5Q2xpZW50LmludmFsaWRhdGVRdWVyaWVzKCk7CiAgICB9KTsKICAgIHJldHVybiAoKSA9PiBzdWIuc3Vic2NyaXB0aW9uLnVuc3Vic2NyaWJlKCk7CiAgfSwgW3JvdXRlciwgcXVlcnlDbGllbnRdKTsKCiAgcmV0dXJuICgKICAgIDxRdWVyeUNsaWVudFByb3ZpZGVyIGNsaWVudD17cXVlcnlDbGllbnR9PgogICAgICA8T3V0bGV0IC8+CiAgICAgIDxUb2FzdGVyIHBvc2l0aW9uPSJ0b3AtY2VudGVyIiByaWNoQ29sb3JzIGNsb3NlQnV0dG9uIC8+CiAgICA8L1F1ZXJ5Q2xpZW50UHJvdmlkZXI+CiAgKTsKfQo=
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Outlet,
+  Link,
+  createRootRouteWithContext,
+  useRouter,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
+import { useEffect, type ReactNode } from "react";
+import { Toaster } from "sonner";
+
+import appCss from "../styles.css?url";
+import { reportLovableError } from "../lib/lovable-error-reporting";
+import { supabase } from "@/integrations/supabase/client";
+
+function NotFoundComponent() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div className="mt-6">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Go home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  console.error(error);
+  const router = useRouter();
+  useEffect(() => {
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  }, [error]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          This page didn't load
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong on our end. You can try refreshing or head back home.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Try again
+          </button>
+          <a
+            href="/"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          >
+            Go home
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { title: "Goa Social — Community of Goa" },
+      { name: "description", content: "Goa's own social network. Connect with verified Goans, discover local businesses, events and stories." },
+      { name: "theme-color", content: "#1877f2" },
+      { property: "og:title", content: "Goa Social — Community of Goa" },
+      { property: "og:description", content: "Goa's own social network. Connect with verified Goans, discover local businesses, events and stories." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.json" },
+      { rel: "icon", href: "/logo.png" },
+      { rel: "apple-touch-icon", href: "/logo.png" },
+    ],
+  }),
+  shellComponent: RootShell,
+  component: RootComponent,
+  notFoundComponent: NotFoundComponent,
+  errorComponent: ErrorComponent,
+});
+
+function RootShell({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router, queryClient]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+      <Toaster position="top-center" richColors closeButton />
+    </QueryClientProvider>
+  );
+}

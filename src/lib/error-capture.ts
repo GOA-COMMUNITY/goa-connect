@@ -1,1 +1,27 @@
-Ly8gQ2FwdHVyZXMgdGhlIG9yaWdpbmFsIEVycm9yIG91dC1vZi1iYW5kIHNvIHNlcnZlci50cyBjYW4gcmVjb3ZlciB0aGUgc3RhY2sKLy8gd2hlbiBoMyBoYXMgYWxyZWFkeSBzd2FsbG93ZWQgdGhlIHRocm93IGludG8gYSBnZW5lcmljIDUwMCBSZXNwb25zZS4KCmxldCBsYXN0Q2FwdHVyZWRFcnJvcjogeyBlcnJvcjogdW5rbm93bjsgYXQ6IG51bWJlciB9IHwgdW5kZWZpbmVkOwpjb25zdCBUVExfTVMgPSA1XzAwMDsKCmZ1bmN0aW9uIHJlY29yZChlcnJvcjogdW5rbm93bikgewogIGxhc3RDYXB0dXJlZEVycm9yID0geyBlcnJvciwgYXQ6IERhdGUubm93KCkgfTsKfQoKaWYgKHR5cGVvZiBnbG9iYWxUaGlzLmFkZEV2ZW50TGlzdGVuZXIgPT09ICJmdW5jdGlvbiIpIHsKICBnbG9iYWxUaGlzLmFkZEV2ZW50TGlzdGVuZXIoImVycm9yIiwgKGV2ZW50KSA9PiByZWNvcmQoKGV2ZW50IGFzIEVycm9yRXZlbnQpLmVycm9yID8/IGV2ZW50KSk7CiAgZ2xvYmFsVGhpcy5hZGRFdmVudExpc3RlbmVyKCJ1bmhhbmRsZWRyZWplY3Rpb24iLCAoZXZlbnQpID0+CiAgICByZWNvcmQoKGV2ZW50IGFzIFByb21pc2VSZWplY3Rpb25FdmVudCkucmVhc29uKSwKICApOwp9CgpleHBvcnQgZnVuY3Rpb24gY29uc3VtZUxhc3RDYXB0dXJlZEVycm9yKCk6IHVua25vd24gewogIGlmICghbGFzdENhcHR1cmVkRXJyb3IpIHJldHVybiB1bmRlZmluZWQ7CiAgaWYgKERhdGUubm93KCkgLSBsYXN0Q2FwdHVyZWRFcnJvci5hdCA+IFRUTF9NUykgewogICAgbGFzdENhcHR1cmVkRXJyb3IgPSB1bmRlZmluZWQ7CiAgICByZXR1cm4gdW5kZWZpbmVkOwogIH0KICBjb25zdCB7IGVycm9yIH0gPSBsYXN0Q2FwdHVyZWRFcnJvcjsKICBsYXN0Q2FwdHVyZWRFcnJvciA9IHVuZGVmaW5lZDsKICByZXR1cm4gZXJyb3I7Cn0K
+// Captures the original Error out-of-band so server.ts can recover the stack
+// when h3 has already swallowed the throw into a generic 500 Response.
+
+let lastCapturedError: { error: unknown; at: number } | undefined;
+const TTL_MS = 5_000;
+
+function record(error: unknown) {
+  lastCapturedError = { error, at: Date.now() };
+}
+
+if (typeof globalThis.addEventListener === "function") {
+  globalThis.addEventListener("error", (event) => record((event as ErrorEvent).error ?? event));
+  globalThis.addEventListener("unhandledrejection", (event) =>
+    record((event as PromiseRejectionEvent).reason),
+  );
+}
+
+export function consumeLastCapturedError(): unknown {
+  if (!lastCapturedError) return undefined;
+  if (Date.now() - lastCapturedError.at > TTL_MS) {
+    lastCapturedError = undefined;
+    return undefined;
+  }
+  const { error } = lastCapturedError;
+  lastCapturedError = undefined;
+  return error;
+}

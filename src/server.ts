@@ -1,1 +1,58 @@
-aW1wb3J0ICIuL2xpYi9lcnJvci1jYXB0dXJlIjsKCmltcG9ydCB7IGNvbnN1bWVMYXN0Q2FwdHVyZWRFcnJvciB9IGZyb20gIi4vbGliL2Vycm9yLWNhcHR1cmUiOwppbXBvcnQgeyByZW5kZXJFcnJvclBhZ2UgfSBmcm9tICIuL2xpYi9lcnJvci1wYWdlIjsKCnR5cGUgU2VydmVyRW50cnkgPSB7CiAgZmV0Y2g6IChyZXF1ZXN0OiBSZXF1ZXN0LCAuLi5hcmdzOiBBcnJheTx1bmtub3duPikgPT4gUHJvbWlzZTxSZXNwb25zZT4gfCBSZXNwb25zZTsKfTsKCmxldCBzZXJ2ZXJFbnRyeVByb21pc2U6IFByb21pc2U8U2VydmVyRW50cnk+IHwgdW5kZWZpbmVkOwoKYXN5bmMgZnVuY3Rpb24gZ2V0U2VydmVyRW50cnkoKTogUHJvbWlzZTxTZXJ2ZXJFbnRyeT4gewogIGlmICghc2VydmVyRW50cnlQcm9taXNlKSB7CiAgICBzZXJ2ZXJFbnRyeVByb21pc2UgPSBpbXBvcnQoIkB0YW5zdGFjay9yZWFjdC1zdGFydC9zZXJ2ZXIiKS50aGVuKChtKSA9PiAoewogICAgICAvLyBUaGUgc3RvY2sgc2VydmVyIGVudHJ5IHN0cmVhbXMgU1NSIEhUTUwuIER1cmluZyBUYW5TdGFjayBTdGFydCdzIFNQQSBzaGVsbAogICAgICAvLyBwcmVyZW5kZXIsIE5vZGUgMjIgY2FuIHJlc29sdmUgUmVhY3QncyBXb3JrZXIvQnVuIHN0cmVhbSByZW5kZXJlciBhbmQgY3Jhc2gKICAgICAgLy8gb24gUmVhZGFibGVTdHJlYW0gaW50ZXJuYWxzIGJlZm9yZSBhIHBhZ2UgaXMgd3JpdHRlbi4gUmVuZGVyaW5nIHRvIGEgc3RyaW5nCiAgICAgIC8vIGtlZXBzIHRoZSBvdXRwdXQgc3RhdGljIGFuZCBhdm9pZHMgdGhlIGJyb2tlbiBwcmVyZW5kZXIgc3RyZWFtIHBhdGguCiAgICAgIGZldGNoOiBtLmNyZWF0ZVN0YXJ0SGFuZGxlcihtLmRlZmF1bHRSZW5kZXJIYW5kbGVyKSBhcyBTZXJ2ZXJFbnRyeVsiZmV0Y2giXSwKICAgIH0pKTsKICB9CiAgcmV0dXJuIHNlcnZlckVudHJ5UHJvbWlzZTsKfQoKLy8gaDMgc3dhbGxvd3MgaW4taGFuZGxlciB0aHJvd3MgaW50byBhIG5vcm1hbCA1MDAgUmVzcG9uc2Ugd2l0aCBib2R5Ci8vIHsidW5oYW5kbGVkIjp0cnVlLCJtZXNzYWdlIjoiSFRUUEVycm9yIn0g4oCUIHRyeS9jYXRjaCBhbG9uZSBuZXZlciBmaXJlcyBmb3IgdGhvc2UuCmFzeW5jIGZ1bmN0aW9uIG5vcm1hbGl6ZUNhdGFzdHJvcGhpY1NzclJlc3BvbnNlKHJlc3BvbnNlOiBSZXNwb25zZSk6IFByb21pc2U8UmVzcG9uc2U+IHsKICBpZiAocmVzcG9uc2Uuc3RhdHVzIDwgNTAwKSByZXR1cm4gcmVzcG9uc2U7CiAgY29uc3QgY29udGVudFR5cGUgPSByZXNwb25zZS5oZWFkZXJzLmdldCgiY29udGVudC10eXBlIikgPz8gIiI7CiAgaWYgKCFjb250ZW50VHlwZS5pbmNsdWRlcygiYXBwbGljYXRpb24vanNvbiIpKSByZXR1cm4gcmVzcG9uc2U7CgogIGNvbnN0IGJvZHkgPSBhd2FpdCByZXNwb25zZS5jbG9uZSgpLnRleHQoKTsKICBpZiAoIWJvZHkuaW5jbHVkZXMoJyJ1bmhhbmRsZWQiOnRydWUnKSB8fCAhYm9keS5pbmNsdWRlcygnIm1lc3NhZ2UiOiJIVFRQRXJyb3IiJykpIHsKICAgIHJldHVybiByZXNwb25zZTsKICB9CgogIGNvbnNvbGUuZXJyb3IoY29uc3VtZUxhc3RDYXB0dXJlZEVycm9yKCkgPz8gbmV3IEVycm9yKGBoMyBzd2FsbG93ZWQgU1NSIGVycm9yOiAke2JvZHl9YCkpOwogIHJldHVybiBuZXcgUmVzcG9uc2UocmVuZGVyRXJyb3JQYWdlKCksIHsKICAgIHN0YXR1czogNTAwLAogICAgaGVhZGVyczogeyAiY29udGVudC10eXBlIjogInRleHQvaHRtbDsgY2hhcnNldD11dGYtOCIgfSwKICB9KTsKfQoKZXhwb3J0IGRlZmF1bHQgewogIGFzeW5jIGZldGNoKHJlcXVlc3Q6IFJlcXVlc3QsIGVudjogdW5rbm93biwgY3R4OiB1bmtub3duKSB7CiAgICB0cnkgewogICAgICBjb25zdCBoYW5kbGVyID0gYXdhaXQgZ2V0U2VydmVyRW50cnkoKTsKICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBoYW5kbGVyLmZldGNoKHJlcXVlc3QsIGVudiwgY3R4KTsKICAgICAgcmV0dXJuIGF3YWl0IG5vcm1hbGl6ZUNhdGFzdHJvcGhpY1NzclJlc3BvbnNlKHJlc3BvbnNlKTsKICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgIGNvbnNvbGUuZXJyb3IoZXJyb3IpOwogICAgICByZXR1cm4gbmV3IFJlc3BvbnNlKHJlbmRlckVycm9yUGFnZSgpLCB7CiAgICAgICAgc3RhdHVzOiA1MDAsCiAgICAgICAgaGVhZGVyczogeyAiY29udGVudC10eXBlIjogInRleHQvaHRtbDsgY2hhcnNldD11dGYtOCIgfSwKICAgICAgfSk7CiAgICB9CiAgfSwKfTsK
+import "./lib/error-capture";
+
+import { consumeLastCapturedError } from "./lib/error-capture";
+import { renderErrorPage } from "./lib/error-page";
+
+type ServerEntry = {
+  fetch: (request: Request, ...args: Array<unknown>) => Promise<Response> | Response;
+};
+
+let serverEntryPromise: Promise<ServerEntry> | undefined;
+
+async function getServerEntry(): Promise<ServerEntry> {
+  if (!serverEntryPromise) {
+    serverEntryPromise = import("@tanstack/react-start/server").then((m) => ({
+      // The stock server entry streams SSR HTML. During TanStack Start's SPA shell
+      // prerender, Node 22 can resolve React's Worker/Bun stream renderer and crash
+      // on ReadableStream internals before a page is written. Rendering to a string
+      // keeps the output static and avoids the broken prerender stream path.
+      fetch: m.createStartHandler(m.defaultRenderHandler) as ServerEntry["fetch"],
+    }));
+  }
+  return serverEntryPromise;
+}
+
+// h3 swallows in-handler throws into a normal 500 Response with body
+// {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
+async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+  if (response.status < 500) return response;
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) return response;
+
+  const body = await response.clone().text();
+  if (!body.includes('"unhandled":true') || !body.includes('"message":"HTTPError"')) {
+    return response;
+  }
+
+  console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
+  return new Response(renderErrorPage(), {
+    status: 500,
+    headers: { "content-type": "text/html; charset=utf-8" },
+  });
+}
+
+export default {
+  async fetch(request: Request, env: unknown, ctx: unknown) {
+    try {
+      const handler = await getServerEntry();
+      const response = await handler.fetch(request, env, ctx);
+      return await normalizeCatastrophicSsrResponse(response);
+    } catch (error) {
+      console.error(error);
+      return new Response(renderErrorPage(), {
+        status: 500,
+        headers: { "content-type": "text/html; charset=utf-8" },
+      });
+    }
+  },
+};

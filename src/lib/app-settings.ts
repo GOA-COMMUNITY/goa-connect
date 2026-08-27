@@ -1,1 +1,41 @@
-aW1wb3J0IHsgc3VwYWJhc2UgfSBmcm9tICJAL2ludGVncmF0aW9ucy9zdXBhYmFzZS9jbGllbnQiOwoKZXhwb3J0IHR5cGUgU2hvcnRzU2V0dGluZ3MgPSB7CiAgY2FjaGVkRmlyc3Q6IGJvb2xlYW47CiAgYXV0b1JlZnJlc2g6IGJvb2xlYW47CiAgbWF4Q2FjaGVkOiBudW1iZXI7CiAgLyoqIFdoZW4gZmFsc2UsIG9ubHkgc2hvcnRzIGRvd25sb2FkZWQgb250byBHb2EgU29jaWFsIGhvc3RpbmcgYXJlIHBsYXllZC4gKi8KICBlbWJlZHNFbmFibGVkOiBib29sZWFuOwp9OwoKZXhwb3J0IGNvbnN0IGRlZmF1bHRTaG9ydHNTZXR0aW5nczogU2hvcnRzU2V0dGluZ3MgPSB7CiAgY2FjaGVkRmlyc3Q6IHRydWUsCiAgYXV0b1JlZnJlc2g6IHRydWUsCiAgbWF4Q2FjaGVkOiAxMDAsCiAgLy8gT2ZmIGJ5IGRlZmF1bHQ6IG9ubHkgc2hvcnRzIGRvd25sb2FkZWQgb250byBHb2EgU29jaWFsIGhvc3RpbmcgcGxheS4KICBlbWJlZHNFbmFibGVkOiBmYWxzZSwKfTsKCgpsZXQgY2FjaGVkOiBQcm9taXNlPFNob3J0c1NldHRpbmdzPiB8IG51bGwgPSBudWxsOwoKZXhwb3J0IGZ1bmN0aW9uIGdldFNob3J0c1NldHRpbmdzKCk6IFByb21pc2U8U2hvcnRzU2V0dGluZ3M+IHsKICBpZiAoIWNhY2hlZCkgewogICAgY2FjaGVkID0gKGFzeW5jICgpID0+IHsKICAgICAgdHJ5IHsKICAgICAgICBjb25zdCB7IGRhdGEgfSA9IGF3YWl0IHN1cGFiYXNlCiAgICAgICAgICAuZnJvbSgiYXBwX3NldHRpbmdzIikKICAgICAgICAgIC5zZWxlY3QoInZhbHVlIikKICAgICAgICAgIC5lcSgia2V5IiwgInNob3J0cyIpCiAgICAgICAgICAubWF5YmVTaW5nbGUoKTsKICAgICAgICByZXR1cm4gewogICAgICAgICAgLi4uZGVmYXVsdFNob3J0c1NldHRpbmdzLAogICAgICAgICAgLi4uKChkYXRhPy52YWx1ZSBhcyBQYXJ0aWFsPFNob3J0c1NldHRpbmdzPiB8IG51bGwpID8/IHt9KSwKICAgICAgICB9OwogICAgICB9IGNhdGNoIHsKICAgICAgICByZXR1cm4gZGVmYXVsdFNob3J0c1NldHRpbmdzOwogICAgICB9CiAgICB9KSgpOwogIH0KICByZXR1cm4gY2FjaGVkOwp9Cg==
+import { supabase } from "@/integrations/supabase/client";
+
+export type ShortsSettings = {
+  cachedFirst: boolean;
+  autoRefresh: boolean;
+  maxCached: number;
+  /** When false, only shorts downloaded onto Goa Social hosting are played. */
+  embedsEnabled: boolean;
+};
+
+export const defaultShortsSettings: ShortsSettings = {
+  cachedFirst: true,
+  autoRefresh: true,
+  maxCached: 100,
+  // Off by default: only shorts downloaded onto Goa Social hosting play.
+  embedsEnabled: false,
+};
+
+
+let cached: Promise<ShortsSettings> | null = null;
+
+export function getShortsSettings(): Promise<ShortsSettings> {
+  if (!cached) {
+    cached = (async () => {
+      try {
+        const { data } = await supabase
+          .from("app_settings")
+          .select("value")
+          .eq("key", "shorts")
+          .maybeSingle();
+        return {
+          ...defaultShortsSettings,
+          ...((data?.value as Partial<ShortsSettings> | null) ?? {}),
+        };
+      } catch {
+        return defaultShortsSettings;
+      }
+    })();
+  }
+  return cached;
+}

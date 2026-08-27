@@ -1,1 +1,160 @@
-LyoqCiAqIFNob3J0cyB3YXJtLXVwOiBydW5zIHRoZSBtb21lbnQgdGhlIHNwbGFzaCBzY3JlZW4gYXBwZWFycyBzbyB0aGUgZmlyc3QKICogc2hvcnQgaXMgZnVsbHkgYnVmZmVyZWQgKGFuZCB0aGUgdmlkZW8gbGlzdCBpcyBjYWNoZWQpIGJlZm9yZSB0aGUgdXNlcgogKiBldmVyIHNlZXMgdGhlIGZlZWQuCiAqCiAqIFdlIGRvIE5PVCByZS1ob3N0IFlvdVR1YmUgdmlkZW9zLiBJbnN0ZWFkIHdlIHBheSBldmVyeSBuZXR3b3JrIGNvc3QKICogdXAtZnJvbnQsIGJlaGluZCB0aGUgc3BsYXNoIGFuaW1hdGlvbjoKICogIC0gcHJlY29ubmVjdCAvIEROUyB0byBldmVyeSBZb3VUdWJlICsgQ0ROIG9yaWdpbgogKiAgLSBsb2FkIHRoZSBJRnJhbWUgQVBJIHNjcmlwdCBlYXJseQogKiAgLSB3YXJtIGhpZGRlbiBtdXRlZCBwbGF5ZXJzIGZvciB0aGUgZmlyc3Qgc2hvcnRzIHNvIHRoZWlyIHZpZGVvIHNlZ21lbnRzCiAqICAgIGFyZSBhbHJlYWR5IGluIHRoZSBicm93c2VyIGNhY2hlIHdoZW4gdGhlIHJlYWwgcGxheWVyIG1vdW50cwogKiAgLSBjYWNoZSB2aWRlb3MuanNvbiBpbiBzZXNzaW9uU3RvcmFnZSBmb3IgaW5zdGFudCByZXBlYXQgbG9hZHMKICovCgpleHBvcnQgdHlwZSBXYXJtU2hvcnQgPSB7IHZpZGVvSWQ6IHN0cmluZzsgY2hhbm5lbE5hbWU6IHN0cmluZzsgY2hhbm5lbEljb246IHN0cmluZyB9OwoKY29uc3QgTElTVF9DQUNIRV9LRVkgPSAiZ3NfdmlkZW9zX2NhY2hlX3YxIjsKY29uc3QgTElTVF9DQUNIRV9UVEwgPSAxNSAqIDYwICogMTAwMDsKCmNvbnN0IE9SSUdJTlMgPSBbCiAgImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tIiwKICAiaHR0cHM6Ly93d3cueW91dHViZS1ub2Nvb2tpZS5jb20iLAogICJodHRwczovL2kueXRpbWcuY29tIiwKICAiaHR0cHM6Ly9zLnl0aW1nLmNvbSIsCiAgImh0dHBzOi8veXQzLmdncGh0LmNvbSIsCiAgImh0dHBzOi8vZ29vZ2xldmlkZW8uY29tIiwKICAiaHR0cHM6Ly9ycjEtLS1zbi1jdmg3a256ay5nb29nbGV2aWRlby5jb20iLApdOwoKbGV0IHdhcm1lZCA9IGZhbHNlOwoKZnVuY3Rpb24gYWRkTGluayhyZWw6IHN0cmluZywgaHJlZjogc3RyaW5nLCBleHRyYTogUGFydGlhbDxIVE1MTGlua0VsZW1lbnQ+ID0ge30pIHsKICBpZiAoZG9jdW1lbnQuaGVhZC5xdWVyeVNlbGVjdG9yKGBsaW5rW3JlbD0iJHtyZWx9Il1baHJlZj0iJHtocmVmfSJdYCkpIHJldHVybjsKICBjb25zdCBsaW5rID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgibGluayIpOwogIGxpbmsucmVsID0gcmVsOwogIGxpbmsuaHJlZiA9IGhyZWY7CiAgT2JqZWN0LmFzc2lnbihsaW5rLCBleHRyYSk7CiAgZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChsaW5rKTsKfQoKZnVuY3Rpb24gd2FybU9yaWdpbnMoKSB7CiAgT1JJR0lOUy5mb3JFYWNoKChvcmlnaW4pID0+IHsKICAgIGFkZExpbmsoInByZWNvbm5lY3QiLCBvcmlnaW4sIHsgY3Jvc3NPcmlnaW46ICJhbm9ueW1vdXMiIH0gYXMgUGFydGlhbDxIVE1MTGlua0VsZW1lbnQ+KTsKICAgIGFkZExpbmsoImRucy1wcmVmZXRjaCIsIG9yaWdpbik7CiAgfSk7Cn0KCmZ1bmN0aW9uIGxvYWRJZnJhbWVBcGkoKSB7CiAgaWYgKGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoInNjcmlwdFtzcmM9J2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL2lmcmFtZV9hcGknXSIpKSByZXR1cm47CiAgY29uc3Qgc2NyaXB0ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic2NyaXB0Iik7CiAgc2NyaXB0LnNyYyA9ICJodHRwczovL3d3dy55b3V0dWJlLmNvbS9pZnJhbWVfYXBpIjsKICBzY3JpcHQuYXN5bmMgPSB0cnVlOwogIGRvY3VtZW50LmhlYWQuYXBwZW5kQ2hpbGQoc2NyaXB0KTsKfQoKLyoqIEhpZGRlbiwgbXV0ZWQsIG9mZi1zY3JlZW4gcGxheWVycyB0aGF0IGZvcmNlIFlvdVR1YmUgdG8gYnVmZmVyIHRoZSB2aWRlby4gKi8KZnVuY3Rpb24gYnVmZmVyU2hvcnRzKGlkczogc3RyaW5nW10pIHsKICBpZiAoaWRzLmxlbmd0aCA9PT0gMCkgcmV0dXJuOwogIGNvbnN0IGhvc3QgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJkaXYiKTsKICBob3N0LnNldEF0dHJpYnV0ZSgiYXJpYS1oaWRkZW4iLCAidHJ1ZSIpOwogIGhvc3Quc3R5bGUuY3NzVGV4dCA9CiAgICAicG9zaXRpb246Zml4ZWQ7bGVmdDotOTk5OXB4O3RvcDowO3dpZHRoOjFweDtoZWlnaHQ6MXB4O29wYWNpdHk6MDtwb2ludGVyLWV2ZW50czpub25lO292ZXJmbG93OmhpZGRlbiI7CiAgZG9jdW1lbnQuYm9keS5hcHBlbmRDaGlsZChob3N0KTsKCiAgaWRzLmZvckVhY2goKHZpZGVvSWQsIGluZGV4KSA9PiB7CiAgICB3aW5kb3cuc2V0VGltZW91dCgoKSA9PiB7CiAgICAgIGNvbnN0IGZyYW1lID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiaWZyYW1lIik7CiAgICAgIGZyYW1lLmFsbG93ID0gImF1dG9wbGF5OyBlbmNyeXB0ZWQtbWVkaWEiOwogICAgICBmcmFtZS5zcmMgPQogICAgICAgIGBodHRwczovL3d3dy55b3V0dWJlLW5vY29va2llLmNvbS9lbWJlZC8ke3ZpZGVvSWR9YCArCiAgICAgICAgYD9hdXRvcGxheT0xJm11dGU9MSZjb250cm9scz0wJnBsYXlzaW5saW5lPTEmcmVsPTAmbW9kZXN0YnJhbmRpbmc9MSZ2cT10aW55Jm9yaWdpbj0ke2VuY29kZVVSSUNvbXBvbmVudCgKICAgICAgICAgIHdpbmRvdy5sb2NhdGlvbi5vcmlnaW4sCiAgICAgICAgKX1gOwogICAgICBmcmFtZS53aWR0aCA9ICIxIjsKICAgICAgZnJhbWUuaGVpZ2h0ID0gIjEiOwogICAgICBob3N0LmFwcGVuZENoaWxkKGZyYW1lKTsKICAgIH0sIGluZGV4ICogNDAwKTsKICB9KTsKCiAgLy8gS2VlcCBidWZmZXJpbmcgb25seSB3aGlsZSB0aGUgc3BsYXNoIGlzIG9uIHNjcmVlbiwgdGhlbiByZWxlYXNlIG1lbW9yeS4KICBjb25zdCBjbGVhbnVwID0gKCkgPT4gewogICAgaG9zdC5yZW1vdmUoKTsKICAgIHdpbmRvdy5yZW1vdmVFdmVudExpc3RlbmVyKCJncy1zaG9ydHMtd2FybS1kb25lIiwgY2xlYW51cCk7CiAgfTsKICB3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcigiZ3Mtc2hvcnRzLXdhcm0tZG9uZSIsIGNsZWFudXApOwogIHdpbmRvdy5zZXRUaW1lb3V0KGNsZWFudXAsIDkwMDApOwp9CgpmdW5jdGlvbiB3YXJtVGh1bWJuYWlscyhpZHM6IHN0cmluZ1tdKSB7CiAgaWRzLmZvckVhY2goKHZpZGVvSWQsIGluZGV4KSA9PiB7CiAgICBjb25zdCBpbWFnZSA9IG5ldyBJbWFnZSgpOwogICAgaW1hZ2UuZGVjb2RpbmcgPSAiYXN5bmMiOwogICAgaWYgKGluZGV4ID4gMCkgaW1hZ2UubG9hZGluZyA9ICJsYXp5IjsKICAgIGltYWdlLnNyYyA9IGBodHRwczovL2kueXRpbWcuY29tL3ZpLyR7dmlkZW9JZH0vaHE3MjAuanBnYDsKICB9KTsKfQoKLyoqIEluc3RhbnRseSBhdmFpbGFibGUgY2FjaGVkIGxpc3QgKHVzZWQgYmVmb3JlIHRoZSBuZXR3b3JrIHJlc3BvbmRzKS4gKi8KZXhwb3J0IGZ1bmN0aW9uIGdldENhY2hlZFNob3J0cygpOiBXYXJtU2hvcnRbXSB8IG51bGwgewogIGlmICh0eXBlb2Ygd2luZG93ID09PSAidW5kZWZpbmVkIikgcmV0dXJuIG51bGw7CiAgdHJ5IHsKICAgIGNvbnN0IHJhdyA9IHNlc3Npb25TdG9yYWdlLmdldEl0ZW0oTElTVF9DQUNIRV9LRVkpOwogICAgaWYgKCFyYXcpIHJldHVybiBudWxsOwogICAgY29uc3QgcGFyc2VkID0gSlNPTi5wYXJzZShyYXcpIGFzIHsgYXQ6IG51bWJlcjsgaXRlbXM6IFdhcm1TaG9ydFtdIH07CiAgICBpZiAoIXBhcnNlZD8uaXRlbXM/Lmxlbmd0aCkgcmV0dXJuIG51bGw7CiAgICBpZiAoRGF0ZS5ub3coKSAtIHBhcnNlZC5hdCA+IExJU1RfQ0FDSEVfVFRMKSByZXR1cm4gbnVsbDsKICAgIHJldHVybiBwYXJzZWQuaXRlbXM7CiAgfSBjYXRjaCB7CiAgICByZXR1cm4gbnVsbDsKICB9Cn0KCmZ1bmN0aW9uIGNhY2hlU2hvcnRzKGl0ZW1zOiBXYXJtU2hvcnRbXSkgewogIHRyeSB7CiAgICBzZXNzaW9uU3RvcmFnZS5zZXRJdGVtKExJU1RfQ0FDSEVfS0VZLCBKU09OLnN0cmluZ2lmeSh7IGF0OiBEYXRlLm5vdygpLCBpdGVtcyB9KSk7CiAgfSBjYXRjaCB7fQp9CgovKioKICogS2ljayBvZmYgZXZlcnl0aGluZy4gUmV0dXJucyB0aGUgZnJlc2hlc3QgbGlzdCBvZiBzaG9ydHMgaXQgY291bGQgZ2V0CiAqIChjYWNoZWQgZmlyc3QsIG5ldHdvcmsgc2Vjb25kKSBzbyBjYWxsZXJzIGNhbiByZW5kZXIgaW5zdGFudGx5LgogKi8KZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIHdhcm1TaG9ydHMoCiAgZmFsbGJhY2s6IFdhcm1TaG9ydFtdLAogIG9uTGlzdD86IChpdGVtczogV2FybVNob3J0W10pID0+IHZvaWQsCik6IFByb21pc2U8dm9pZD4gewogIGlmICh0eXBlb2Ygd2luZG93ID09PSAidW5kZWZpbmVkIikgcmV0dXJuOwoKICBjb25zdCBjYWNoZWQgPSBnZXRDYWNoZWRTaG9ydHMoKTsKICBjb25zdCBzZWVkID0gY2FjaGVkPy5sZW5ndGggPyBjYWNoZWQgOiBmYWxsYmFjazsKCiAgaWYgKCF3YXJtZWQpIHsKICAgIHdhcm1lZCA9IHRydWU7CiAgICB3YXJtT3JpZ2lucygpOwogICAgbG9hZElmcmFtZUFwaSgpOwogICAgd2FybVRodW1ibmFpbHMoc2VlZC5zbGljZSgwLCA0KS5tYXAoKHNob3J0KSA9PiBzaG9ydC52aWRlb0lkKSk7CiAgICBidWZmZXJTaG9ydHMoc2VlZC5zbGljZSgwLCAyKS5tYXAoKHNob3J0KSA9PiBzaG9ydC52aWRlb0lkKSk7CiAgfQoKICBpZiAoY2FjaGVkPy5sZW5ndGgpIG9uTGlzdD8uKGNhY2hlZCk7CgogIHRyeSB7CiAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKGAvdmlkZW9zLmpzb24/dj0ke01hdGguZmxvb3IoRGF0ZS5ub3coKSAvIDkwMDAwMCl9YCwgewogICAgICBjYWNoZTogIm5vLXN0b3JlIiwKICAgIH0pOwogICAgY29uc3QgaXRlbXMgPSAoYXdhaXQgcmVzcG9uc2UuanNvbigpKSBhcyBXYXJtU2hvcnRbXTsKICAgIGlmIChBcnJheS5pc0FycmF5KGl0ZW1zKSAmJiBpdGVtcy5sZW5ndGgpIHsKICAgICAgY29uc3QgdHJpbW1lZCA9IGl0ZW1zLnNsaWNlKDAsIDM2KTsKICAgICAgY2FjaGVTaG9ydHModHJpbW1lZCk7CiAgICAgIHdhcm1UaHVtYm5haWxzKHRyaW1tZWQuc2xpY2UoMCwgNCkubWFwKChzaG9ydCkgPT4gc2hvcnQudmlkZW9JZCkpOwogICAgICBvbkxpc3Q/Lih0cmltbWVkKTsKICAgIH0KICB9IGNhdGNoIHt9Cn0KCi8qKiBDYWxsZWQgd2hlbiB0aGUgc3BsYXNoIGZpbmlzaGVzIHNvIGhpZGRlbiB3YXJtLXVwIGZyYW1lcyBhcmUgZHJvcHBlZC4gKi8KZXhwb3J0IGZ1bmN0aW9uIHJlbGVhc2VXYXJtdXAoKSB7CiAgaWYgKHR5cGVvZiB3aW5kb3cgPT09ICJ1bmRlZmluZWQiKSByZXR1cm47CiAgd2luZG93LmRpc3BhdGNoRXZlbnQobmV3IEV2ZW50KCJncy1zaG9ydHMtd2FybS1kb25lIikpOwp9Cg==
+/**
+ * Shorts warm-up: runs the moment the splash screen appears so the first
+ * short is fully buffered (and the video list is cached) before the user
+ * ever sees the feed.
+ *
+ * We do NOT re-host YouTube videos. Instead we pay every network cost
+ * up-front, behind the splash animation:
+ *  - preconnect / DNS to every YouTube + CDN origin
+ *  - load the IFrame API script early
+ *  - warm hidden muted players for the first shorts so their video segments
+ *    are already in the browser cache when the real player mounts
+ *  - cache videos.json in sessionStorage for instant repeat loads
+ */
+
+export type WarmShort = { videoId: string; channelName: string; channelIcon: string };
+
+const LIST_CACHE_KEY = "gs_videos_cache_v1";
+const LIST_CACHE_TTL = 15 * 60 * 1000;
+
+const ORIGINS = [
+  "https://www.youtube.com",
+  "https://www.youtube-nocookie.com",
+  "https://i.ytimg.com",
+  "https://s.ytimg.com",
+  "https://yt3.ggpht.com",
+  "https://googlevideo.com",
+  "https://rr1---sn-cvh7knzk.googlevideo.com",
+];
+
+let warmed = false;
+
+function addLink(rel: string, href: string, extra: Partial<HTMLLinkElement> = {}) {
+  if (document.head.querySelector(`link[rel="${rel}"][href="${href}"]`)) return;
+  const link = document.createElement("link");
+  link.rel = rel;
+  link.href = href;
+  Object.assign(link, extra);
+  document.head.appendChild(link);
+}
+
+function warmOrigins() {
+  ORIGINS.forEach((origin) => {
+    addLink("preconnect", origin, { crossOrigin: "anonymous" } as Partial<HTMLLinkElement>);
+    addLink("dns-prefetch", origin);
+  });
+}
+
+function loadIframeApi() {
+  if (document.querySelector("script[src='https://www.youtube.com/iframe_api']")) return;
+  const script = document.createElement("script");
+  script.src = "https://www.youtube.com/iframe_api";
+  script.async = true;
+  document.head.appendChild(script);
+}
+
+/** Hidden, muted, off-screen players that force YouTube to buffer the video. */
+function bufferShorts(ids: string[]) {
+  if (ids.length === 0) return;
+  const host = document.createElement("div");
+  host.setAttribute("aria-hidden", "true");
+  host.style.cssText =
+    "position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden";
+  document.body.appendChild(host);
+
+  ids.forEach((videoId, index) => {
+    window.setTimeout(() => {
+      const frame = document.createElement("iframe");
+      frame.allow = "autoplay; encrypted-media";
+      frame.src =
+        `https://www.youtube-nocookie.com/embed/${videoId}` +
+        `?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1&vq=tiny&origin=${encodeURIComponent(
+          window.location.origin,
+        )}`;
+      frame.width = "1";
+      frame.height = "1";
+      host.appendChild(frame);
+    }, index * 400);
+  });
+
+  // Keep buffering only while the splash is on screen, then release memory.
+  const cleanup = () => {
+    host.remove();
+    window.removeEventListener("gs-shorts-warm-done", cleanup);
+  };
+  window.addEventListener("gs-shorts-warm-done", cleanup);
+  window.setTimeout(cleanup, 9000);
+}
+
+function warmThumbnails(ids: string[]) {
+  ids.forEach((videoId, index) => {
+    const image = new Image();
+    image.decoding = "async";
+    if (index > 0) image.loading = "lazy";
+    image.src = `https://i.ytimg.com/vi/${videoId}/hq720.jpg`;
+  });
+}
+
+/** Instantly available cached list (used before the network responds). */
+export function getCachedShorts(): WarmShort[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem(LIST_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { at: number; items: WarmShort[] };
+    if (!parsed?.items?.length) return null;
+    if (Date.now() - parsed.at > LIST_CACHE_TTL) return null;
+    return parsed.items;
+  } catch {
+    return null;
+  }
+}
+
+function cacheShorts(items: WarmShort[]) {
+  try {
+    sessionStorage.setItem(LIST_CACHE_KEY, JSON.stringify({ at: Date.now(), items }));
+  } catch {}
+}
+
+/**
+ * Kick off everything. Returns the freshest list of shorts it could get
+ * (cached first, network second) so callers can render instantly.
+ */
+export async function warmShorts(
+  fallback: WarmShort[],
+  onList?: (items: WarmShort[]) => void,
+): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  const cached = getCachedShorts();
+  const seed = cached?.length ? cached : fallback;
+
+  if (!warmed) {
+    warmed = true;
+    warmOrigins();
+    loadIframeApi();
+    warmThumbnails(seed.slice(0, 4).map((short) => short.videoId));
+    bufferShorts(seed.slice(0, 2).map((short) => short.videoId));
+  }
+
+  if (cached?.length) onList?.(cached);
+
+  try {
+    const response = await fetch(`/videos.json?v=${Math.floor(Date.now() / 900000)}`, {
+      cache: "no-store",
+    });
+    const items = (await response.json()) as WarmShort[];
+    if (Array.isArray(items) && items.length) {
+      const trimmed = items.slice(0, 36);
+      cacheShorts(trimmed);
+      warmThumbnails(trimmed.slice(0, 4).map((short) => short.videoId));
+      onList?.(trimmed);
+    }
+  } catch {}
+}
+
+/** Called when the splash finishes so hidden warm-up frames are dropped. */
+export function releaseWarmup() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event("gs-shorts-warm-done"));
+}

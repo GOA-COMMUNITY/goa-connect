@@ -1,1 +1,36 @@
-dHlwZSBQcm9maWxlQXZhdGFyUHJvcHMgPSB7CiAgdXJsPzogc3RyaW5nIHwgbnVsbDsKICBlbW9qaT86IHN0cmluZyB8IG51bGw7CiAgbmFtZT86IHN0cmluZyB8IG51bGw7CiAgY2xhc3NOYW1lPzogc3RyaW5nOwogIGltYWdlQ2xhc3NOYW1lPzogc3RyaW5nOwogIGZhbGxiYWNrQ2xhc3NOYW1lPzogc3RyaW5nOwp9OwoKZXhwb3J0IGZ1bmN0aW9uIFByb2ZpbGVBdmF0YXIoewogIHVybCwKICBlbW9qaSwKICBuYW1lLAogIGNsYXNzTmFtZSA9ICJoLTEyIHctMTIiLAogIGltYWdlQ2xhc3NOYW1lID0gIiIsCiAgZmFsbGJhY2tDbGFzc05hbWUgPSAidGV4dC14bCIsCn06IFByb2ZpbGVBdmF0YXJQcm9wcykgewogIGNvbnN0IGxhYmVsID0gbmFtZSA/IGAke25hbWV9IGF2YXRhcmAgOiAiUHJvZmlsZSBhdmF0YXIiOwoKICByZXR1cm4gKAogICAgPGRpdiBjbGFzc05hbWU9e2Ake2NsYXNzTmFtZX0gc2hyaW5rLTAgb3ZlcmZsb3ctaGlkZGVuIHJvdW5kZWQtZnVsbCBiZy1ncmFkaWVudC1wcmltYXJ5ICR7ZmFsbGJhY2tDbGFzc05hbWV9YH0+CiAgICAgIHt1cmwgPyAoCiAgICAgICAgPGltZwogICAgICAgICAgc3JjPXt1cmx9CiAgICAgICAgICBhbHQ9e2xhYmVsfQogICAgICAgICAgY2xhc3NOYW1lPXtgaC1mdWxsIHctZnVsbCBvYmplY3QtY292ZXIgJHtpbWFnZUNsYXNzTmFtZX1gfQogICAgICAgICAgbG9hZGluZz0ibGF6eSIKICAgICAgICAgIGRlY29kaW5nPSJhc3luYyIKICAgICAgICAgIHJlZmVycmVyUG9saWN5PSJuby1yZWZlcnJlciIKICAgICAgICAvPgogICAgICApIDogKAogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGgtZnVsbCB3LWZ1bGwgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIj57ZW1vamkgPz8gIvCfjLQifTwvZGl2PgogICAgICApfQogICAgPC9kaXY+CiAgKTsKfQ==
+type ProfileAvatarProps = {
+  url?: string | null;
+  emoji?: string | null;
+  name?: string | null;
+  className?: string;
+  imageClassName?: string;
+  fallbackClassName?: string;
+};
+
+export function ProfileAvatar({
+  url,
+  emoji,
+  name,
+  className = "h-12 w-12",
+  imageClassName = "",
+  fallbackClassName = "text-xl",
+}: ProfileAvatarProps) {
+  const label = name ? `${name} avatar` : "Profile avatar";
+
+  return (
+    <div className={`${className} shrink-0 overflow-hidden rounded-full bg-gradient-primary ${fallbackClassName}`}>
+      {url ? (
+        <img
+          src={url}
+          alt={label}
+          className={`h-full w-full object-cover ${imageClassName}`}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">{emoji ?? "🌴"}</div>
+      )}
+    </div>
+  );
+}

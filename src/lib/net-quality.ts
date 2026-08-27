@@ -1,1 +1,168 @@
-LyoqCiAqIEFkYXB0aXZlIHF1YWxpdHkgYnJhaW4gZm9yIHRoZSBzaG9ydHMgZmVlZC4KICoKICogR29hbDogdGhlIGZpcnN0IDItMyBzaG9ydHMgQUxXQVlTIHN0YXJ0IGF0IHRoZSBsb3dlc3QgdGllciBzbyBwbGF5YmFjayBpcwogKiBpbnN0YW50LCB0aGVuIHRoZSBhcHAga2VlcHMgbWVhc3VyaW5nIHRoZSByZWFsIGNvbm5lY3Rpb24gYW5kIHNpbGVudGx5CiAqIHVwZ3JhZGVzIChvciBkb3duZ3JhZGVzKSBxdWFsaXR5LiBBIHRpbnkgbWFudWFsIG92ZXJyaWRlIGxpdmVzIGluIHRoZSBmZWVkLgogKgogKiBQcm9iZSBzY2hlZHVsZTogMHMgKGNoZWFwLCBmcm9tIHRoZSBOZXR3b3JrIEluZm9ybWF0aW9uIEFQSSksIHRoZW4gcmVhbAogKiBieXRlLXRpbWVkIHByb2JlcyBhdCB+OHMsIH4yNXMsIH42MHMgYW5kIGV2ZXJ5IDYwcyBhZnRlciB0aGF0LiBDaGVhcCBlbm91Z2gKICogdG8gbmV2ZXIgY29tcGV0ZSB3aXRoIHZpZGVvIGJhbmR3aWR0aC4KICovCgpleHBvcnQgdHlwZSBRdWFsaXR5VGllciA9ICJsb3ciIHwgIm1lZGl1bSIgfCAiaGlnaCI7CmV4cG9ydCB0eXBlIFF1YWxpdHlNb2RlID0gImF1dG8iIHwgUXVhbGl0eVRpZXI7Cgpjb25zdCBNT0RFX0tFWSA9ICJnc19xdWFsaXR5X21vZGUiOwpjb25zdCBUSUVSX0tFWSA9ICJnc19xdWFsaXR5X3RpZXIiOwovKiogRmlyc3QgTiBzaG9ydHMgYXJlIHBpbm5lZCB0byB0aGUgbG93ZXN0IHRpZXIgZm9yIGFuIGluc3RhbnQgZmlyc3QgZnJhbWUuICovCmV4cG9ydCBjb25zdCBGQVNUX1NUQVJUX0NPVU5UID0gMzsKCnR5cGUgTGlzdGVuZXIgPSAodGllcjogUXVhbGl0eVRpZXIsIG1vZGU6IFF1YWxpdHlNb2RlKSA9PiB2b2lkOwoKY29uc3QgbGlzdGVuZXJzID0gbmV3IFNldDxMaXN0ZW5lcj4oKTsKbGV0IG1vZGU6IFF1YWxpdHlNb2RlID0gImF1dG8iOwpsZXQgbWVhc3VyZWQ6IFF1YWxpdHlUaWVyID0gImxvdyI7CmxldCBzdGFydGVkID0gZmFsc2U7CmxldCB0aW1lcjogbnVtYmVyIHwgdW5kZWZpbmVkOwoKZnVuY3Rpb24gcmVhZFN0b3JlZCgpIHsKICBpZiAodHlwZW9mIHdpbmRvdyA9PT0gInVuZGVmaW5lZCIpIHJldHVybjsKICBjb25zdCBzdG9yZWRNb2RlID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0oTU9ERV9LRVkpIGFzIFF1YWxpdHlNb2RlIHwgbnVsbDsKICBpZiAoc3RvcmVkTW9kZSA9PT0gImF1dG8iIHx8IHN0b3JlZE1vZGUgPT09ICJsb3ciIHx8IHN0b3JlZE1vZGUgPT09ICJtZWRpdW0iIHx8IHN0b3JlZE1vZGUgPT09ICJoaWdoIikgewogICAgbW9kZSA9IHN0b3JlZE1vZGU7CiAgfQogIGNvbnN0IHN0b3JlZFRpZXIgPSBzZXNzaW9uU3RvcmFnZS5nZXRJdGVtKFRJRVJfS0VZKSBhcyBRdWFsaXR5VGllciB8IG51bGw7CiAgaWYgKHN0b3JlZFRpZXIgPT09ICJsb3ciIHx8IHN0b3JlZFRpZXIgPT09ICJtZWRpdW0iIHx8IHN0b3JlZFRpZXIgPT09ICJoaWdoIikgbWVhc3VyZWQgPSBzdG9yZWRUaWVyOwp9CnJlYWRTdG9yZWQoKTsKCmZ1bmN0aW9uIGVtaXQoKSB7CiAgY29uc3QgdGllciA9IGN1cnJlbnRUaWVyKCk7CiAgbGlzdGVuZXJzLmZvckVhY2goKGxpc3RlbmVyKSA9PiBsaXN0ZW5lcih0aWVyLCBtb2RlKSk7Cn0KCmV4cG9ydCBmdW5jdGlvbiBjdXJyZW50VGllcigpOiBRdWFsaXR5VGllciB7CiAgcmV0dXJuIG1vZGUgPT09ICJhdXRvIiA/IG1lYXN1cmVkIDogbW9kZTsKfQoKZXhwb3J0IGZ1bmN0aW9uIGN1cnJlbnRNb2RlKCk6IFF1YWxpdHlNb2RlIHsKICByZXR1cm4gbW9kZTsKfQoKZXhwb3J0IGZ1bmN0aW9uIHNldFF1YWxpdHlNb2RlKG5leHQ6IFF1YWxpdHlNb2RlKSB7CiAgbW9kZSA9IG5leHQ7CiAgdHJ5IHsKICAgIGxvY2FsU3RvcmFnZS5zZXRJdGVtKE1PREVfS0VZLCBuZXh0KTsKICB9IGNhdGNoIHt9CiAgZW1pdCgpOwp9CgpleHBvcnQgZnVuY3Rpb24gb25RdWFsaXR5Q2hhbmdlKGxpc3RlbmVyOiBMaXN0ZW5lcikgewogIGxpc3RlbmVycy5hZGQobGlzdGVuZXIpOwogIHJldHVybiAoKSA9PiBsaXN0ZW5lcnMuZGVsZXRlKGxpc3RlbmVyKTsKfQoKZnVuY3Rpb24gYXBwbHlNZWFzdXJlZChuZXh0OiBRdWFsaXR5VGllcikgewogIGlmIChuZXh0ID09PSBtZWFzdXJlZCkgcmV0dXJuOwogIG1lYXN1cmVkID0gbmV4dDsKICB0cnkgewogICAgc2Vzc2lvblN0b3JhZ2Uuc2V0SXRlbShUSUVSX0tFWSwgbmV4dCk7CiAgfSBjYXRjaCB7fQogIGlmIChtb2RlID09PSAiYXV0byIpIGVtaXQoKTsKfQoKZnVuY3Rpb24gdGllckZyb21NYnBzKG1icHM6IG51bWJlcik6IFF1YWxpdHlUaWVyIHsKICBpZiAobWJwcyA+PSA2KSByZXR1cm4gImhpZ2giOwogIGlmIChtYnBzID49IDEuOCkgcmV0dXJuICJtZWRpdW0iOwogIHJldHVybiAibG93IjsKfQoKZnVuY3Rpb24gaGludGVkVGllcigpOiBRdWFsaXR5VGllciB8IG51bGwgewogIGNvbnN0IGNvbm5lY3Rpb24gPSAobmF2aWdhdG9yIGFzIGFueSk/LmNvbm5lY3Rpb247CiAgaWYgKCFjb25uZWN0aW9uKSByZXR1cm4gbnVsbDsKICBpZiAoY29ubmVjdGlvbi5zYXZlRGF0YSkgcmV0dXJuICJsb3ciOwogIGNvbnN0IGVmZmVjdGl2ZSA9IGNvbm5lY3Rpb24uZWZmZWN0aXZlVHlwZSBhcyBzdHJpbmcgfCB1bmRlZmluZWQ7CiAgaWYgKGVmZmVjdGl2ZSA9PT0gInNsb3ctMmciIHx8IGVmZmVjdGl2ZSA9PT0gIjJnIiB8fCBlZmZlY3RpdmUgPT09ICIzZyIpIHJldHVybiAibG93IjsKICBjb25zdCBkb3dubGluayA9IE51bWJlcihjb25uZWN0aW9uLmRvd25saW5rKTsKICBpZiAoTnVtYmVyLmlzRmluaXRlKGRvd25saW5rKSAmJiBkb3dubGluayA+IDApIHJldHVybiB0aWVyRnJvbU1icHMoZG93bmxpbmspOwogIHJldHVybiBudWxsOwp9CgovKiogVGltZXMgYSBzbWFsbCByZWFsIGRvd25sb2FkIHRvIGdldCBob25lc3QgdGhyb3VnaHB1dCAobm90IGEgdmVuZG9yIGhpbnQpLiAqLwphc3luYyBmdW5jdGlvbiBwcm9iZSgpOiBQcm9taXNlPFF1YWxpdHlUaWVyIHwgbnVsbD4gewogIGNvbnN0IHVybCA9IGAvY2FjaGVkLXNob3J0cy5qc29uP3Byb2JlPSR7RGF0ZS5ub3coKX1gOwogIHRyeSB7CiAgICBjb25zdCBzdGFydCA9IHBlcmZvcm1hbmNlLm5vdygpOwogICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaCh1cmwsIHsgY2FjaGU6ICJuby1zdG9yZSIgfSk7CiAgICBjb25zdCBidWZmZXIgPSBhd2FpdCByZXNwb25zZS5hcnJheUJ1ZmZlcigpOwogICAgY29uc3Qgc2Vjb25kcyA9IChwZXJmb3JtYW5jZS5ub3coKSAtIHN0YXJ0KSAvIDEwMDA7CiAgICBpZiAoc2Vjb25kcyA8PSAwIHx8IGJ1ZmZlci5ieXRlTGVuZ3RoIDwgMjAwKSByZXR1cm4gbnVsbDsKICAgIC8vIFNtYWxsIHBheWxvYWQ6IGxhdGVuY3kgZG9taW5hdGVzLCBzbyB0cmVhdCBhIHNsb3cgcm91bmQtdHJpcCBhcyBhIHNsb3cgbGluay4KICAgIGNvbnN0IG1icHMgPSAoYnVmZmVyLmJ5dGVMZW5ndGggKiA4KSAvIHNlY29uZHMgLyAxXzAwMF8wMDA7CiAgICBpZiAoc2Vjb25kcyA+IDEuMikgcmV0dXJuICJsb3ciOwogICAgaWYgKHNlY29uZHMgPCAwLjE4KSByZXR1cm4gImhpZ2giOwogICAgcmV0dXJuIHRpZXJGcm9tTWJwcyhNYXRoLm1heChtYnBzLCBzZWNvbmRzIDwgMC40ID8gNiA6IDIpKTsKICB9IGNhdGNoIHsKICAgIHJldHVybiBudWxsOwogIH0KfQoKYXN5bmMgZnVuY3Rpb24gbWVhc3VyZU5vdygpIHsKICBjb25zdCBoaW50ID0gaGludGVkVGllcigpOwogIGlmIChoaW50ID09PSAibG93IikgewogICAgYXBwbHlNZWFzdXJlZCgibG93Iik7CiAgICByZXR1cm47CiAgfQogIGNvbnN0IHJlc3VsdCA9IGF3YWl0IHByb2JlKCk7CiAgaWYgKHJlc3VsdCkgYXBwbHlNZWFzdXJlZChyZXN1bHQpOwogIGVsc2UgaWYgKGhpbnQpIGFwcGx5TWVhc3VyZWQoaGludCk7Cn0KCi8qKiBTdGFydHMgdGhlIGVzY2FsYXRpbmcgbWVhc3VyZW1lbnQgc2NoZWR1bGUgKHNhZmUgdG8gY2FsbCBtYW55IHRpbWVzKS4gKi8KZXhwb3J0IGZ1bmN0aW9uIHN0YXJ0UXVhbGl0eVdhdGNoKCkgewogIGlmIChzdGFydGVkIHx8IHR5cGVvZiB3aW5kb3cgPT09ICJ1bmRlZmluZWQiKSByZXR1cm47CiAgc3RhcnRlZCA9IHRydWU7CgogIGNvbnN0IGhpbnQgPSBoaW50ZWRUaWVyKCk7CiAgaWYgKGhpbnQpIGFwcGx5TWVhc3VyZWQoaGludCk7CgogIGNvbnN0IHNjaGVkdWxlID0gWzgwMDAsIDI1MDAwLCA2MDAwMF07CiAgc2NoZWR1bGUuZm9yRWFjaCgoZGVsYXkpID0+IHdpbmRvdy5zZXRUaW1lb3V0KCgpID0+IHZvaWQgbWVhc3VyZU5vdygpLCBkZWxheSkpOwogIHRpbWVyID0gd2luZG93LnNldEludGVydmFsKCgpID0+IHZvaWQgbWVhc3VyZU5vdygpLCA2MDAwMCk7CgogIChuYXZpZ2F0b3IgYXMgYW55KT8uY29ubmVjdGlvbj8uYWRkRXZlbnRMaXN0ZW5lcj8uKCJjaGFuZ2UiLCAoKSA9PiB7CiAgICBjb25zdCBjaGFuZ2VkID0gaGludGVkVGllcigpOwogICAgaWYgKGNoYW5nZWQpIGFwcGx5TWVhc3VyZWQoY2hhbmdlZCk7CiAgfSk7CgogIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoInZpc2liaWxpdHljaGFuZ2UiLCAoKSA9PiB7CiAgICBpZiAoZG9jdW1lbnQudmlzaWJpbGl0eVN0YXRlID09PSAidmlzaWJsZSIpIHZvaWQgbWVhc3VyZU5vdygpOwogIH0pOwp9CgpleHBvcnQgZnVuY3Rpb24gc3RvcFF1YWxpdHlXYXRjaCgpIHsKICBpZiAodGltZXIpIHdpbmRvdy5jbGVhckludGVydmFsKHRpbWVyKTsKICB0aW1lciA9IHVuZGVmaW5lZDsKICBzdGFydGVkID0gZmFsc2U7Cn0KCi8qKiBZb3VUdWJlIElGcmFtZSBxdWFsaXR5IHN0cmluZyBmb3IgYSB0aWVyLiAqLwpleHBvcnQgZnVuY3Rpb24geXRRdWFsaXR5KHRpZXI6IFF1YWxpdHlUaWVyKSB7CiAgcmV0dXJuIHRpZXIgPT09ICJoaWdoIiA/ICJtZWRpdW0iIDogdGllciA9PT0gIm1lZGl1bSIgPyAic21hbGwiIDogInRpbnkiOwp9CgovKiogSG93IGFnZ3Jlc3NpdmVseSBhIG5hdGl2ZSA8dmlkZW8+IHNob3VsZCBidWZmZXIgYXQgdGhpcyB0aWVyLiAqLwpleHBvcnQgZnVuY3Rpb24gcHJlbG9hZEZvcih0aWVyOiBRdWFsaXR5VGllciwgaW5kZXg6IG51bWJlciwgaXNBY3RpdmU6IGJvb2xlYW4pIHsKICBpZiAoaXNBY3RpdmUpIHJldHVybiAiYXV0byIgYXMgY29uc3Q7CiAgaWYgKGluZGV4IDwgRkFTVF9TVEFSVF9DT1VOVCkgcmV0dXJuIHRpZXIgPT09ICJsb3ciID8gKCJtZXRhZGF0YSIgYXMgY29uc3QpIDogKCJhdXRvIiBhcyBjb25zdCk7CiAgaWYgKHRpZXIgPT09ICJoaWdoIikgcmV0dXJuICJhdXRvIiBhcyBjb25zdDsKICBpZiAodGllciA9PT0gIm1lZGl1bSIpIHJldHVybiBpbmRleCA8PSBGQVNUX1NUQVJUX0NPVU5UICsgMSA/ICgibWV0YWRhdGEiIGFzIGNvbnN0KSA6ICgibm9uZSIgYXMgY29uc3QpOwogIHJldHVybiAibm9uZSIgYXMgY29uc3Q7Cn0KCi8qKiBQb3N0ZXIgcmVzb2x1dGlvbiB0aGF0IG1hdGNoZXMgdGhlIHRpZXIgKHNhdmVzIGJ5dGVzIG9uIHNsb3cgbGlua3MpLiAqLwpleHBvcnQgZnVuY3Rpb24gcG9zdGVyRm9yKHZpZGVvSWQ6IHN0cmluZywgdGllcjogUXVhbGl0eVRpZXIsIGluZGV4OiBudW1iZXIpIHsKICBjb25zdCBzaXplID0gaW5kZXggPCBGQVNUX1NUQVJUX0NPVU5UIHx8IHRpZXIgPT09ICJsb3ciID8gIm1xZGVmYXVsdCIgOiB0aWVyID09PSAibWVkaXVtIiA/ICJocWRlZmF1bHQiIDogImhxNzIwIjsKICByZXR1cm4gYGh0dHBzOi8vaS55dGltZy5jb20vdmkvJHt2aWRlb0lkfS8ke3NpemV9LmpwZ2A7Cn0K
+/**
+ * Adaptive quality brain for the shorts feed.
+ *
+ * Goal: the first 2-3 shorts ALWAYS start at the lowest tier so playback is
+ * instant, then the app keeps measuring the real connection and silently
+ * upgrades (or downgrades) quality. A tiny manual override lives in the feed.
+ *
+ * Probe schedule: 0s (cheap, from the Network Information API), then real
+ * byte-timed probes at ~8s, ~25s, ~60s and every 60s after that. Cheap enough
+ * to never compete with video bandwidth.
+ */
+
+export type QualityTier = "low" | "medium" | "high";
+export type QualityMode = "auto" | QualityTier;
+
+const MODE_KEY = "gs_quality_mode";
+const TIER_KEY = "gs_quality_tier";
+/** First N shorts are pinned to the lowest tier for an instant first frame. */
+export const FAST_START_COUNT = 3;
+
+type Listener = (tier: QualityTier, mode: QualityMode) => void;
+
+const listeners = new Set<Listener>();
+let mode: QualityMode = "auto";
+let measured: QualityTier = "low";
+let started = false;
+let timer: number | undefined;
+
+function readStored() {
+  if (typeof window === "undefined") return;
+  const storedMode = localStorage.getItem(MODE_KEY) as QualityMode | null;
+  if (storedMode === "auto" || storedMode === "low" || storedMode === "medium" || storedMode === "high") {
+    mode = storedMode;
+  }
+  const storedTier = sessionStorage.getItem(TIER_KEY) as QualityTier | null;
+  if (storedTier === "low" || storedTier === "medium" || storedTier === "high") measured = storedTier;
+}
+readStored();
+
+function emit() {
+  const tier = currentTier();
+  listeners.forEach((listener) => listener(tier, mode));
+}
+
+export function currentTier(): QualityTier {
+  return mode === "auto" ? measured : mode;
+}
+
+export function currentMode(): QualityMode {
+  return mode;
+}
+
+export function setQualityMode(next: QualityMode) {
+  mode = next;
+  try {
+    localStorage.setItem(MODE_KEY, next);
+  } catch {}
+  emit();
+}
+
+export function onQualityChange(listener: Listener) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+function applyMeasured(next: QualityTier) {
+  if (next === measured) return;
+  measured = next;
+  try {
+    sessionStorage.setItem(TIER_KEY, next);
+  } catch {}
+  if (mode === "auto") emit();
+}
+
+function tierFromMbps(mbps: number): QualityTier {
+  if (mbps >= 6) return "high";
+  if (mbps >= 1.8) return "medium";
+  return "low";
+}
+
+function hintedTier(): QualityTier | null {
+  const connection = (navigator as any)?.connection;
+  if (!connection) return null;
+  if (connection.saveData) return "low";
+  const effective = connection.effectiveType as string | undefined;
+  if (effective === "slow-2g" || effective === "2g" || effective === "3g") return "low";
+  const downlink = Number(connection.downlink);
+  if (Number.isFinite(downlink) && downlink > 0) return tierFromMbps(downlink);
+  return null;
+}
+
+/** Times a small real download to get honest throughput (not a vendor hint). */
+async function probe(): Promise<QualityTier | null> {
+  const url = `/cached-shorts.json?probe=${Date.now()}`;
+  try {
+    const start = performance.now();
+    const response = await fetch(url, { cache: "no-store" });
+    const buffer = await response.arrayBuffer();
+    const seconds = (performance.now() - start) / 1000;
+    if (seconds <= 0 || buffer.byteLength < 200) return null;
+    // Small payload: latency dominates, so treat a slow round-trip as a slow link.
+    const mbps = (buffer.byteLength * 8) / seconds / 1_000_000;
+    if (seconds > 1.2) return "low";
+    if (seconds < 0.18) return "high";
+    return tierFromMbps(Math.max(mbps, seconds < 0.4 ? 6 : 2));
+  } catch {
+    return null;
+  }
+}
+
+async function measureNow() {
+  const hint = hintedTier();
+  if (hint === "low") {
+    applyMeasured("low");
+    return;
+  }
+  const result = await probe();
+  if (result) applyMeasured(result);
+  else if (hint) applyMeasured(hint);
+}
+
+/** Starts the escalating measurement schedule (safe to call many times). */
+export function startQualityWatch() {
+  if (started || typeof window === "undefined") return;
+  started = true;
+
+  const hint = hintedTier();
+  if (hint) applyMeasured(hint);
+
+  const schedule = [8000, 25000, 60000];
+  schedule.forEach((delay) => window.setTimeout(() => void measureNow(), delay));
+  timer = window.setInterval(() => void measureNow(), 60000);
+
+  (navigator as any)?.connection?.addEventListener?.("change", () => {
+    const changed = hintedTier();
+    if (changed) applyMeasured(changed);
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") void measureNow();
+  });
+}
+
+export function stopQualityWatch() {
+  if (timer) window.clearInterval(timer);
+  timer = undefined;
+  started = false;
+}
+
+/** YouTube IFrame quality string for a tier. */
+export function ytQuality(tier: QualityTier) {
+  return tier === "high" ? "medium" : tier === "medium" ? "small" : "tiny";
+}
+
+/** How aggressively a native <video> should buffer at this tier. */
+export function preloadFor(tier: QualityTier, index: number, isActive: boolean) {
+  if (isActive) return "auto" as const;
+  if (index < FAST_START_COUNT) return tier === "low" ? ("metadata" as const) : ("auto" as const);
+  if (tier === "high") return "auto" as const;
+  if (tier === "medium") return index <= FAST_START_COUNT + 1 ? ("metadata" as const) : ("none" as const);
+  return "none" as const;
+}
+
+/** Poster resolution that matches the tier (saves bytes on slow links). */
+export function posterFor(videoId: string, tier: QualityTier, index: number) {
+  const size = index < FAST_START_COUNT || tier === "low" ? "mqdefault" : tier === "medium" ? "hqdefault" : "hq720";
+  return `https://i.ytimg.com/vi/${videoId}/${size}.jpg`;
+}
