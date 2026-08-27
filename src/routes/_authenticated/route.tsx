@@ -1,12 +1,1 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
-
-export const Route = createFileRoute("/_authenticated")({
-  ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    return { user: data.user };
-  },
-  component: () => <Outlet />,
-});
+aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCBPdXRsZXQsIHJlZGlyZWN0IH0gZnJvbSAiQHRhbnN0YWNrL3JlYWN0LXJvdXRlciI7CmltcG9ydCB7IHN1cGFiYXNlIH0gZnJvbSAiQC9pbnRlZ3JhdGlvbnMvc3VwYWJhc2UvY2xpZW50IjsKCmV4cG9ydCBjb25zdCBSb3V0ZSA9IGNyZWF0ZUZpbGVSb3V0ZSgiL19hdXRoZW50aWNhdGVkIikoewogIHNzcjogZmFsc2UsCiAgLy8gVXNlcyB0aGUgbG9jYWxseSBjYWNoZWQgc2Vzc2lvbiAobm8gbmV0d29yayByb3VuZC10cmlwKSBzbyB0YXBwaW5nIGludG8gYQogIC8vIGNoYXQgb3BlbnMgaW5zdGFudGx5IGluc3RlYWQgb2Ygd2FpdGluZyBvbiBhbiBhdXRoIEFQSSBjYWxsLgogIGJlZm9yZUxvYWQ6IGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHsgZGF0YSB9ID0gYXdhaXQgc3VwYWJhc2UuYXV0aC5nZXRTZXNzaW9uKCk7CiAgICBjb25zdCB1c2VyID0gZGF0YS5zZXNzaW9uPy51c2VyID8/IG51bGw7CiAgICBpZiAoIXVzZXIpIHRocm93IHJlZGlyZWN0KHsgdG86ICIvYXV0aCIgfSk7CiAgICByZXR1cm4geyB1c2VyIH07CiAgfSwKICBjb21wb25lbnQ6ICgpID0+IDxPdXRsZXQgLz4sCn0pOwoK
