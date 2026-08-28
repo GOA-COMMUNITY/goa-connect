@@ -160,6 +160,9 @@
   }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { scrollbar-width: none; }
+  /* Skip layout/paint of off-screen content until it is scrolled into view. */
+  .gs-defer { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
   .bg-gradient-primary { background: var(--gradient-primary); }
   .shadow-card { box-shadow: var(--shadow-card); }
   .shadow-soft { box-shadow: var(--shadow-soft); }

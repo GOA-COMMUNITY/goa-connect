@@ -90,6 +90,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.json" },
+      { rel: "preload", as: "image", href: "/logo.png", fetchPriority: "high" },
+      ...(import.meta.env.VITE_SUPABASE_URL
+        ? [
+            { rel: "preconnect", href: import.meta.env.VITE_SUPABASE_URL as string, crossOrigin: "anonymous" as const },
+            { rel: "dns-prefetch", href: import.meta.env.VITE_SUPABASE_URL as string },
+          ]
+        : []),
+
       { rel: "icon", href: "/logo.png" },
       { rel: "apple-touch-icon", href: "/logo.png" },
     ],
