@@ -550,6 +550,40 @@ function ChannelsPanel() {
     return { name, url: `${url}/shorts` };
   }
 
+  /** Paste 50 links -> save them all at once, no lookup, no confirmation. */
+  async function addPastedInstantly() {
+    const parsed = paste
+      .split(/[\n,\s]+/)
+      .map(parseChannelLine)
+      .filter(Boolean) as { name: string; url: string }[];
+    if (!parsed.length) return toast.error("No valid channel links found");
+
+    const existing = new Set(rows.map((r) => r.url.toLowerCase()));
+    const seen = new Set<string>();
+    const fresh = parsed.filter((p) => {
+      const key = p.url.toLowerCase();
+      if (existing.has(key) || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    if (!fresh.length) return toast.info("Those channels are already added");
+
+    setBusy(true);
+    const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
+    const { error } = await supabase.from("youtube_channels").insert(
+      fresh.map((p, i) => ({
+        name: p.name, url: p.url, icon: "🌴",
+        priority: base + i + 1, active: true, weight: 10,
+      })),
+    );
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Saved ${fresh.length} channel${fresh.length > 1 ? "s" : ""} to the download list`);
+    setPaste("");
+    setPreviews([]);
+    reload();
+  }
+
   /** Step 1 — look up public details for every pasted link. */
   async function checkPasted() {
     const parsed = paste
@@ -653,13 +687,22 @@ function ChannelsPanel() {
           value={paste}
           onChange={(e) => setPaste(e.target.value)}
         />
-        <button
-          onClick={checkPasted}
-          disabled={busy || !paste.trim()}
-          className="mt-3 flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-        >
-          <Search className="h-4 w-4" /> {busy ? "Checking…" : "Check channels"}
-        </button>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            onClick={checkPasted}
+            disabled={busy || !paste.trim()}
+            className="flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+          >
+            <Search className="h-4 w-4" /> {busy ? "Checking…" : "Check channels"}
+          </button>
+          <button
+            onClick={addPastedInstantly}
+            disabled={busy || !paste.trim()}
+            className="flex items-center gap-1 rounded-full border border-border px-5 py-2 text-sm font-semibold disabled:opacity-50"
+          >
+            <Plus className="h-4 w-4" /> Add all instantly
+          </button>
+        </div>
 
         {previews.length > 0 && (
           <div className="mt-4 space-y-3">
@@ -791,10 +834,13 @@ function ChannelsPanel() {
   );
 }
 
-type ShortsSettings = { cachedFirst: boolean; autoRefresh: boolean; maxCached: number; embedsEnabled: boolean };
+type ShortsSettings = {
+  cachedFirst: boolean; autoRefresh: boolean; maxCached: number;
+  refreshDays: number; perChannel: number; embedsEnabled: boolean;
+};
 
 function ShortsSettingsPanel() {
-  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100, embedsEnabled: true });
+  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100, refreshDays: 1, perChannel: 0, embedsEnabled: true });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -857,6 +903,38 @@ function ShortsSettingsPanel() {
         <input
           type="number" min={0} max={300} value={s.maxCached}
           onChange={(e) => setS({ ...s, maxCached: Number(e.target.value) })}
+          onBlur={() => save(s)}
+          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
+        />
+      </div>
+
+      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
+        <div>
+          <p className="text-sm font-semibold">Rebuild every … days</p>
+          <p className="text-[11px] text-muted-foreground">
+            1 = a brand-new set of latest shorts every day, 2 = every second day. In between, runs
+            only top the pool up.
+          </p>
+        </div>
+        <input
+          type="number" min={1} max={14} value={s.refreshDays}
+          onChange={(e) => setS({ ...s, refreshDays: Number(e.target.value) })}
+          onBlur={() => save(s)}
+          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
+        />
+      </div>
+
+      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
+        <div>
+          <p className="text-sm font-semibold">Max shorts per channel</p>
+          <p className="text-[11px] text-muted-foreground">
+            Cap how many clips a single channel can contribute each cycle. 0 = automatic from the
+            share sliders.
+          </p>
+        </div>
+        <input
+          type="number" min={0} max={100} value={s.perChannel}
+          onChange={(e) => setS({ ...s, perChannel: Number(e.target.value) })}
           onBlur={() => save(s)}
           className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
         />

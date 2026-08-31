@@ -32,6 +32,15 @@ const HISTORY = "public/cached-history.json";
 let MAX_CLIPS = Number(process.env.CACHE_MAX_CLIPS || 100);
 const MAX_BYTES = 2_200_000;
 const TODAY = new Date().toISOString().slice(0, 10);
+// Refresh cycle key: with refreshDays = 1 this is just the UTC date; with 2 it
+// changes every second day, so the pool is only rebuilt when a new cycle starts.
+let CYCLE = TODAY;
+function cycleKeyFor(refreshDays) {
+  const days = Math.max(1, Number(refreshDays) || 1);
+  if (days === 1) return TODAY;
+  const epochDay = Math.floor(Date.now() / 86400000);
+  return `d${days}-${Math.floor(epochDay / days)}`;
+}
 
 const FALLBACK_CHANNELS = [
   { name: "Adventure Goa DK", url: "https://www.youtube.com/@adventuregoadk/shorts", icon: "🌴", priority: 1, weight: 10 },
@@ -86,13 +95,13 @@ async function fetchSettings() {
 async function loadHistory() {
   try {
     const data = JSON.parse(await readFile(HISTORY, "utf8"));
-    if (data?.date === TODAY && Array.isArray(data.ids)) return new Set(data.ids);
+    if (data?.date === CYCLE && Array.isArray(data.ids)) return new Set(data.ids);
   } catch {}
   return new Set();
 }
 
 async function saveHistory(ids) {
-  await writeFile(HISTORY, `${JSON.stringify({ date: TODAY, ids: [...ids] }, null, 2)}\n`);
+  await writeFile(HISTORY, `${JSON.stringify({ date: CYCLE, ids: [...ids] }, null, 2)}\n`);
 }
 
 /** Clips already cached today stay — we only top up to MAX_CLIPS. */
@@ -198,7 +207,7 @@ async function fallbackQueue(channels) {
  * Every channel gets at least its latest short; the remaining slots are
  * distributed proportionally to `weight` (percentage-ish share).
  */
-function quotas(channels, target) {
+function quotas(channels, target, perChannel = 0) {
   const n = channels.length;
   if (n === 0) return [];
   const base = Math.min(1, target);
@@ -206,7 +215,9 @@ function quotas(channels, target) {
   const totalWeight = channels.reduce((sum, c) => sum + Math.max(1, Number(c.weight) || 10), 0);
   return channels.map((c) => {
     const w = Math.max(1, Number(c.weight) || 10);
-    return { channel: c, quota: base + Math.ceil((remaining * w) / totalWeight) };
+    let quota = base + Math.ceil((remaining * w) / totalWeight);
+    if (perChannel > 0) quota = Math.min(quota, perChannel);
+    return { channel: c, quota };
   });
 }
 
@@ -280,6 +291,10 @@ async function main() {
     return;
   }
   if (settings && Number(settings.maxCached) >= 0) MAX_CLIPS = Number(settings.maxCached);
+  const REFRESH_DAYS = Math.max(1, Number(settings?.refreshDays) || 1);
+  const PER_CHANNEL = Math.max(0, Number(settings?.perChannel) || 0);
+  CYCLE = cycleKeyFor(REFRESH_DAYS);
+  console.log(`refresh cycle: ${CYCLE} (every ${REFRESH_DAYS} day(s)), per-channel cap: ${PER_CHANNEL || "auto"}`);
   if (MAX_CLIPS === 0) {
     await writeFile(MANIFEST, "[]\n");
     console.log("maxCached = 0 — skipping pre-cache");
@@ -288,8 +303,8 @@ async function main() {
 
   const history = await loadHistory();
   const existing = await loadExisting(history);
-  if (history.size === 0) console.log(`new day (${TODAY}) — rebuilding the full cache`);
-  else console.log(`same day — keeping ${existing.length} clips, topping up to ${MAX_CLIPS}`);
+  if (history.size === 0) console.log(`new cycle (${CYCLE}) — rebuilding the full cache`);
+  else console.log(`same cycle — keeping ${existing.length} clips, topping up to ${MAX_CLIPS}`);
 
   const needed = MAX_CLIPS - existing.length;
   if (needed <= 0) {
@@ -299,7 +314,7 @@ async function main() {
   }
 
   const channels = (await fetchChannels()).sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100));
-  const plan = quotas(channels, needed);
+  const plan = quotas(channels, needed, PER_CHANNEL);
   const lists = [];
   for (const { channel, quota } of plan) {
     // over-fetch heavily so gaps left by failing channels can be filled from others
