@@ -34,6 +34,8 @@ type Conv = {
   user_b: string;
   last_message: string | null;
   last_message_at: string;
+  read_a_at: string | null;
+  read_b_at: string | null;
 };
 
 function Chats() {
@@ -209,6 +211,9 @@ function Chats() {
               {filteredConversations.map((c, i) => {
                 const otherId = c.user_a === user?.id ? c.user_b : c.user_a;
                 const p = pmap.get(otherId);
+                const readAt = c.user_a === user?.id ? c.read_a_at : c.read_b_at;
+                const unread =
+                  !!c.last_message && (!readAt || new Date(readAt) < new Date(c.last_message_at));
                 return (
                   <Link
                     key={c.id}
@@ -224,13 +229,16 @@ function Chats() {
                         <span className="truncate font-semibold text-foreground">
                           {p?.display_name ?? "Goan"}
                         </span>
-                        <span className="ml-2 shrink-0 text-[11px] text-muted-foreground">
+                        <span className={`ml-2 shrink-0 text-[11px] ${unread ? "font-semibold text-primary" : "text-muted-foreground"}`}>
                           {formatDistanceToNowStrict(new Date(c.last_message_at))}
                         </span>
                       </div>
-                      <p className="truncate text-sm text-muted-foreground">
-                        {c.last_message ?? "Say hi 👋"}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className={`truncate text-sm ${unread ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                          {c.last_message ?? "Say hi 👋"}
+                        </p>
+                        {unread && <span className="h-2 w-2 shrink-0 rounded-full bg-primary" aria-label="Unread" />}
+                      </div>
                     </div>
                   </Link>
                 );

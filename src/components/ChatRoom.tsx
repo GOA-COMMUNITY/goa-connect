@@ -1,10 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Loader2, Send } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ArrowLeft, Loader2, Lock, Send, UserPlus } from "lucide-react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileAvatar } from "@/components/ProfileAvatar";
+import { computeQuota, markConversationRead } from "@/lib/chat";
 import { toast } from "sonner";
 
 type Message = {
@@ -75,28 +76,53 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
     },
   });
 
-  useEffect(() => {
-    const channel = supabase
-      .channel(`messages:${conversationId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
-        (payload) => {
-          const incoming = payload.new as Message;
-          queryClient.setQueryData<Message[]>(["messages", conversationId], (current = []) =>
-            current.some((message) => message.id === incoming.id) ? current : [...current, incoming],
-          );
-        },
-      )
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [conversationId, queryClient]);
+  const { data: mutualFollow = false } = useQuery({
+    queryKey: ["mutual-follow", user?.id, otherId],
+    enabled: !!user && !!otherId,
+    staleTime: 30_000,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("follows")
+        .select("follower_id, following_id")
+        .or(
+          `and(follower_id.eq.${user!.id},following_id.eq.${otherId}),and(follower_id.eq.${otherId},following_id.eq.${user!.id})`,
+        );
+      return (data ?? []).length >= 2;
+    },
+  });
+
+  const quota = useMemo(
+    () =>
+      computeQuota(
+        messages.filter((m) => m.sender_id === user?.id),
+        messages.filter((m) => m.sender_id !== user?.id).length,
+        mutualFollow,
+      ),
+    [messages, user?.id, mutualFollow],
+  );
+
+  async function followBack() {
+    if (!user || !otherId) return;
+    const { error: followError } = await supabase
+      .from("follows")
+      .insert({ follower_id: user.id, following_id: otherId });
+    if (followError && !followError.message.includes("duplicate")) return toast.error(followError.message);
+    void queryClient.invalidateQueries({ queryKey: ["mutual-follow"] });
+    void queryClient.invalidateQueries({ queryKey: ["following", user.id] });
+    toast.success("Followed — they can now reply freely too");
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages.length, typing]);
+
+  // Keep the unread badge accurate.
+  useEffect(() => {
+    if (!conversation || !user) return;
+    void markConversationRead(conversationId, conversation.user_a === user.id);
+    void queryClient.invalidateQueries({ queryKey: ["conversations"] });
+  }, [conversation, conversationId, user, messages.length, queryClient]);
+
 
   useLayoutEffect(() => {
     inputRef.current?.focus({ preventScroll: true });
@@ -150,7 +176,11 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
         current.filter((message) => message.id !== optimisticId),
       );
       setBody(text);
-      toast.error("Message not sent. Please try again.");
+      toast.error(
+        insertError.message.includes("MESSAGE_LIMIT_REACHED")
+          ? "You've used your messages for today. Follow each other to chat freely."
+          : "Message not sent. Please try again.",
+      );
       setSending(false);
       return;
     }
@@ -170,7 +200,12 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
   }
 
   async function requestReply() {
-    setTyping(true);
+    // A real person reads first, then starts typing — and their messages land
+    // one at a time, so poll while they're composing.
+    const typingTimer = window.setTimeout(() => setTyping(true), 1200);
+    const poll = window.setInterval(() => {
+      void queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+    }, 2000);
     try {
       const { data, error: replyError } = await supabase.functions.invoke("ai-reply", {
         body: { conversationId },
@@ -182,9 +217,12 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
     } catch {
       // Human conversations do not require an automatic response.
     } finally {
+      window.clearTimeout(typingTimer);
+      window.clearInterval(poll);
       setTyping(false);
     }
   }
+
 
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-background">
@@ -233,9 +271,29 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
         {typing && <div className="w-fit rounded-2xl rounded-bl-sm bg-card px-4 py-2 text-sm text-muted-foreground shadow-soft">typing…</div>}
       </div>
 
+      {!quota.unlocked && (
+        <div className="shrink-0 border-t border-border bg-secondary/60 px-4 py-2.5">
+          <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+            <Lock className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <p className="flex-1">
+              {quota.remaining > 0
+                ? `${quota.remaining} intro message${quota.remaining === 1 ? "" : "s"} left. Follow each other to chat without limits.`
+                : "Daily limit reached. You can send 1 more message tomorrow — or follow each other to unlock unlimited chat."}
+            </p>
+            <button
+              type="button"
+              onClick={() => void followBack()}
+              className="flex shrink-0 items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground"
+            >
+              <UserPlus className="h-3 w-3" /> Follow
+            </button>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={send} className="flex shrink-0 items-center gap-2 border-t border-border bg-card px-3 pb-[calc(.75rem+env(safe-area-inset-bottom))] pt-3">
-        <input ref={inputRef} autoFocus value={body} onChange={(event) => setBody(event.target.value)} placeholder={isLoading ? "You can start typing…" : "Message…"} aria-label="Message" className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-3 text-[16px] outline-none focus:border-primary" />
-        <button type="submit" disabled={sending || isLoading || !!error || !body.trim()} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-40" aria-label="Send message">
+        <input ref={inputRef} autoFocus value={body} onChange={(event) => setBody(event.target.value)} placeholder={quota.remaining === 0 ? "Limit reached for today…" : isLoading ? "You can start typing…" : "Message…"} aria-label="Message" disabled={quota.remaining === 0} className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-3 text-[16px] outline-none focus:border-primary disabled:opacity-60" />
+        <button type="submit" disabled={sending || isLoading || !!error || !body.trim() || quota.remaining === 0} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-40" aria-label="Send message">
           {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </button>
       </form>

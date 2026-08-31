@@ -84,44 +84,122 @@ Deno.serve(async (req) => {
       })),
     ];
 
-    const aiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!aiKey) return json({ error: "missing LOVABLE_API_KEY" }, 500);
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": aiKey,
-        "X-Lovable-AIG-SDK": "fetch",
-      },
-      body: JSON.stringify({ model: "google/gemini-3.6-flash", messages }),
-    });
+    let reply = "";
 
-    if (res.status === 429) return json({ error: "Too many messages right now, try again in a bit." }, 429);
-    if (res.status === 402) return json({ error: "AI credits exhausted." }, 402);
-    if (!res.ok) {
-      const detail = await res.text();
-      console.error("gateway error", res.status, detail);
-      return json({ error: "AI unavailable" }, 502);
+    // Primary: the project's own Google Gemini key.
+    if (geminiKey) {
+      const gRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: persona }] },
+            contents: ordered.map((m) => ({
+              role: m.sender_id === bot.id ? "model" : "user",
+              parts: [{ text: m.body || "..." }],
+            })),
+            generationConfig: { temperature: 1, maxOutputTokens: 200 },
+          }),
+        },
+      );
+      if (gRes.ok) {
+        const gPayload = await gRes.json();
+        reply = (gPayload?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") ?? "").trim();
+      } else {
+        console.error("gemini error", gRes.status, await gRes.text());
+      }
     }
 
-    const payload = await res.json();
-    const reply: string = (payload?.choices?.[0]?.message?.content ?? "").trim();
+    // Fallback: Lovable AI Gateway.
+    if (!reply && lovableKey) {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Lovable-API-Key": lovableKey,
+          "X-Lovable-AIG-SDK": "fetch",
+        },
+        body: JSON.stringify({ model: "google/gemini-3.6-flash", messages }),
+      });
+
+      if (res.status === 429) return json({ error: "Too many messages right now, try again in a bit." }, 429);
+      if (res.status === 402) return json({ error: "AI credits exhausted." }, 402);
+      if (!res.ok) {
+        const detail = await res.text();
+        console.error("gateway error", res.status, detail);
+        return json({ error: "AI unavailable" }, 502);
+      }
+      const payload = await res.json();
+      reply = (payload?.choices?.[0]?.message?.content ?? "").trim();
+    }
+
+    reply = humanise(reply);
     if (!reply) return json({ skipped: "empty reply" });
 
-    const { error: insertError } = await admin
-      .from("messages")
-      .insert({ conversation_id: conversationId, sender_id: bot.id, body: reply.slice(0, 800) });
-    if (insertError) throw insertError;
+    // Real people read, think, then type. Split longer replies the way a person
+    // fires off a second line right after the first.
+    const parts = splitParts(reply);
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    let last = reply;
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const think = i === 0 ? 900 + Math.random() * 2200 : 400 + Math.random() * 900;
+      const typing = Math.min(9000, part.length * (38 + Math.random() * 30));
+      await sleep(Math.round(think + typing));
+
+      const { error: insertError } = await admin
+        .from("messages")
+        .insert({ conversation_id: conversationId, sender_id: bot.id, body: part.slice(0, 800) });
+      if (insertError) throw insertError;
+      last = part;
+    }
 
     await admin
       .from("conversations")
-      .update({ last_message: reply.slice(0, 200), last_message_at: new Date().toISOString() })
+      .update({ last_message: last.slice(0, 200), last_message_at: new Date().toISOString() })
       .eq("id", conversationId);
 
-    return json({ reply });
+    return json({ reply, parts });
+
   } catch (e) {
     console.error(e);
     return json({ error: e instanceof Error ? e.message : "unknown error" }, 500);
   }
 });
+
+/** Strips assistant-speak, markdown and other tells so replies read like a person. */
+function humanise(raw: string) {
+  let text = (raw ?? "").trim();
+  text = text.replace(/^["'`]+|["'`]+$/g, "");
+  text = text.replace(/[*_#>`]+/g, "");
+  text = text.replace(/^\s*(assistant|bot|ai)\s*:\s*/i, "");
+  // Drop any sentence that breaks character.
+  text = text
+    .split(/(?<=[.!?])\s+/)
+    .filter((s) =>
+      !/\b(as an ai|language model|i am an ai|i'm an ai|i cannot|i can't help with|how can i (help|assist)|is there anything else|happy to help|as your assistant)\b/i.test(s),
+    )
+    .join(" ")
+    .trim();
+  // Keep it chat-length; people don't send essays on a social app.
+  if (text.length > 320) {
+    const cut = text.slice(0, 320);
+    text = cut.slice(0, Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"), 200) + 1).trim() || cut;
+  }
+  return text.replace(/\s+/g, " ").trim();
+}
+
+/** Occasionally breaks a reply into two quick messages, like real texting. */
+function splitParts(text: string): string[] {
+  const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  if (sentences.length >= 2 && text.length > 70 && Math.random() < 0.45) {
+    const mid = Math.ceil(sentences.length / 2);
+    return [sentences.slice(0, mid).join(" "), sentences.slice(mid).join(" ")];
+  }
+  return [text];
+}

@@ -1,14 +1,15 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Search, CheckCircle2, MapPin, MessageCircle, UserPlus, UserCheck, Loader2, Users } from "lucide-react";
+import { Search, CheckCircle2, MapPin, MessageCircle, UserPlus, UserCheck, Loader2, Heart, Users } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { getOrCreateConversation } from "@/lib/chat";
 import { toast } from "sonner";
 import { ChatRoom } from "@/components/ChatRoom";
+import { DatingTeaser } from "@/components/DatingTeaser";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
@@ -71,11 +72,14 @@ function Explore() {
 
   const { data: profiles = [], isLoading } = useQuery({
     queryKey: ["profiles", active, debouncedQ, tab, followingIds.length],
+    placeholderData: keepPreviousData,
+    staleTime: 2 * 60_000,
     queryFn: async () => {
       let query = supabase
         .from("profiles")
         .select("id, display_name, area, bio, avatar_emoji, avatar_url, username, is_goan, is_tourist, is_active")
         .eq("is_active", true)
+        .order("is_fake", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(60);
       if (active !== "All Goa") query = query.eq("area", active);
@@ -89,6 +93,7 @@ function Explore() {
       return (data ?? []).filter((p) => p.id !== user?.id) as Profile[];
     },
   });
+
 
   async function toggleFollow(targetId: string) {
     if (!user) return navigate({ to: "/auth" });
