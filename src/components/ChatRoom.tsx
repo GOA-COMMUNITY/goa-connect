@@ -202,10 +202,11 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
   async function requestReply() {
     // A real person reads first, then starts typing — and their messages land
     // one at a time, so poll while they're composing.
-    const typingTimer = window.setTimeout(() => setTyping(true), 1200);
+    const typingTimer = window.setTimeout(() => setTyping(true), 350);
     const poll = window.setInterval(() => {
       void queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-    }, 2000);
+    }, 800);
+
     try {
       const { data, error: replyError } = await supabase.functions.invoke("ai-reply", {
         body: { conversationId },

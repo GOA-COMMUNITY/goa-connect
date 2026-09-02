@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { getCachedShorts, warmShorts } from "@/lib/shorts-warmup";
 import { rankShorts } from "@/lib/viewer-context";
 import { getShortsSettings } from "@/lib/app-settings";
+import { EventCard } from "@/components/EventCard";
+import { fetchUpcomingEvents, type GoaEvent } from "@/lib/events";
 
 
 const initialVideos: Short[] = [
@@ -64,6 +66,7 @@ const chips = ["For You", "North Goa", "South Goa", "Trending", "Food", "Events"
 function Home() {
   const [videos, setVideos] = useState<Short[]>(() => getCachedShorts() ?? initialVideos);
   const [activeChip, setActiveChip] = useState("For You");
+  const [events, setEvents] = useState<GoaEvent[]>([]);
   const embedsAllowed = useRef(false);
 
   useEffect(() => {
@@ -104,6 +107,7 @@ function Home() {
     };
 
     idle(() => {
+      void fetchUpcomingEvents(12).then(setEvents);
       void getShortsSettings().then((settings) => {
         embedsAllowed.current = settings.embedsEnabled;
         setVideos((current) => merge(current));
@@ -118,7 +122,23 @@ function Home() {
       <AppLayout showEventBanner={false}>
         {/* One feed instance prevents duplicate observers, players and network listeners. */}
         <section className="px-2 pt-2 sm:px-3">
-          <ShortsFeed shorts={videos} />
+          <ShortsFeed
+            shorts={videos}
+            interleave={(index) => {
+              // Every 4th short, slide in the next upcoming Goa event:
+              // entertainment and information in the same scroll.
+              if (index % 4 !== 3 || events.length === 0) return null;
+              const event = events[Math.floor(index / 4) % events.length];
+              return (
+                <div className="pt-1">
+                  <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+                    Happening in Goa
+                  </p>
+                  <EventCard event={event} compact />
+                </div>
+              );
+            }}
+          />
         </section>
 
         {/* Everything under the feed is below the fold — `gs-defer` lets the browser
@@ -151,6 +171,7 @@ function Home() {
             <div className="mb-3 flex items-center justify-between px-4">
               <h2 className="text-base font-semibold text-foreground">Live Stories</h2>
               <div className="flex items-center gap-3">
+                <Link to="/events" className="text-sm font-medium text-primary">Events</Link>
                 <Link to="/my-feed" className="text-sm font-medium text-muted-foreground">Your feed</Link>
                 <Link to="/explore" className="text-sm font-medium text-primary">See all</Link>
               </div>

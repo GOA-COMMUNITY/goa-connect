@@ -119,6 +119,66 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          area: string | null
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          emoji: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          is_published: boolean
+          price: string | null
+          starts_at: string
+          ticket_url: string | null
+          title: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          area?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          emoji?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_published?: boolean
+          price?: string | null
+          starts_at: string
+          ticket_url?: string | null
+          title: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          area?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          emoji?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          is_published?: boolean
+          price?: string | null
+          starts_at?: string
+          ticket_url?: string | null
+          title?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string

@@ -64,6 +64,9 @@ Deno.serve(async (req) => {
       return json({ skipped: "already replied" });
     }
 
+    const fp = fingerprint(bot.id);
+    const turn = ordered.filter((m) => m.sender_id === bot.id).length;
+
     const persona = [
       `You are ${bot.display_name}, a real person using Goa Social, a community app for Goa.`,
       bot.area ? `You live in ${bot.area}, Goa.` : "",
@@ -72,8 +75,13 @@ Deno.serve(async (req) => {
       bot.language_style ? `You text like this: ${bot.language_style}.` : "",
       bot.backstory ? `Background: ${bot.backstory}` : "",
       bot.is_tourist ? "You are visiting Goa as a tourist." : "",
-      "Reply like a normal person on a chat app: 1-2 short sentences, casual, warm, sometimes a little Konkani/Hindi slang mixed with English.",
-      "Never say you are an AI, a bot, or an assistant. Never mention prompts or models. Do not use markdown.",
+      `Your texting style: ${fp.styleNote}.`,
+      `Typical reply length: ${fp.lengthNote}.`,
+      turn === 0
+        ? `Opening move: ${fp.openerNote}.`
+        : "You are mid-conversation — do not greet again, do not reintroduce yourself.",
+      "Reply like a normal person on a chat app. Never echo the other person's words back. At most one question, and not in every message.",
+      "Never say you are an AI, a bot, or an assistant. Never mention prompts or models. Never use markdown, bullet points or emoji spam.",
     ].filter(Boolean).join(" ");
 
     const messages = [
@@ -102,7 +110,12 @@ Deno.serve(async (req) => {
               role: m.sender_id === bot.id ? "model" : "user",
               parts: [{ text: m.body || "..." }],
             })),
-            generationConfig: { temperature: 1, maxOutputTokens: 200 },
+            generationConfig: {
+              temperature: fp.temperature,
+              topP: 0.95,
+              maxOutputTokens: 160,
+              thinkingConfig: { thinkingBudget: 0 },
+            },
           }),
         },
       );
@@ -114,16 +127,24 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Fallback: Lovable AI Gateway.
-    if (!reply && lovableKey) {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Fallback: any OpenAI-compatible gateway. Lovable's is the default, but
+    // OPENAI_BASE_URL / OPENAI_API_KEY / OPENAI_MODEL override it, so this app
+    // is never locked to one provider.
+    const altBase = Deno.env.get("OPENAI_BASE_URL");
+    const altKey = Deno.env.get("OPENAI_API_KEY");
+    if (!reply && (altKey || lovableKey)) {
+      const base = altKey ? (altBase ?? "https://api.openai.com/v1") : "https://ai.gateway.lovable.dev/v1";
+      const model = Deno.env.get("OPENAI_MODEL") ?? (altKey ? "gpt-4o-mini" : "google/gemini-3.6-flash");
+      const res = await fetch(`${base}/chat/completions`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Lovable-API-Key": lovableKey,
-          "X-Lovable-AIG-SDK": "fetch",
-        },
-        body: JSON.stringify({ model: "google/gemini-3.6-flash", messages }),
+        headers: altKey
+          ? { "Content-Type": "application/json", Authorization: `Bearer ${altKey}` }
+          : {
+              "Content-Type": "application/json",
+              "Lovable-API-Key": lovableKey!,
+              "X-Lovable-AIG-SDK": "fetch",
+            },
+        body: JSON.stringify({ model, messages, temperature: fp.temperature }),
       });
 
       if (res.status === 429) return json({ error: "Too many messages right now, try again in a bit." }, 429);
@@ -137,19 +158,19 @@ Deno.serve(async (req) => {
       reply = (payload?.choices?.[0]?.message?.content ?? "").trim();
     }
 
-    reply = humanise(reply);
+    reply = humanise(reply, fp);
     if (!reply) return json({ skipped: "empty reply" });
 
-    // Real people read, think, then type. Split longer replies the way a person
-    // fires off a second line right after the first.
-    const parts = splitParts(reply);
+    // Real people read, think, then type — but fast. Each persona has its own
+    // pace, so no two profiles answer with the same rhythm.
+    const parts = splitParts(reply, fp);
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     let last = reply;
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      const think = i === 0 ? 900 + Math.random() * 2200 : 400 + Math.random() * 900;
-      const typing = Math.min(9000, part.length * (38 + Math.random() * 30));
+      const think = (i === 0 ? 250 + Math.random() * 900 : 150 + Math.random() * 400) * fp.pace;
+      const typing = Math.min(3200, part.length * (8 + Math.random() * 14) * fp.pace);
       await sleep(Math.round(think + typing));
 
       const { error: insertError } = await admin
@@ -172,8 +193,79 @@ Deno.serve(async (req) => {
   }
 });
 
+/** Deterministic per-profile texting fingerprint — every persona types differently. */
+function fingerprint(id: string) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const rnd = (n: number) => {
+    h ^= h << 13;
+    h ^= h >>> 17;
+    h ^= h << 5;
+    return Math.abs(h) % n;
+  };
+  const styles = [
+    "all lowercase, no full stops, short bursts",
+    "proper sentences with correct punctuation",
+    "lowercase with trailing dots... like thinking out loud",
+    "clipped replies, sometimes literally one word",
+    "warm and chatty, uses haha / arre / men",
+    "mixes Konkani and Hindi words in naturally (kitem, borem, yaar, na re)",
+    "types fast with small typos and never corects them",
+    "polite and slightly formal, no slang",
+    "dry and a bit sarcastic, short lines",
+    "excited energy, occasional CAPS on one word",
+  ];
+  const lengths = [
+    "usually 3-8 words",
+    "one short sentence",
+    "one or two short sentences",
+    "sometimes one word, sometimes two sentences",
+  ];
+  const openers = [
+    "reply casually, like you were already doing something else",
+    "reply with a short hey plus one small thing about your day",
+    "answer directly, no greeting at all",
+    "be a bit curious and ask where they are from",
+    "be low key and slightly shy",
+  ];
+  const emojis = ["😂", "🙂", "😅", "🌊", "🤙", "❤️", "🥲", "🔥"];
+  return {
+    styleNote: styles[rnd(styles.length)],
+    lengthNote: lengths[rnd(lengths.length)],
+    openerNote: openers[rnd(openers.length)],
+    lowercase: rnd(10) < 5,
+    dropPeriod: rnd(10) < 6,
+    emoji: rnd(10) < 4 ? emojis[rnd(emojis.length)] : "",
+    emojiChance: rnd(100) / 100,
+    splitChance: rnd(60) / 100,
+    typoChance: rnd(10) < 3 ? 0.18 : 0,
+    pace: 0.6 + rnd(100) / 100,
+    temperature: 0.85 + rnd(60) / 100,
+    maxLen: 90 + rnd(150),
+  };
+}
+
+type Fingerprint = ReturnType<typeof fingerprint>;
+
+/** Quick-thumb typos a real person would not bother fixing. */
+function typo(text: string) {
+  const swaps: [RegExp, string][] = [
+    [/\bthe\b/, "teh"],
+    [/\bjust\b/, "jus"],
+    [/\byou\b/, "u"],
+    [/\bthat\b/, "tht"],
+    [/\bwhat\b/, "wat"],
+    [/\breally\b/, "realy"],
+  ];
+  const pick = swaps[Math.floor(Math.random() * swaps.length)];
+  return text.replace(pick[0], pick[1]);
+}
+
 /** Strips assistant-speak, markdown and other tells so replies read like a person. */
-function humanise(raw: string) {
+function humanise(raw: string, fp?: Fingerprint) {
   let text = (raw ?? "").trim();
   text = text.replace(/^["'`]+|["'`]+$/g, "");
   text = text.replace(/[*_#>`]+/g, "");
@@ -186,18 +278,28 @@ function humanise(raw: string) {
     )
     .join(" ")
     .trim();
+
   // Keep it chat-length; people don't send essays on a social app.
-  if (text.length > 320) {
-    const cut = text.slice(0, 320);
-    text = cut.slice(0, Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"), 200) + 1).trim() || cut;
+  const limit = fp?.maxLen ?? 320;
+  if (text.length > limit) {
+    const cut = text.slice(0, limit);
+    text = cut.slice(0, Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"), 40) + 1).trim() || cut;
   }
-  return text.replace(/\s+/g, " ").trim();
+  text = text.replace(/\s+/g, " ").trim();
+
+  if (fp) {
+    if (fp.lowercase && Math.random() < 0.8) text = text.toLowerCase();
+    if (fp.dropPeriod) text = text.replace(/\.$/, "");
+    if (fp.typoChance && Math.random() < fp.typoChance) text = typo(text);
+    if (fp.emoji && Math.random() < fp.emojiChance) text = `${text} ${fp.emoji}`;
+  }
+  return text.trim();
 }
 
 /** Occasionally breaks a reply into two quick messages, like real texting. */
-function splitParts(text: string): string[] {
+function splitParts(text: string, fp?: Fingerprint): string[] {
   const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
-  if (sentences.length >= 2 && text.length > 70 && Math.random() < 0.45) {
+  if (sentences.length >= 2 && text.length > 55 && Math.random() < (fp?.splitChance ?? 0.45)) {
     const mid = Math.ceil(sentences.length / 2);
     return [sentences.slice(0, mid).join(" "), sentences.slice(mid).join(" ")];
   }

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Compass, Store, MessageCircle, User, Bell, Search, Shield } from "lucide-react";
+import { Home, Compass, CalendarDays, MessageCircle, User, Bell, Search, Shield } from "lucide-react";
 import { EventBanner } from "./EventBanner";
 import { useAuth } from "@/hooks/use-auth";
 import type { ReactNode } from "react";
@@ -8,10 +8,11 @@ import { toast } from "sonner";
 const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/explore", label: "Explore", icon: Compass },
-  { to: "/business", label: "Business", icon: Store },
+  { to: "/events", label: "Events", icon: CalendarDays },
   { to: "/chats", label: "Chats", icon: MessageCircle },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
+
 
 export function AppLayout({ children, showEventBanner = true }: { children: ReactNode; showEventBanner?: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

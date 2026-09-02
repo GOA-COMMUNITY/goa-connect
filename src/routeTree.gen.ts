@@ -14,6 +14,7 @@ import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MyFeedRouteImport } from './routes/my-feed'
 import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -48,6 +49,11 @@ const MyFeedRoute = MyFeedRouteImport.update({
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BusinessRoute = BusinessRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/business': typeof BusinessRoute
+  '/events': typeof EventsRoute
   '/explore': typeof ExploreRoute
   '/my-feed': typeof MyFeedRoute
   '/privacy': typeof PrivacyRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/business': typeof BusinessRoute
+  '/events': typeof EventsRoute
   '/explore': typeof ExploreRoute
   '/my-feed': typeof MyFeedRoute
   '/privacy': typeof PrivacyRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/business': typeof BusinessRoute
+  '/events': typeof EventsRoute
   '/explore': typeof ExploreRoute
   '/my-feed': typeof MyFeedRoute
   '/privacy': typeof PrivacyRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/business'
+    | '/events'
     | '/explore'
     | '/my-feed'
     | '/privacy'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/business'
+    | '/events'
     | '/explore'
     | '/my-feed'
     | '/privacy'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/business'
+    | '/events'
     | '/explore'
     | '/my-feed'
     | '/privacy'
@@ -205,6 +217,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BusinessRoute: typeof BusinessRoute
+  EventsRoute: typeof EventsRoute
   ExploreRoute: typeof ExploreRoute
   MyFeedRoute: typeof MyFeedRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -248,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/explore'
       fullPath: '/explore'
       preLoaderRoute: typeof ExploreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/business': {
@@ -356,6 +376,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BusinessRoute: BusinessRoute,
+  EventsRoute: EventsRoute,
   ExploreRoute: ExploreRoute,
   MyFeedRoute: MyFeedRoute,
   PrivacyRoute: PrivacyRoute,

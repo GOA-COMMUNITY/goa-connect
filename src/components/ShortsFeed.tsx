@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { Heart, MessageCircle, Send, Volume2, VolumeX, Play, Settings2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { recordLike, recordShare, recordWatch } from "@/lib/viewer-context";
@@ -102,7 +102,7 @@ function pauseEveryPlayerExcept(activeKey?: string) {
   });
 }
 
-export function ShortsFeed({ shorts }: { shorts: Short[] }) {
+export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave?: (index: number) => ReactNode }) {
   const { user } = useAuth();
   const feedId = useRef(`feed-${Math.random().toString(36).slice(2)}`);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -542,7 +542,7 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
         const isLiked = liked.has(short.videoId);
         const isActive = index === activeIdx;
         const isUpload = sourceOf(short) === "upload";
-        return (
+        const card = (
           <article
             key={`${short.videoId}-${index}`}
             ref={(element) => { itemRefs.current[index] = element; }}
@@ -741,7 +741,16 @@ export function ShortsFeed({ shorts }: { shorts: Short[] }) {
             )}
           </article>
         );
+        return interleave ? (
+          <Fragment key={`slot-${short.videoId}-${index}`}>
+            {card}
+            {interleave(index)}
+          </Fragment>
+        ) : (
+          card
+        );
       })}
+
 
       {openComments && (
         <CommentSheet

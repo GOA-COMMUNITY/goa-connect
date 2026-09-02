@@ -5,10 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { getChannelInfo, type ChannelInfo } from "@/lib/youtube.functions";
 import { toast } from "sonner";
+import { eventCategories, type GoaEvent } from "@/lib/events";
 import {
   Shield, Users, Store, MessageCircle, Bot, Settings, Trash2,
   ToggleLeft, ToggleRight, ArrowLeft, Search, Youtube, Plus,
-  BarChart3, Eye, Heart, Share2, Timer,
+  BarChart3, Eye, Heart, Share2, Timer, CalendarDays, Pencil,
 } from "lucide-react";
 
 
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminDashboard,
 });
 
-type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels";
+type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels" | "events";
 
 type Profile = {
   id: string;
@@ -91,6 +92,7 @@ function AdminDashboard() {
             ["users", "Real Users", Users],
             ["bots", "Demo Profiles", Bot],
             ["businesses", "Businesses", Store],
+            ["events", "Events", CalendarDays],
             ["channels", "YouTube", Youtube],
             ["content", "Site Content", MessageCircle],
           ] as const).map(([k, label, Icon]) => (
@@ -113,6 +115,7 @@ function AdminDashboard() {
         {tab === "users" && <ProfilesPanel onlyFake={false} />}
         {tab === "bots" && <ProfilesPanel onlyFake={true} />}
         {tab === "businesses" && <BusinessesPanel />}
+        {tab === "events" && <EventsPanel />}
         {tab === "channels" && <ChannelsPanel />}
         {tab === "content" && <ContentPanel />}
       </main>
@@ -512,6 +515,171 @@ function ContentPanel() {
       <button onClick={save} className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground">
         Save changes
       </button>
+    </div>
+  );
+}
+
+const emptyEvent = {
+  title: "",
+  description: "",
+  category: "general",
+  area: "North Goa",
+  venue: "",
+  starts_at: "",
+  price: "",
+  image_url: "",
+  ticket_url: "",
+  emoji: "",
+  is_featured: false,
+  is_published: true,
+};
+
+type EventDraft = typeof emptyEvent;
+
+function toLocalInput(iso: string) {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function EventsPanel() {
+  const [events, setEvents] = useState<GoaEvent[]>([]);
+  const [draft, setDraft] = useState<EventDraft>(emptyEvent);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  async function load() {
+    const { data } = await supabase.from("events").select("*").order("starts_at", { ascending: true });
+    setEvents((data ?? []) as GoaEvent[]);
+  }
+  useEffect(() => { void load(); }, []);
+
+  async function save() {
+    if (!draft.title.trim() || !draft.starts_at) return toast.error("Title and date/time are required");
+    setSaving(true);
+    const payload = {
+      title: draft.title.trim(),
+      description: draft.description || null,
+      category: draft.category,
+      area: draft.area || null,
+      venue: draft.venue || null,
+      starts_at: new Date(draft.starts_at).toISOString(),
+      price: draft.price || null,
+      image_url: draft.image_url || null,
+      ticket_url: draft.ticket_url || null,
+      emoji: draft.emoji || null,
+      is_featured: draft.is_featured,
+      is_published: draft.is_published,
+    };
+    const { error } = editingId
+      ? await supabase.from("events").update(payload).eq("id", editingId)
+      : await supabase.from("events").insert(payload);
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    toast.success(editingId ? "Event updated" : "Event published");
+    setDraft(emptyEvent);
+    setEditingId(null);
+    void load();
+  }
+
+  async function remove(id: string) {
+    const { error } = await supabase.from("events").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    setEvents((prev) => prev.filter((e) => e.id !== id));
+  }
+
+  async function togglePublished(event: GoaEvent) {
+    const { error } = await supabase.from("events").update({ is_published: !event.is_published }).eq("id", event.id);
+    if (error) return toast.error(error.message);
+    void load();
+  }
+
+  function edit(event: GoaEvent) {
+    setEditingId(event.id);
+    setDraft({
+      title: event.title,
+      description: event.description ?? "",
+      category: event.category,
+      area: event.area ?? "",
+      venue: event.venue ?? "",
+      starts_at: toLocalInput(event.starts_at),
+      price: event.price ?? "",
+      image_url: event.image_url ?? "",
+      ticket_url: event.ticket_url ?? "",
+      emoji: event.emoji ?? "",
+      is_featured: event.is_featured,
+      is_published: event.is_published,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  const field = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
+
+  return (
+    <div className="space-y-5">
+      <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <CalendarDays className="h-5 w-5 text-primary" />
+          {editingId ? "Edit event" : "Add an event"}
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          Events show on the dedicated Events page and slide into the home shorts feed every 4th short.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <input className={field} placeholder="Event title" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
+          <input className={field} type="datetime-local" value={draft.starts_at} onChange={(e) => setDraft({ ...draft, starts_at: e.target.value })} />
+          <select className={field} value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value })}>
+            {eventCategories.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select className={field} value={draft.area} onChange={(e) => setDraft({ ...draft, area: e.target.value })}>
+            {["North Goa", "South Goa", "Panjim", "Margao", "Vasco", "Online"].map((a) => <option key={a} value={a}>{a}</option>)}
+          </select>
+          <input className={field} placeholder="Venue (e.g. Arpora)" value={draft.venue} onChange={(e) => setDraft({ ...draft, venue: e.target.value })} />
+          <input className={field} placeholder="Price (e.g. Free / ₹500)" value={draft.price} onChange={(e) => setDraft({ ...draft, price: e.target.value })} />
+          <input className={field} placeholder="Emoji (e.g. 🎸)" value={draft.emoji} onChange={(e) => setDraft({ ...draft, emoji: e.target.value })} />
+          <input className={field} placeholder="Ticket / info link" value={draft.ticket_url} onChange={(e) => setDraft({ ...draft, ticket_url: e.target.value })} />
+          <input className={`${field} sm:col-span-2`} placeholder="Image URL (optional)" value={draft.image_url} onChange={(e) => setDraft({ ...draft, image_url: e.target.value })} />
+          <textarea className={`${field} sm:col-span-2`} rows={3} placeholder="Description" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <label className="flex items-center gap-2 text-xs font-semibold">
+            <input type="checkbox" checked={draft.is_featured} onChange={(e) => setDraft({ ...draft, is_featured: e.target.checked })} /> Featured
+          </label>
+          <label className="flex items-center gap-2 text-xs font-semibold">
+            <input type="checkbox" checked={draft.is_published} onChange={(e) => setDraft({ ...draft, is_published: e.target.checked })} /> Published
+          </label>
+          <button onClick={save} disabled={saving} className="ml-auto inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60">
+            <Plus className="h-4 w-4" /> {editingId ? "Save changes" : "Publish event"}
+          </button>
+          {editingId && (
+            <button onClick={() => { setEditingId(null); setDraft(emptyEvent); }} className="rounded-full bg-secondary px-4 py-2 text-sm font-semibold">
+              Cancel
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-2 rounded-3xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="text-lg font-bold">All events ({events.length})</h2>
+        {events.length === 0 && <p className="text-sm text-muted-foreground">Nothing scheduled yet.</p>}
+        {events.map((event) => (
+          <div key={event.id} className="flex items-center gap-3 rounded-2xl border border-border px-3 py-2">
+            <span className="text-xl">{event.emoji ?? "📅"}</span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold">{event.title}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {new Date(event.starts_at).toLocaleString("en-IN")} · {event.category}
+                {event.area ? ` · ${event.area}` : ""}
+              </p>
+            </div>
+            <button onClick={() => togglePublished(event)} title="Publish toggle" className="text-muted-foreground">
+              {event.is_published ? <ToggleRight className="h-6 w-6 text-primary" /> : <ToggleLeft className="h-6 w-6" />}
+            </button>
+            <button onClick={() => edit(event)} className="text-muted-foreground"><Pencil className="h-4 w-4" /></button>
+            <button onClick={() => remove(event.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
