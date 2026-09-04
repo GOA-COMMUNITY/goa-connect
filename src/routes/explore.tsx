@@ -38,6 +38,9 @@ type Profile = {
   username: string | null;
   is_goan: boolean | null;
   is_tourist: boolean | null;
+  account_type?: string | null;
+  business_name?: string | null;
+  business_category?: string | null;
 };
 
 function Explore() {
@@ -77,7 +80,7 @@ function Explore() {
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select("id, display_name, area, bio, avatar_emoji, avatar_url, username, is_goan, is_tourist, is_active")
+        .select("id, display_name, area, bio, avatar_emoji, avatar_url, username, is_goan, is_tourist, is_active, account_type, business_name, business_category")
         .eq("is_active", true)
         .order("is_fake", { ascending: false })
         .order("created_at", { ascending: false })
@@ -225,13 +228,21 @@ function Explore() {
                   <ProfileAvatar url={p.avatar_url} emoji={p.avatar_emoji} name={p.display_name} className="h-16 w-16" fallbackClassName="text-3xl" />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <h3 className="font-semibold text-foreground">{p.display_name}</h3>
+                      <h3 className="font-semibold text-foreground">
+                        {p.account_type === "business" && p.business_name ? p.business_name : p.display_name}
+                      </h3>
                       {p.is_goan && <CheckCircle2 className="h-4 w-4 text-primary" />}
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                        p.is_tourist ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary"
-                      }`}>
-                        {p.is_tourist ? "Tourist" : "Goan"}
-                      </span>
+                      {p.account_type === "business" ? (
+                        <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">
+                          {p.business_category ? `Business · ${p.business_category}` : "Business"}
+                        </span>
+                      ) : (
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                          p.is_tourist ? "bg-secondary text-secondary-foreground" : "bg-primary/10 text-primary"
+                        }`}>
+                          {p.is_tourist ? "Tourist" : "Goan"}
+                        </span>
+                      )}
                     </div>
                     {(p.area || p.username) && (
                       <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">

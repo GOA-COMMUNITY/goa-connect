@@ -5,6 +5,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
 import { useEffect, useRef, useState } from "react";
 import { getCachedShorts, warmShorts } from "@/lib/shorts-warmup";
+import { fetchUploadedShorts } from "@/lib/user-shorts";
 import { rankShorts } from "@/lib/viewer-context";
 import { getShortsSettings } from "@/lib/app-settings";
 import { EventCard } from "@/components/EventCard";
@@ -108,6 +109,10 @@ function Home() {
 
     idle(() => {
       void fetchUpcomingEvents(12).then(setEvents);
+      // Member uploads are permanent Goa Social content — always part of the feed.
+      void fetchUploadedShorts(40).then((uploads) => {
+        if (uploads.length > 0) setVideos((current) => merge([...uploads, ...current]));
+      });
       void getShortsSettings().then((settings) => {
         embedsAllowed.current = settings.embedsEnabled;
         setVideos((current) => merge(current));

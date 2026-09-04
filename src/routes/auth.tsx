@@ -27,13 +27,17 @@ function isPhone(v: string) {
   return /^\d{10}$/.test(v.trim());
 }
 
+const BIZ_CATEGORIES = ["Cafe", "Restaurant", "Bar", "Surf School", "Hotel", "Shop", "Art", "Service", "Other"];
+
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [identifier, setIdentifier] = useState(""); // email or 10-digit phone
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [userType, setUserType] = useState<"goan" | "tourist">("goan");
+  const [accountType, setAccountType] = useState<"personal" | "business">("personal");
+  const [bizName, setBizName] = useState("");
+  const [bizCategory, setBizCategory] = useState("Cafe");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -42,6 +46,7 @@ function AuthPage() {
       if (data.session) navigate({ to: "/" });
     });
   }, [navigate]);
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,13 +63,17 @@ function AuthPage() {
           options: {
             data: {
               full_name:
+                (accountType === "business" ? bizName.trim() : "") ||
                 name.trim() ||
                 (isPhone(raw) ? `Goan ${raw.slice(-4)}` : email.split("@")[0]),
-              is_tourist: userType === "tourist",
+              account_type: accountType,
+              business_name: accountType === "business" ? bizName.trim() : "",
+              business_category: accountType === "business" ? bizCategory : "",
             },
             emailRedirectTo: window.location.origin,
           },
         });
+
         if (error) {
           // Common: "User already registered" -> guide them to sign in
           if (/already/i.test(error.message)) {
@@ -90,10 +99,15 @@ function AuthPage() {
         if (data.user) {
           supabase
             .from("profiles")
-            .update({ is_tourist: userType === "tourist", is_goan: userType === "goan" })
+            .update({
+              account_type: accountType,
+              business_name: accountType === "business" ? bizName.trim() : null,
+              business_category: accountType === "business" ? bizCategory : null,
+            })
             .eq("id", data.user.id)
             .then(() => {});
         }
+
         toast.success("Welcome to Goa Social!");
         navigate({ to: "/" });
       } else {
@@ -122,6 +136,10 @@ function AuthPage() {
       toast.error("Please enter your name first.");
       return;
     }
+    if (accountType === "business" && !bizName.trim()) {
+      toast.error("Please enter your business name first.");
+      return;
+    }
     setBusy(true);
     try {
       const id = `goan${Math.random().toString(36).slice(2, 8)}${Date.now().toString(36).slice(-4)}`;
@@ -130,9 +148,15 @@ function AuthPage() {
         email: `${id}@goa.social`,
         password: pass,
         options: {
-          data: { full_name: name.trim() || `Goan ${id.slice(-4)}`, is_tourist: userType === "tourist" },
+          data: {
+            full_name: name.trim() || `Goan ${id.slice(-4)}`,
+            account_type: accountType,
+            business_name: accountType === "business" ? bizName.trim() : "",
+            business_category: accountType === "business" ? bizCategory : "",
+          },
         },
       });
+
       if (error) {
         toast.error(error.message);
         return;
@@ -197,31 +221,50 @@ function AuthPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+                required
               />
               <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setUserType("goan")}
-                  className={`rounded-2xl border-2 p-3 text-sm font-semibold transition ${
-                    userType === "goan"
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground"
-                  }`}
-                >
-                  🌴 Goan<br /><span className="text-[10px] font-normal opacity-80">Free</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUserType("tourist")}
-                  className={`rounded-2xl border-2 p-3 text-sm font-semibold transition ${
-                    userType === "tourist"
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground"
-                  }`}
-                >
-                  🧳 Tourist<br /><span className="text-[10px] font-normal opacity-80">Verification later</span>
-                </button>
+                {([
+                  ["personal", "Personal", "For fun & community", "🌴"],
+                  ["business", "Business", "Promote & grow", "🏪"],
+                ] as const).map(([value, label, hint, icon]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setAccountType(value)}
+                    className={`rounded-2xl border-2 p-3 text-left transition ${
+                      accountType === value
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground"
+                    }`}
+                  >
+                    <span className="text-lg">{icon}</span>
+                    <span className="ml-2 text-sm font-semibold">{label}</span>
+                    <span className="mt-1 block text-[10px] font-normal opacity-80">{hint}</span>
+                  </button>
+                ))}
               </div>
+              {accountType === "business" && (
+                <div className="space-y-3 rounded-2xl border border-primary/20 bg-primary/5 p-3">
+                  <input
+                    value={bizName}
+                    onChange={(e) => setBizName(e.target.value)}
+                    placeholder="Business name"
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+                    required
+                  />
+                  <select
+                    value={bizCategory}
+                    onChange={(e) => setBizCategory(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+                  >
+                    {BIZ_CATEGORIES.map((category) => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-muted-foreground">You keep the same social features, with business tools ready when you need them.</p>
+                </div>
+              )}
             </>
           )}
           <input

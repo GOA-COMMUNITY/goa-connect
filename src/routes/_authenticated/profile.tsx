@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { FileText, HelpCircle, ChevronRight, LogOut, Moon, Sun, Loader2, ShieldCheck } from "lucide-react";
+import { FileText, HelpCircle, ChevronRight, LogOut, Moon, Sun, Loader2, ShieldCheck, Store } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { useEffect, useState } from "react";
@@ -34,7 +34,14 @@ function Profile() {
   const [dark, setDark] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ display_name: "", area: "", bio: "", avatar_emoji: "🌴" });
+  const [form, setForm] = useState({
+    display_name: "",
+    area: "",
+    bio: "",
+    avatar_emoji: "🌴",
+    business_name: "",
+    business_category: "Cafe",
+  });
 
   useEffect(() => {
     const saved = localStorage.getItem("gs_theme");
@@ -83,6 +90,8 @@ function Profile() {
         area: profile.area ?? "",
         bio: profile.bio ?? "",
         avatar_emoji: profile.avatar_emoji ?? "🌴",
+        business_name: profile.business_name ?? "",
+        business_category: profile.business_category ?? "Cafe",
       });
     }
   }, [profile]);
@@ -90,7 +99,11 @@ function Profile() {
   async function save() {
     if (!user) return;
     setSaving(true);
-    const { error } = await supabase.from("profiles").update(form).eq("id", user.id);
+    const { error } = await supabase.from("profiles").update({
+      ...form,
+      business_name: profile?.account_type === "business" ? form.business_name.trim() || null : null,
+      business_category: profile?.account_type === "business" ? form.business_category : null,
+    }).eq("id", user.id);
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Profile saved");
