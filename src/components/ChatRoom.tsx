@@ -65,7 +65,11 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
   const { data: messages = [] } = useQuery({
     queryKey: ["messages", conversationId],
     enabled: !!user,
+    // Replies can land minutes later, so keep the open chat fresh.
+    refetchInterval: 20_000,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
+
       const { data, error: queryError } = await supabase
         .from("messages")
         .select("id, conversation_id, sender_id, body, created_at")
@@ -200,12 +204,13 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
   }
 
   async function requestReply() {
-    // A real person reads first, then starts typing — and their messages land
-    // one at a time, so poll while they're composing.
-    const typingTimer = window.setTimeout(() => setTyping(true), 350);
-    const poll = window.setInterval(() => {
-      void queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-    }, 800);
+    // People answer when they get to their phone — sometimes in a minute,
+    // sometimes hours later. Only show "typing…" when the reply is imminent.
+    let poll = 0;
+    const stop = () => {
+      if (poll) window.clearInterval(poll);
+      setTyping(false);
+    };
 
     try {
       const { data, error: replyError } = await supabase.functions.invoke("ai-reply", {
@@ -213,16 +218,22 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
       });
       if (replyError) throw replyError;
       if (data?.error) throw new Error(data.error);
-      await queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+
+      const deliverInMs = typeof data?.deliverInMs === "number" ? data.deliverInMs : 0;
+      if (deliverInMs > 0 && deliverInMs < 45_000) {
+        setTyping(true);
+        poll = window.setInterval(() => {
+          void queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+        }, 1500);
+        window.setTimeout(stop, deliverInMs + 4000);
+      }
       void queryClient.invalidateQueries({ queryKey: ["conversations"] });
     } catch {
       // Human conversations do not require an automatic response.
-    } finally {
-      window.clearTimeout(typingTimer);
-      window.clearInterval(poll);
-      setTyping(false);
+      stop();
     }
   }
+
 
 
   return (

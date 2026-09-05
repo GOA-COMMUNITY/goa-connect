@@ -41,6 +41,8 @@ function Profile() {
     avatar_emoji: "🌴",
     business_name: "",
     business_category: "Cafe",
+    is_tourist: false,
+    origin_city: "",
   });
 
   useEffect(() => {
@@ -92,6 +94,8 @@ function Profile() {
         avatar_emoji: profile.avatar_emoji ?? "🌴",
         business_name: profile.business_name ?? "",
         business_category: profile.business_category ?? "Cafe",
+        is_tourist: profile.is_tourist ?? false,
+        origin_city: profile.origin_city ?? "",
       });
     }
   }, [profile]);
@@ -103,6 +107,9 @@ function Profile() {
       ...form,
       business_name: profile?.account_type === "business" ? form.business_name.trim() || null : null,
       business_category: profile?.account_type === "business" ? form.business_category : null,
+      is_tourist: profile?.account_type === "business" ? false : form.is_tourist,
+      is_goan: profile?.account_type === "business" ? false : !form.is_tourist,
+      origin_city: form.is_tourist ? form.origin_city.trim() || null : null,
     }).eq("id", user.id);
     setSaving(false);
     if (error) return toast.error(error.message);
@@ -183,6 +190,33 @@ function Profile() {
                 ))}
               </select>
             </div>
+            {profile?.account_type !== "business" && (
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Goan or tourist?</label>
+                <div className="mt-1 grid grid-cols-2 gap-2">
+                  {([[false, "\uD83C\uDF34 Goan"], [true, "\u2708\uFE0F Tourist"]] as const).map(([value, label]) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => setForm({ ...form, is_tourist: value })}
+                      className={`rounded-2xl border-2 px-4 py-2.5 text-sm font-semibold transition ${
+                        form.is_tourist === value ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {form.is_tourist && (
+                  <input
+                    value={form.origin_city}
+                    onChange={(e) => setForm({ ...form, origin_city: e.target.value })}
+                    placeholder="Where are you from? (city)"
+                    className="mt-2 w-full rounded-2xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+                  />
+                )}
+              </div>
+            )}
             <div>
               <label className="text-xs font-semibold text-muted-foreground">Bio</label>
               <textarea

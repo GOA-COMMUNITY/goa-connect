@@ -38,6 +38,8 @@ function AuthPage() {
   const [accountType, setAccountType] = useState<"personal" | "business">("personal");
   const [bizName, setBizName] = useState("");
   const [bizCategory, setBizCategory] = useState("Cafe");
+  const [isTourist, setIsTourist] = useState<boolean | null>(null);
+  const [originCity, setOriginCity] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -57,6 +59,10 @@ function AuthPage() {
       const email = isPhone(raw) ? phoneToEmail(raw) : raw.toLowerCase();
 
       if (mode === "signup") {
+        if (accountType === "personal" && isTourist === null) {
+          toast.error("Tap Goan or Tourist so people know who you are.");
+          return;
+        }
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -69,6 +75,8 @@ function AuthPage() {
               account_type: accountType,
               business_name: accountType === "business" ? bizName.trim() : "",
               business_category: accountType === "business" ? bizCategory : "",
+              is_tourist: accountType === "personal" && isTourist ? "true" : "false",
+              origin_city: accountType === "personal" && isTourist ? originCity.trim() : "",
             },
             emailRedirectTo: window.location.origin,
           },
@@ -103,6 +111,9 @@ function AuthPage() {
               account_type: accountType,
               business_name: accountType === "business" ? bizName.trim() : null,
               business_category: accountType === "business" ? bizCategory : null,
+              is_goan: accountType === "personal" ? isTourist !== true : false,
+              is_tourist: accountType === "personal" && isTourist === true,
+              origin_city: accountType === "personal" && isTourist ? originCity.trim() || null : null,
             })
             .eq("id", data.user.id)
             .then(() => {});
@@ -140,6 +151,10 @@ function AuthPage() {
       toast.error("Please enter your business name first.");
       return;
     }
+    if (accountType === "personal" && isTourist === null) {
+      toast.error("Tap Goan or Tourist so people know who you are.");
+      return;
+    }
     setBusy(true);
     try {
       const id = `goan${Math.random().toString(36).slice(2, 8)}${Date.now().toString(36).slice(-4)}`;
@@ -153,6 +168,8 @@ function AuthPage() {
             account_type: accountType,
             business_name: accountType === "business" ? bizName.trim() : "",
             business_category: accountType === "business" ? bizCategory : "",
+            is_tourist: accountType === "personal" && isTourist ? "true" : "false",
+            origin_city: accountType === "personal" && isTourist ? originCity.trim() : "",
           },
         },
       });
@@ -244,6 +261,40 @@ function AuthPage() {
                   </button>
                 ))}
               </div>
+              {accountType === "personal" && (
+                <div className="space-y-2 rounded-2xl border border-primary/20 bg-primary/5 p-3">
+                  <p className="text-xs font-semibold text-foreground">Are you a Goan or a tourist?</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      [false, "Goan", "I live here", "\uD83C\uDF34"],
+                      [true, "Tourist", "Just visiting", "\u2708\uFE0F"],
+                    ] as const).map(([value, label, hint, icon]) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => setIsTourist(value)}
+                        className={`rounded-xl border-2 p-3 text-left transition ${
+                          isTourist === value
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground"
+                        }`}
+                      >
+                        <span className="text-base">{icon}</span>
+                        <span className="ml-2 text-sm font-semibold">{label}</span>
+                        <span className="mt-1 block text-[10px] font-normal opacity-80">{hint}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {isTourist === true && (
+                    <input
+                      value={originCity}
+                      onChange={(e) => setOriginCity(e.target.value)}
+                      placeholder="Where are you from? (city)"
+                      className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+                    />
+                  )}
+                </div>
+              )}
               {accountType === "business" && (
                 <div className="space-y-3 rounded-2xl border border-primary/20 bg-primary/5 p-3">
                   <input

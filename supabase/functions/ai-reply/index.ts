@@ -161,31 +161,42 @@ Deno.serve(async (req) => {
     reply = humanise(reply, fp);
     if (!reply) return json({ skipped: "empty reply" });
 
-    // Real people read, think, then type — but fast. Each persona has its own
-    // pace, so no two profiles answer with the same rhythm.
+    // Real people don't answer instantly. Each persona has its own habit —
+    // some check their phone constantly, some reply after work, some the next
+    // morning. Messages are written now but stamped for later; members simply
+    // cannot see them until that moment arrives.
     const parts = splitParts(reply, fp);
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const delayMs = replyDelay(fp);
+    const firstAt = new Date(Date.now() + delayMs);
 
     let last = reply;
+    let cursor = firstAt.getTime();
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      const think = (i === 0 ? 250 + Math.random() * 900 : 150 + Math.random() * 400) * fp.pace;
-      const typing = Math.min(3200, part.length * (8 + Math.random() * 14) * fp.pace);
-      await sleep(Math.round(think + typing));
-
+      if (i > 0) cursor += Math.round((4000 + Math.random() * 20000) * fp.pace);
       const { error: insertError } = await admin
         .from("messages")
-        .insert({ conversation_id: conversationId, sender_id: bot.id, body: part.slice(0, 800) });
+        .insert({
+          conversation_id: conversationId,
+          sender_id: bot.id,
+          body: part.slice(0, 800),
+          created_at: new Date(cursor).toISOString(),
+        });
       if (insertError) throw insertError;
       last = part;
     }
 
-    await admin
-      .from("conversations")
-      .update({ last_message: last.slice(0, 200), last_message_at: new Date().toISOString() })
-      .eq("id", conversationId);
+    // Only surface the preview in the chat list once the reply is actually due.
+    if (delayMs < 45_000) {
+      await sleep(delayMs + 400);
+      await admin
+        .from("conversations")
+        .update({ last_message: last.slice(0, 200), last_message_at: new Date().toISOString() })
+        .eq("id", conversationId);
+    }
 
-    return json({ reply, parts });
+    return json({ scheduled: true, deliverInMs: delayMs, parts: parts.length });
+
 
   } catch (e) {
     console.error(e);
@@ -245,10 +256,39 @@ function fingerprint(id: string) {
     pace: 0.6 + rnd(100) / 100,
     temperature: 0.85 + rnd(60) / 100,
     maxLen: 90 + rnd(150),
+    delayBucket: rnd(100),
+    delaySpread: rnd(100) / 100,
   };
 }
 
 type Fingerprint = ReturnType<typeof fingerprint>;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * How long this persona takes to notice and answer a message. Habits differ per
+ * profile: some are glued to their phone, most answer within the hour, a few
+ * only get back that evening or the next morning.
+ */
+function replyDelay(fp: Fingerprint) {
+  const min = 60_000;
+  const jitter = 0.6 + Math.random() * 0.9;
+  let ms: number;
+  if (fp.delayBucket < 30) ms = (1 + fp.delaySpread * 6) * min;          // 1-7 min
+  else if (fp.delayBucket < 60) ms = (8 + fp.delaySpread * 40) * min;     // 8-48 min
+  else if (fp.delayBucket < 82) ms = (60 + fp.delaySpread * 180) * min;   // 1-4 h
+  else if (fp.delayBucket < 95) ms = (240 + fp.delaySpread * 360) * min;  // 4-10 h
+  else ms = (600 + fp.delaySpread * 900) * min;                           // 10-25 h
+  ms = Math.round(ms * jitter);
+
+  // Nobody in Goa is texting at 3am — push overnight replies to the morning.
+  const istHour = (new Date(Date.now() + ms).getUTCHours() + 5.5) % 24;
+  if (istHour >= 1 && istHour < 7.5) {
+    ms += Math.round(((7.5 - istHour) * 60 + Math.random() * 150) * min);
+  }
+  return ms;
+}
+
 
 /** Quick-thumb typos a real person would not bother fixing. */
 function typo(text: string) {
