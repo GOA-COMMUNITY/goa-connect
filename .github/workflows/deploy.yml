@@ -14,7 +14,9 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # Never cancel a deployment mid-flight — a cancelled Pages deploy can leave
+  # goasocial.in serving a half-published build.
+  cancel-in-progress: false
 
 jobs:
   build:
