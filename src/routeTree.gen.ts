@@ -25,6 +25,7 @@ import { Route as AuthenticatedChatsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authenticated/chats.index'
 import { Route as AuthenticatedChatsIdRouteImport } from './routes/_authenticated/chats.$id'
+import { Route as ApiPublicCronImportEventsRouteImport } from './routes/api/public/cron/import-events'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -105,6 +106,12 @@ const AuthenticatedChatsIdRoute = AuthenticatedChatsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedChatsRoute,
 } as any)
+const ApiPublicCronImportEventsRoute =
+  ApiPublicCronImportEventsRouteImport.update({
+    id: '/api/public/cron/import-events',
+    path: '/api/public/cron/import-events',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/s/$id': typeof SIdRoute
   '/chats/$id': typeof AuthenticatedChatsIdRoute
   '/chats/': typeof AuthenticatedChatsIndexRoute
+  '/api/public/cron/import-events': typeof ApiPublicCronImportEventsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,6 +146,7 @@ export interface FileRoutesByTo {
   '/s/$id': typeof SIdRoute
   '/chats/$id': typeof AuthenticatedChatsIdRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/api/public/cron/import-events': typeof ApiPublicCronImportEventsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -157,6 +166,7 @@ export interface FileRoutesById {
   '/s/$id': typeof SIdRoute
   '/_authenticated/chats/$id': typeof AuthenticatedChatsIdRoute
   '/_authenticated/chats/': typeof AuthenticatedChatsIndexRoute
+  '/api/public/cron/import-events': typeof ApiPublicCronImportEventsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/s/$id'
     | '/chats/$id'
     | '/chats/'
+    | '/api/public/cron/import-events'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/s/$id'
     | '/chats/$id'
     | '/chats'
+    | '/api/public/cron/import-events'
   id:
     | '__root__'
     | '/'
@@ -210,6 +222,7 @@ export interface FileRouteTypes {
     | '/s/$id'
     | '/_authenticated/chats/$id'
     | '/_authenticated/chats/'
+    | '/api/public/cron/import-events'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,6 +237,7 @@ export interface RootRouteChildren {
   RefundsRoute: typeof RefundsRoute
   TermsRoute: typeof TermsRoute
   SIdRoute: typeof SIdRoute
+  ApiPublicCronImportEventsRoute: typeof ApiPublicCronImportEventsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -340,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatsIdRouteImport
       parentRoute: typeof AuthenticatedChatsRoute
     }
+    '/api/public/cron/import-events': {
+      id: '/api/public/cron/import-events'
+      path: '/api/public/cron/import-events'
+      fullPath: '/api/public/cron/import-events'
+      preLoaderRoute: typeof ApiPublicCronImportEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -383,6 +404,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundsRoute: RefundsRoute,
   TermsRoute: TermsRoute,
   SIdRoute: SIdRoute,
+  ApiPublicCronImportEventsRoute: ApiPublicCronImportEventsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

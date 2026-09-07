@@ -35,10 +35,12 @@ export type Database = {
       businesses: {
         Row: {
           area: string | null
+          boost_until: string | null
           category: string | null
           created_at: string
           description: string | null
           id: string
+          is_verified: boolean
           name: string
           owner_id: string
           phone: string | null
@@ -47,10 +49,12 @@ export type Database = {
         }
         Insert: {
           area?: string | null
+          boost_until?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          is_verified?: boolean
           name: string
           owner_id: string
           phone?: string | null
@@ -59,10 +63,12 @@ export type Database = {
         }
         Update: {
           area?: string | null
+          boost_until?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          is_verified?: boolean
           name?: string
           owner_id?: string
           phone?: string | null
@@ -119,6 +125,51 @@ export type Database = {
           },
         ]
       }
+      event_sources: {
+        Row: {
+          area: string | null
+          auto_publish: boolean
+          category: string
+          created_at: string
+          id: string
+          is_enabled: boolean
+          kind: string
+          last_count: number
+          last_run_at: string | null
+          last_status: string | null
+          name: string
+          url: string
+        }
+        Insert: {
+          area?: string | null
+          auto_publish?: boolean
+          category?: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          kind?: string
+          last_count?: number
+          last_run_at?: string | null
+          last_status?: string | null
+          name: string
+          url: string
+        }
+        Update: {
+          area?: string | null
+          auto_publish?: boolean
+          category?: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          kind?: string
+          last_count?: number
+          last_run_at?: string | null
+          last_status?: string | null
+          name?: string
+          url?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           area: string | null
@@ -133,6 +184,8 @@ export type Database = {
           is_featured: boolean
           is_published: boolean
           price: string | null
+          source_id: string | null
+          source_url: string | null
           starts_at: string
           ticket_url: string | null
           title: string
@@ -152,6 +205,8 @@ export type Database = {
           is_featured?: boolean
           is_published?: boolean
           price?: string | null
+          source_id?: string | null
+          source_url?: string | null
           starts_at: string
           ticket_url?: string | null
           title: string
@@ -171,13 +226,23 @@ export type Database = {
           is_featured?: boolean
           is_published?: boolean
           price?: string | null
+          source_id?: string | null
+          source_url?: string | null
           starts_at?: string
           ticket_url?: string | null
           title?: string
           updated_at?: string
           venue?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "events_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "event_sources"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       follows: {
         Row: {

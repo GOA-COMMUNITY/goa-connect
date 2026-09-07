@@ -6,6 +6,9 @@
 - [x] Verify AI profiles remain available and chat entry points work
 - [x] Validate build and preview after the changes
 
+- [x] Goan / Tourist choice at sign-up and in profile
+- [x] Human reply timing for community personas (minutes to many hours)
+
 ## Next
 - [ ] Automate event/news ingestion from 10-15 Goan sources
 - [ ] Business listing boosts and self-serve ads
