@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Star, MapPin, Phone, Plus, Loader2, X, ExternalLink } from "lucide-react";
+import { BadgeCheck, Star, MapPin, Phone, Plus, Loader2, X, ExternalLink } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +30,8 @@ type Biz = {
   area: string | null;
   phone: string | null;
   rating: number | null;
+  is_verified?: boolean | null;
+  boost_until?: string | null;
 };
 
 const CATEGORIES = ["Cafe", "Restaurant", "Bar", "Surf School", "Hotel", "Shop", "Art", "Service", "Other"];
@@ -59,7 +61,10 @@ function Business() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Biz[];
+      const rows = data as Biz[];
+      const now = Date.now();
+      const featured = (b: Biz) => (b.boost_until && new Date(b.boost_until).getTime() > now ? 1 : 0);
+      return [...rows].sort((a, b) => featured(b) - featured(a));
     },
   });
 
@@ -106,7 +111,15 @@ function Business() {
                 {CATEGORY_EMOJI[b.category ?? "Other"] ?? "🌴"}
               </div>
               <div className="absolute bottom-3 left-4 right-4 text-white">
-                <h3 className="text-xl font-bold drop-shadow">{b.name}</h3>
+                <h3 className="flex items-center gap-1.5 text-xl font-bold drop-shadow">
+                  {b.name}
+                  {b.is_verified && <BadgeCheck className="h-4 w-4" />}
+                </h3>
+                {b.boost_until && new Date(b.boost_until) > new Date() && (
+                  <span className="mt-1 mr-1 inline-flex rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur">
+                    Featured
+                  </span>
+                )}
                 {b.rating != null && b.rating > 0 && (
                   <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur">
                     <Star className="h-3 w-3 fill-current" /> {b.rating}

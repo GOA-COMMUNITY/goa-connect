@@ -6,10 +6,11 @@ import { useAuth } from "@/hooks/use-auth";
 import { getChannelInfo, type ChannelInfo } from "@/lib/youtube.functions";
 import { toast } from "sonner";
 import { eventCategories, type GoaEvent } from "@/lib/events";
+import { importEventsNow } from "@/lib/automation.functions";
 import {
   Shield, Users, Store, MessageCircle, Bot, Settings, Trash2,
   ToggleLeft, ToggleRight, ArrowLeft, Search, Youtube, Plus,
-  BarChart3, Eye, Heart, Share2, Timer, CalendarDays, Pencil,
+  BarChart3, Eye, Heart, Share2, Timer, CalendarDays, Pencil, Rss,
 } from "lucide-react";
 
 
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminDashboard,
 });
 
-type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels" | "events";
+type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels" | "events" | "sources";
 
 type Profile = {
   id: string;
@@ -93,6 +94,7 @@ function AdminDashboard() {
             ["bots", "Demo Profiles", Bot],
             ["businesses", "Businesses", Store],
             ["events", "Events", CalendarDays],
+            ["sources", "Auto Sources", Rss],
             ["channels", "YouTube", Youtube],
             ["content", "Site Content", MessageCircle],
           ] as const).map(([k, label, Icon]) => (
@@ -116,6 +118,7 @@ function AdminDashboard() {
         {tab === "bots" && <ProfilesPanel onlyFake={true} />}
         {tab === "businesses" && <BusinessesPanel />}
         {tab === "events" && <EventsPanel />}
+        {tab === "sources" && <SourcesPanel />}
         {tab === "channels" && <ChannelsPanel />}
         {tab === "content" && <ContentPanel />}
       </main>
@@ -436,12 +439,28 @@ function EditProfileModal({
   );
 }
 
+type BizRow = {
+  id: string; name: string; category: string | null; area: string | null;
+  rating: number | null; is_verified: boolean; boost_until: string | null;
+};
+
 function BusinessesPanel() {
-  const [rows, setRows] = useState<{ id: string; name: string; category: string | null; area: string | null; rating: number | null }[]>([]);
+  const [rows, setRows] = useState<BizRow[]>([]);
   useEffect(() => {
-    supabase.from("businesses").select("id,name,category,area,rating").order("created_at", { ascending: false }).limit(200)
-      .then(({ data }) => setRows(data ?? []));
+    supabase.from("businesses").select("id,name,category,area,rating,is_verified,boost_until")
+      .order("created_at", { ascending: false }).limit(200)
+      .then(({ data }) => setRows((data ?? []) as BizRow[]));
   }, []);
+  async function patch(id: string, changes: Partial<BizRow>) {
+    const { error } = await supabase.from("businesses").update(changes as never).eq("id", id);
+    if (error) return toast.error(error.message);
+    setRows((r) => r.map((x) => (x.id === id ? { ...x, ...changes } : x)));
+    toast.success("Updated");
+  }
+  async function boost(id: string, days: number) {
+    const until = days === 0 ? null : new Date(Date.now() + days * 86400000).toISOString();
+    await patch(id, { boost_until: until });
+  }
   async function remove(id: string) {
     if (!confirm("Delete this business?")) return;
     const { error } = await supabase.from("businesses").delete().eq("id", id);
@@ -449,11 +468,12 @@ function BusinessesPanel() {
     setRows((r) => r.filter((x) => x.id !== id));
     toast.success("Deleted");
   }
+  const boosted = (b: BizRow) => !!b.boost_until && new Date(b.boost_until) > new Date();
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
       <table className="w-full text-sm">
         <thead className="bg-secondary text-xs uppercase text-muted-foreground">
-          <tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Category</th><th className="p-3 text-left">Area</th><th className="p-3 text-left">Rating</th><th /></tr>
+          <tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Category</th><th className="p-3 text-left">Area</th><th className="p-3 text-left">Verified</th><th className="p-3 text-left">Featured</th><th /></tr>
         </thead>
         <tbody>
           {rows.map((b) => (
@@ -461,7 +481,21 @@ function BusinessesPanel() {
               <td className="p-3 font-semibold">{b.name}</td>
               <td className="p-3 text-muted-foreground">{b.category ?? "—"}</td>
               <td className="p-3 text-muted-foreground">{b.area ?? "—"}</td>
-              <td className="p-3">{b.rating ?? 0}</td>
+              <td className="p-3">
+                <button onClick={() => patch(b.id, { is_verified: !b.is_verified })} className="text-primary">
+                  {b.is_verified ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
+                </button>
+              </td>
+              <td className="p-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-muted-foreground">
+                    {boosted(b) ? `until ${new Date(b.boost_until!).toLocaleDateString("en-IN")}` : "off"}
+                  </span>
+                  <button onClick={() => boost(b.id, 7)} className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold">7d</button>
+                  <button onClick={() => boost(b.id, 30)} className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold">30d</button>
+                  {boosted(b) && <button onClick={() => boost(b.id, 0)} className="rounded-full px-2 py-0.5 text-[11px] font-semibold text-destructive">stop</button>}
+                </div>
+              </td>
               <td className="p-3 text-right">
                 <button onClick={() => remove(b.id)} className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
                   <Trash2 className="h-4 w-4" />
@@ -469,12 +503,151 @@ function BusinessesPanel() {
               </td>
             </tr>
           ))}
-          {rows.length === 0 && <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No businesses yet</td></tr>}
+          {rows.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No businesses yet</td></tr>}
         </tbody>
       </table>
     </div>
   );
 }
+
+type SourceRow = {
+  id: string; name: string; url: string; kind: string; area: string | null;
+  category: string; auto_publish: boolean; is_enabled: boolean;
+  last_run_at: string | null; last_status: string | null; last_count: number | null;
+};
+
+function SourcesPanel() {
+  const [rows, setRows] = useState<SourceRow[]>([]);
+  const [bulk, setBulk] = useState("");
+  const [busy, setBusy] = useState(false);
+  const runImport = useServerFn(importEventsNow);
+
+  async function load() {
+    const { data } = await supabase.from("event_sources").select("*").order("created_at", { ascending: false });
+    setRows((data ?? []) as SourceRow[]);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function addBulk() {
+    const lines = bulk.split(/[\n,]/).map((l) => l.trim()).filter((l) => /^https?:\/\//i.test(l));
+    if (!lines.length) return toast.error("Paste one or more feed links (RSS, Atom or calendar)");
+    const payload = lines.map((url) => ({
+      name: (() => { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url.slice(0, 40); } })(),
+      url,
+      kind: /\.ics(\?|$)/i.test(url) ? "ical" : "rss",
+      category: "general",
+      auto_publish: false,
+      is_enabled: true,
+    }));
+    const { error } = await supabase.from("event_sources").insert(payload as never);
+    if (error) return toast.error(error.message);
+    setBulk("");
+    toast.success(`${payload.length} source(s) added`);
+    load();
+  }
+
+  async function patch(id: string, changes: Partial<SourceRow>) {
+    const { error } = await supabase.from("event_sources").update(changes as never).eq("id", id);
+    if (error) return toast.error(error.message);
+    setRows((r) => r.map((x) => (x.id === id ? { ...x, ...changes } : x)));
+  }
+  async function remove(id: string) {
+    if (!confirm("Remove this source?")) return;
+    await supabase.from("event_sources").delete().eq("id", id);
+    setRows((r) => r.filter((x) => x.id !== id));
+  }
+  async function importNow(sourceIds?: string[]) {
+    setBusy(true);
+    try {
+      const res = await runImport({ data: { sourceIds } });
+      const added = res.reports.reduce((n, r) => n + r.added, 0);
+      toast.success(`Imported ${added} new item(s)`);
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Import failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
+        <h3 className="font-bold">Add feeds (one link per line)</h3>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Paste news or event feed links from Goan sites — RSS, Atom or calendar (.ics).
+        </p>
+        <textarea
+          value={bulk}
+          onChange={(e) => setBulk(e.target.value)}
+          rows={5}
+          placeholder="https://example.com/feed&#10;https://example.com/events.ics"
+          className="mt-3 w-full rounded-2xl border border-border bg-background p-3 text-sm"
+        />
+        <div className="mt-3 flex gap-2">
+          <button onClick={addBulk} className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+            <Plus className="mr-1 inline h-4 w-4" /> Add sources
+          </button>
+          <button onClick={() => importNow()} disabled={busy}
+            className="rounded-full bg-secondary px-4 py-2 text-sm font-semibold disabled:opacity-50">
+            {busy ? "Fetching…" : "Fetch all now"}
+          </button>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary text-xs uppercase text-muted-foreground">
+            <tr>
+              <th className="p-3 text-left">Source</th><th className="p-3 text-left">Type</th>
+              <th className="p-3 text-left">Category</th><th className="p-3 text-left">Auto-publish</th>
+              <th className="p-3 text-left">On</th><th className="p-3 text-left">Last run</th><th />
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((s) => (
+              <tr key={s.id} className="border-t border-border align-top">
+                <td className="p-3">
+                  <p className="font-semibold">{s.name}</p>
+                  <p className="max-w-[260px] truncate text-[11px] text-muted-foreground">{s.url}</p>
+                </td>
+                <td className="p-3 text-muted-foreground">{s.kind}</td>
+                <td className="p-3">
+                  <select value={s.category} onChange={(e) => patch(s.id, { category: e.target.value })}
+                    className="rounded-full border border-border bg-background px-2 py-1 text-xs">
+                    {eventCategories.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </td>
+                <td className="p-3">
+                  <button onClick={() => patch(s.id, { auto_publish: !s.auto_publish })} className="text-primary">
+                    {s.auto_publish ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
+                  </button>
+                </td>
+                <td className="p-3">
+                  <button onClick={() => patch(s.id, { is_enabled: !s.is_enabled })} className="text-primary">
+                    {s.is_enabled ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
+                  </button>
+                </td>
+                <td className="p-3 text-[11px] text-muted-foreground">
+                  {s.last_run_at ? `${new Date(s.last_run_at).toLocaleString("en-IN")} · ${s.last_status ?? ""} · +${s.last_count ?? 0}` : "never"}
+                </td>
+                <td className="p-3 text-right">
+                  <button onClick={() => importNow([s.id])} disabled={busy}
+                    className="mr-1 rounded-full bg-secondary px-2 py-1 text-[11px] font-semibold">Fetch</button>
+                  <button onClick={() => remove(s.id)} className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 && <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No sources yet</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 
 function ContentPanel() {
   const [hero, setHero] = useState<{ title: string; subtitle: string }>({ title: "", subtitle: "" });
