@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileAvatar } from "@/components/ProfileAvatar";
 import { computeQuota, markConversationRead } from "@/lib/chat";
+import { personaPresence } from "@/lib/persona-presence";
 import { toast } from "sonner";
 
 type Message = {
@@ -245,7 +246,9 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
         <ProfileAvatar url={other?.avatar_url} emoji={other?.avatar_emoji} name={other?.display_name} className="h-10 w-10" fallbackClassName="text-lg" />
         <div className="min-w-0">
           <p className="truncate font-semibold text-foreground">{other?.display_name ?? "Goan"}</p>
-          <p className="truncate text-xs text-muted-foreground">{typing ? "typing…" : other?.area ?? "Goa Social"}</p>
+          <p className="truncate text-xs text-muted-foreground">
+            {typing ? "typing…" : personaPresence(otherId, other?.area ?? "Goa Social")}
+          </p>
         </div>
       </header>
 
