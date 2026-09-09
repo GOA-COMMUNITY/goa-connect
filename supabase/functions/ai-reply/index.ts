@@ -166,7 +166,7 @@ Deno.serve(async (req) => {
     // morning. Messages are written now but stamped for later; members simply
     // cannot see them until that moment arrives.
     const parts = splitParts(reply, fp);
-    const delayMs = replyDelay(fp);
+    const delayMs = replyDelay(fp, turn);
     const firstAt = new Date(Date.now() + delayMs);
 
     let last = reply;
@@ -258,6 +258,9 @@ function fingerprint(id: string) {
     maxLen: 90 + rnd(150),
     delayBucket: rnd(100),
     delaySpread: rnd(100) / 100,
+    // Personal daily rhythm (IST) — matches the presence line shown in chat.
+    wake: 6 + rnd(5),
+    sleepAt: 22 + rnd(4),
   };
 }
 
@@ -270,7 +273,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
  * profile: some are glued to their phone, most answer within the hour, a few
  * only get back that evening or the next morning.
  */
-function replyDelay(fp: Fingerprint) {
+function replyDelay(fp: Fingerprint, turn = 0) {
   const min = 60_000;
   const jitter = 0.6 + Math.random() * 0.9;
   let ms: number;
@@ -279,14 +282,25 @@ function replyDelay(fp: Fingerprint) {
   else if (fp.delayBucket < 82) ms = (60 + fp.delaySpread * 180) * min;   // 1-4 h
   else if (fp.delayBucket < 95) ms = (240 + fp.delaySpread * 360) * min;  // 4-10 h
   else ms = (600 + fp.delaySpread * 900) * min;                           // 10-25 h
-  ms = Math.round(ms * jitter);
 
-  // Nobody in Goa is texting at 3am — push overnight replies to the morning.
-  const istHour = (new Date(Date.now() + ms).getUTCHours() + 5.5) % 24;
-  if (istHour >= 1 && istHour < 7.5) {
-    ms += Math.round(((7.5 - istHour) * 60 + Math.random() * 150) * min);
+  // A conversation that is already flowing gets quicker replies, the way a real
+  // back-and-forth speeds up once both people are on their phones.
+  const warmth = Math.max(0.18, 1 / (1 + turn * 0.55));
+  ms = Math.round(ms * jitter * warmth);
+
+  // Sometimes a message just gets left on read for a long while.
+  if (Math.random() < 0.08) ms += Math.round((90 + Math.random() * 600) * min);
+
+  // Respect this person's own sleeping hours instead of a fixed night window.
+  const wake = fp.wake;
+  const sleepAt = fp.sleepAt;
+  const istHour = (new Date(Date.now() + ms).getUTCHours() + new Date(Date.now() + ms).getUTCMinutes() / 60 + 5.5) % 24;
+  const asleep = sleepAt >= 24 ? istHour >= sleepAt - 24 && istHour < wake : istHour >= sleepAt || istHour < wake;
+  if (asleep) {
+    const untilWake = (wake - istHour + 24) % 24;
+    ms += Math.round((untilWake * 60 + Math.random() * 90) * min);
   }
-  return ms;
+  return Math.max(20_000, ms);
 }
 
 
