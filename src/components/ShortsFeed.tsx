@@ -125,7 +125,13 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [burst, setBurst] = useState<string | null>(null);
   const [openComments, setOpenComments] = useState<Short | null>(null);
-  const [progress, setProgress] = useState(0);
+  // Progress is written straight to the DOM (never React state) so a playing
+  // video cannot re-render the whole feed 4x a second while you scroll.
+  const barRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const paintProgress = useCallback((index: number, value: number) => {
+    const bar = barRefs.current[index];
+    if (bar) bar.style.transform = `scaleX(${value})`;
+  }, []);
   const [muted, setMuted] = useState(() => {
     if (typeof window === "undefined") return true;
     return sessionStorage.getItem(SHORT_SOUND_KEY) !== "on";
@@ -288,12 +294,12 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
     activeSinceRef.current = Date.now();
     activeIdxRef.current = index;
     setActiveIdx(index);
-    setProgress(0);
+    for (let barIndex = 0; barIndex < barRefs.current.length; barIndex++) paintProgress(barIndex, 0);
     keepWarmAround(index);
     if (shorts[index]) logShortEvent(shorts[index].videoId, "view", sourceOf(shorts[index]), 0, user?.id);
     window.dispatchEvent(new CustomEvent("gs-shorts-active-feed", { detail: feedId.current }));
     syncPlayback(index);
-  }, [keepWarmAround, shorts, sourceOf, syncPlayback, user?.id]);
+  }, [keepWarmAround, paintProgress, shorts, sourceOf, syncPlayback, user?.id]);
 
 
   useEffect(() => {
@@ -305,6 +311,21 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
   useEffect(() => {
     syncPlayback(activeIdxRef.current);
   }, [tier, syncPlayback]);
+
+  // Paint the progress hairline for the active embedded player without
+  // touching React state (keeps scrolling perfectly smooth).
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const index = activeIdxRef.current;
+      const player = players.current[index];
+      if (!player?.getDuration) return;
+      try {
+        const duration = player.getDuration();
+        if (duration > 0) paintProgress(index, player.getCurrentTime() / duration);
+      } catch {}
+    }, 400);
+    return () => window.clearInterval(timer);
+  }, [paintProgress]);
 
 
   useEffect(() => {
@@ -553,9 +574,7 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
             <img
               src={short.poster ?? posterFor(short.videoId, tier, index)}
               alt=""
-              className={`absolute inset-0 h-full w-full scale-110 object-cover opacity-60 ${
-                isActive ? "blur-xl" : "blur-md"
-              }`}
+              className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-md"
               loading={index <= 2 ? "eager" : "lazy"}
               decoding="async"
               aria-hidden
@@ -577,9 +596,8 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
                 preload={preloadFor(tier, index, isActive)}
 
                 onTimeUpdate={(event) => {
-                  if (!isActive) return;
                   const el = event.currentTarget;
-                  if (el.duration) setProgress(el.currentTime / el.duration);
+                  if (el.duration) paintProgress(index, el.currentTime / el.duration);
                 }}
                 onEnded={() => logShortEvent(short.videoId, "complete", sourceOf(short), 0, user?.id)}
                 onCanPlay={() => {
@@ -726,11 +744,12 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
               </div>
             </div>
 
-            {/* playback progress hairline */}
+            {/* playback progress hairline — painted straight to the DOM */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-[3px] bg-white/10">
               <span
-                className="block h-full bg-white/85 transition-[width] duration-200"
-                style={{ width: `${isActive ? Math.round(progress * 100) : 0}%` }}
+                ref={(element) => { barRefs.current[index] = element; }}
+                className="block h-full origin-left bg-white/85 will-change-transform"
+                style={{ transform: "scaleX(0)" }}
               />
             </div>
 
