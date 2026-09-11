@@ -8,7 +8,7 @@ import { releaseWarmup } from "@/lib/shorts-warmup";
  * Tapping anywhere unlocks browser audio for the shorts feed.
  */
 export function SplashScreen({
-  duration = 1200,
+  duration = 6000,
   children,
 }: {
   duration?: number;
@@ -23,12 +23,8 @@ export function SplashScreen({
   const startedAtRef = useRef<number>(Date.now());
 
   useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem("gs_splash")) {
-      setDone(true);
-      return;
-    }
     startedAtRef.current = Date.now();
-    const fadeAt = window.setTimeout(() => setFading(true), Math.max(500, duration - 400));
+    const fadeAt = window.setTimeout(() => setFading(true), Math.max(500, duration - 950));
     const finishAt = window.setTimeout(() => finish(), duration);
     return () => {
       window.clearTimeout(fadeAt);
@@ -38,7 +34,6 @@ export function SplashScreen({
 
   function finish() {
     setDone(true);
-    sessionStorage.setItem("gs_splash", "1");
     releaseWarmup();
     window.dispatchEvent(new Event("gs-enable-shorts-sound"));
   }
@@ -57,10 +52,6 @@ export function SplashScreen({
       sessionStorage.setItem("gs_shorts_sound", "on");
       window.dispatchEvent(new Event("gs-enable-shorts-sound"));
     } catch {}
-    const elapsed = Date.now() - startedAtRef.current;
-    const wait = Math.max(650 - elapsed, 0);
-    window.setTimeout(() => setFading(true), wait + 80);
-    window.setTimeout(finish, wait + 420);
   }
 
   return (
@@ -159,19 +150,21 @@ export function SplashScreen({
 
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_46%,transparent_28%,rgba(0,0,0,.55)_82%)]" />
 
-          {/* wordmark — placeholder pulses until the real logo decodes, then bursts */}
+          {/* wordmark — light gathers first, then the decoded logo resolves cleanly */}
           <div className="absolute inset-x-0 top-[16%] flex flex-col items-center px-8 text-center text-white">
             <div className="relative h-20 w-20">
+              <span className="gs-starburst absolute left-1/2 top-1/2" aria-hidden>
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <i key={index} style={{ rotate: `${index * 30}deg` }} />
+                ))}
+              </span>
               <span
                 className={`gs-backlight absolute inset-0 rounded-full ${logoReady ? "gs-backlight--on" : ""}`}
                 aria-hidden
               />
-              {!logoReady && (
-                <span className="gs-mark-skeleton absolute inset-0 rounded-[1.3rem] ring-1 ring-white/20" aria-hidden />
-              )}
               <div
                 className={`absolute inset-0 overflow-hidden rounded-[1.3rem] ring-1 ring-white/25 shadow-[0_18px_50px_-12px_rgba(0,0,0,.8)] ${
-                  logoReady ? "gs-mark-burst" : "opacity-0"
+                  logoReady ? "gs-mark-reveal" : "opacity-0"
                 }`}
               >
                 <img
@@ -190,6 +183,10 @@ export function SplashScreen({
             <p className="gs-sub mt-4 text-[10px] font-medium uppercase tracking-[0.62em] text-emerald-100/70">
               Susegad Network
             </p>
+          </div>
+
+          <div className="gs-wind pointer-events-none absolute inset-0" aria-hidden>
+            <span /><span /><span /><span />
           </div>
 
 
@@ -211,8 +208,8 @@ export function SplashScreen({
           </div>
 
           <style>{`
-            .gs-splash { background:#02100d; transition: opacity 700ms cubic-bezier(.4,0,.2,1), filter 700ms; }
-            .gs-splash--out { opacity:0; filter: blur(6px); }
+            .gs-splash { background:#02100d; transition: opacity 950ms cubic-bezier(.22,1,.36,1), filter 950ms, transform 950ms cubic-bezier(.22,1,.36,1); }
+            .gs-splash--out { opacity:0; filter: blur(12px) brightness(1.15); transform: translate3d(3%,0,0) scale(1.025); pointer-events:none; }
             .gs-sky {
               background:
                 radial-gradient(120% 80% at 50% 62%, rgba(255,196,120,.35), transparent 55%),
@@ -246,29 +243,32 @@ export function SplashScreen({
               18% { opacity:.9 }
               100% { transform: translate3d(26px,-140px,0); opacity:0 }
             }
-            .gs-mark-skeleton {
-              background: linear-gradient(120deg, rgba(255,255,255,.06), rgba(255,226,168,.22), rgba(255,255,255,.06));
-              background-size: 220% 100%;
-              animation: gsSkeleton 1.4s ease-in-out infinite;
-            }
-            @keyframes gsSkeleton { from { background-position: 180% 0 } to { background-position: -60% 0 } }
             .gs-backlight {
               opacity: 0; transform: scale(.6);
               background: radial-gradient(circle, rgba(255,226,150,.95) 0%, rgba(255,190,80,.45) 42%, transparent 72%);
               filter: blur(10px);
             }
-            .gs-backlight--on { animation: gsBacklight 1.1s cubic-bezier(.16,1,.3,1) forwards; }
+            .gs-backlight--on { animation: gsBacklight 1.8s .15s cubic-bezier(.16,1,.3,1) forwards; }
             @keyframes gsBacklight {
               0% { opacity:0; transform: scale(.55) }
-              35% { opacity:1; transform: scale(2.1) }
-              100% { opacity:.55; transform: scale(1.55) }
+              45% { opacity:1; transform: scale(1.9) }
+              100% { opacity:.42; transform: scale(1.45) }
             }
-            .gs-mark-burst { animation: gsMarkBurst 900ms cubic-bezier(.16,1,.3,1) both; }
-            @keyframes gsMarkBurst {
-              0% { transform: scale(.55) rotate(-8deg); opacity:0; filter: brightness(2.4) }
-              45% { transform: scale(1.22) rotate(2deg); opacity:1; filter: brightness(1.5) }
+            .gs-mark-reveal { animation: gsMarkReveal 1.65s .35s cubic-bezier(.16,1,.3,1) both; }
+            @keyframes gsMarkReveal {
+              0% { transform: scale(.82); opacity:0; filter: blur(10px) brightness(1.8) }
+              55% { transform: scale(1.04); opacity:1; filter: blur(0) brightness(1.18) }
               100% { transform: none; opacity:1; filter:none }
             }
+            .gs-starburst { width:1px; height:1px; opacity:0; animation:gsStarFlash 1.8s .25s ease-out both; }
+            .gs-starburst i { position:absolute; left:0; top:0; width:1px; height:38px; transform-origin:50% 0; background:linear-gradient(to bottom,rgba(255,239,188,.9),transparent); }
+            @keyframes gsStarFlash { 0%{opacity:0;transform:scale(.2)} 38%{opacity:1;transform:scale(1.15)} 100%{opacity:0;transform:scale(1.8)} }
+            .gs-wind { opacity:0; }
+            .gs-wind span { position:absolute; left:-35%; width:70%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); filter:blur(1px); transform:skewX(-18deg); }
+            .gs-wind span:nth-child(1){top:28%;animation-delay:0ms}.gs-wind span:nth-child(2){top:44%;animation-delay:100ms}.gs-wind span:nth-child(3){top:61%;animation-delay:40ms}.gs-wind span:nth-child(4){top:76%;animation-delay:160ms}
+            .gs-splash--out .gs-wind { opacity:1; }
+            .gs-splash--out .gs-wind span { animation:gsWindOut 850ms cubic-bezier(.22,1,.36,1) both; }
+            @keyframes gsWindOut { from{transform:translate3d(0,0,0) skewX(-18deg);opacity:0} 28%{opacity:.85} to{transform:translate3d(210%,0,0) skewX(-18deg);opacity:0} }
 
             .gs-title { animation: gsTitle 1.8s .45s cubic-bezier(.16,1,.3,1) both; text-shadow: 0 22px 60px rgba(0,0,0,.65); }
             @keyframes gsTitle { from { letter-spacing:.32em; opacity:0; transform: translateY(10px) } to { letter-spacing:-.02em; opacity:1; transform:none } }
@@ -280,8 +280,8 @@ export function SplashScreen({
             .gs-ring-a { animation: gsRing 2.8s ease-out infinite; }
             .gs-ring-b { animation: gsRing 2.8s .9s ease-out infinite; }
             @keyframes gsRing { 0% { transform: scale(.55); opacity:.9 } 100% { transform: scale(1.5); opacity:0 } }
-            .gs-progress { width:0; animation-name: gsProgress; animation-timing-function: linear; animation-fill-mode: forwards; }
-            @keyframes gsProgress { from { width:0 } to { width:100% } }
+            .gs-progress { transform:scaleX(0); transform-origin:left; animation-name: gsProgress; animation-timing-function: linear; animation-fill-mode: forwards; }
+            @keyframes gsProgress { from { transform:scaleX(0) } to { transform:scaleX(1) } }
             .gs-splash--bloom .gs-sun { animation: none; transform: translate(-50%,-50%) scale(2.6); opacity:1; transition: transform 900ms cubic-bezier(.16,1,.3,1); }
             .gs-splash--bloom .gs-sky { filter: brightness(1.45) saturate(1.2); transition: filter 700ms ease; }
             .gs-splash--bloom .gs-ring { transform: scale(1.35); opacity:0; transition: all 700ms cubic-bezier(.16,1,.3,1); }

@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2, Sparkles } from "lucide-react";
+import { BriefcaseBusiness, Eye, EyeOff, Loader2, MapPin, Palmtree, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -42,6 +42,16 @@ function AuthPage() {
   const [originCity, setOriginCity] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  function selectIdentity(identity: "goan" | "tourist" | "business") {
+    if (identity === "business") {
+      setAccountType("business");
+      setIsTourist(null);
+      return;
+    }
+    setAccountType("personal");
+    setIsTourist(identity === "tourist");
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -210,7 +220,7 @@ function AuthPage() {
         <span className="text-2xl font-bold text-primary">Goa Social</span>
       </Link>
 
-      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-card">
+        <div className="w-full max-w-md rounded-3xl border border-border bg-card p-5 shadow-card sm:p-6">
         <div className="mb-5 flex rounded-full bg-secondary p-1">
           <button
             onClick={() => setMode("signin")}
@@ -361,12 +371,72 @@ function AuthPage() {
         </div>
 
         <div className="rounded-2xl border border-border bg-secondary/40 p-3">
+          <div className="mb-3">
+            <p className="text-sm font-semibold text-foreground">Quick entry</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">Choose one, add your name, and enter instantly.</p>
+          </div>
+          <div className="mb-3 grid grid-cols-3 gap-2">
+            {([
+              ["goan", "Goan", Palmtree],
+              ["tourist", "Tourist", MapPin],
+              ["business", "Business", BriefcaseBusiness],
+            ] as const).map(([identity, label, Icon]) => {
+              const selected =
+                identity === "business"
+                  ? accountType === "business"
+                  : accountType === "personal" && isTourist === (identity === "tourist");
+              return (
+                <button
+                  key={identity}
+                  type="button"
+                  onClick={() => selectIdentity(identity)}
+                  aria-pressed={selected}
+                  className={`flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border-2 px-1 py-2 text-xs font-semibold transition ${
+                    selected
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-background text-muted-foreground"
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name (required)"
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
           />
+          {accountType === "personal" && isTourist === true && (
+            <input
+              value={originCity}
+              onChange={(e) => setOriginCity(e.target.value)}
+              placeholder="Your home city (optional)"
+              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+            />
+          )}
+          {accountType === "business" && (
+            <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
+              <input
+                value={bizName}
+                onChange={(e) => setBizName(e.target.value)}
+                placeholder="Business name"
+                className="min-w-0 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
+              />
+              <select
+                value={bizCategory}
+                onChange={(e) => setBizCategory(e.target.value)}
+                aria-label="Business category"
+                className="max-w-32 rounded-xl border border-border bg-background px-2 py-3 text-xs outline-none focus:border-primary"
+              >
+                {BIZ_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <button
             type="button"
             onClick={handleInstant}

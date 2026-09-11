@@ -10,5 +10,11 @@
 - [x] Human reply timing for community personas (minutes to many hours)
 
 ## Next
-- [ ] Automate event/news ingestion from 10-15 Goan sources
-- [ ] Business listing boosts and self-serve ads
+- [x] Automate event/news ingestion from 10-15 Goan sources
+- [x] Business listing boosts and self-serve ads
+
+## Launch experience
+- [x] Hold the cinematic opening for six seconds while the first Short preloads
+- [x] Smooth the logo reveal and wind-like transition into the feed
+- [x] Make Goan, Tourist, and Business choices clear for every account path
+- [x] Verify and publish the launch flow to goasocial.in

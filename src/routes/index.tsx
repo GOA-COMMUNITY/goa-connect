@@ -127,7 +127,7 @@ function Home() {
   }, []);
 
   return (
-    <SplashScreen duration={1100}>
+    <SplashScreen duration={6000}>
       <AppLayout showEventBanner={false}>
         {/* One feed instance prevents duplicate observers, players and network listeners. */}
         <section className="px-2 pt-2 sm:px-3">
