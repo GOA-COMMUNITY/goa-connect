@@ -153,10 +153,35 @@ function Home() {
         {/* Everything under the feed is below the fold — `gs-defer` lets the browser
             skip its layout/paint work until the user scrolls there. */}
         <div className="gs-defer">
+          {/* ⚡ Quick actions — the four things people actually came for */}
+          <section className="mx-3 mt-4 grid grid-cols-4 gap-2">
+            {[
+              { to: "/explore", label: "People", icon: Users },
+              { to: "/events", label: "Events", icon: Sparkles },
+              { to: "/business", label: "Places", icon: Coffee },
+              { to: "/chats", label: "Chats", icon: Music },
+            ].map(({ to, label, icon: Icon }) => (
+              <Link
+                key={label}
+                to={to}
+                className="gs-tile flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-2 py-3 shadow-soft"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="text-[11px] font-semibold text-foreground">{label}</span>
+              </Link>
+            ))}
+          </section>
+
           {/* 📋 Dashboard / welcome hero */}
           <section className="relative mx-3 mt-4 overflow-hidden rounded-3xl bg-gradient-primary p-6 text-primary-foreground shadow-card">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-            <h1 className="relative flex items-end gap-2 text-3xl font-bold leading-tight">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-16 -left-10 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
+            <span className="relative inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> Live in Goa
+            </span>
+            <h1 className="relative mt-3 flex items-end gap-2 font-display text-3xl font-extrabold leading-tight">
               <span>Susegad,<br />welcome home</span>
               <Palmtree className="mb-1 h-7 w-7" />
             </h1>
@@ -167,7 +192,7 @@ function Home() {
                 { icon: Sparkles, label: "Verified" },
                 { icon: Waves, label: "Local Vibe" },
               ].map(({ icon: Icon, label }) => (
-                <div key={label} className="rounded-2xl border border-white/20 bg-white/15 p-3 text-center">
+                <div key={label} className="gs-tile rounded-2xl border border-white/20 bg-white/15 p-3 text-center">
                   <Icon className="mx-auto h-6 w-6" />
                   <p className="mt-1 text-[11px] font-semibold">{label}</p>
                 </div>

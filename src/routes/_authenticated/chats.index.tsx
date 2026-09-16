@@ -124,7 +124,7 @@ function Chats() {
   return (
     <AppLayout>
       <div className="space-y-4 pb-4">
-        <div className="sticky top-0 z-20 space-y-3 border-b border-border bg-background/85 px-4 pb-3 pt-4 backdrop-blur-xl">
+        <div className="gs-glass sticky top-0 z-20 space-y-3 border-b border-border px-4 pb-3 pt-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Messages</h1>
             <Link

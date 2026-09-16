@@ -75,7 +75,7 @@ function EventsPage() {
         {events === null ? (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-[1.4rem] bg-secondary" />
+              <div key={i} className="gs-shimmer h-28 rounded-[1.4rem] bg-secondary" />
             ))}
           </div>
         ) : visible.length === 0 ? (

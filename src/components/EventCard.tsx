@@ -4,7 +4,7 @@ import { eventWhen, type GoaEvent } from "@/lib/events";
 
 export function EventCard({ event, compact = false }: { event: GoaEvent; compact?: boolean }) {
   return (
-    <article className="overflow-hidden rounded-[1.4rem] border border-border bg-card shadow-card">
+    <article className="gs-tile overflow-hidden rounded-[1.4rem] border border-border bg-card shadow-card">
       {event.image_url && !compact && (
         <img src={event.image_url} alt="" loading="lazy" decoding="async" className="h-40 w-full object-cover" />
       )}

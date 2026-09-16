@@ -146,6 +146,8 @@
 @theme inline {
   --color-success: var(--success);
   --color-primary-glow: var(--primary-glow);
+  --font-sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -155,8 +157,13 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
   }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { scrollbar-width: none; }
@@ -208,5 +215,49 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .gs-rise { animation: none; }
+  }
+}
+
+@layer base {
+  /* Warm, glassy surfaces + small delights that make the app feel alive */
+  .gs-glass {
+    background: color-mix(in oklab, var(--card) 82%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  }
+  .gs-tile {
+    transition: transform .22s cubic-bezier(.16,1,.3,1), box-shadow .22s ease;
+  }
+  .gs-tile:active { transform: scale(.985); }
+  @media (hover: hover) {
+    .gs-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+  }
+  .gs-gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Soft page entrance so every screen arrives instead of snapping in */
+  .gs-enter { animation: gs-enter .34s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes gs-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  /* Bottom-nav active pill */
+  @keyframes gs-pop { 0% { transform: scale(.8); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
+  .gs-pop { animation: gs-pop .22s cubic-bezier(.16,1,.3,1) both; }
+  /* Gentle shimmer for loading placeholders */
+  .gs-shimmer {
+    background: linear-gradient(90deg,
+      color-mix(in oklab, var(--muted) 85%, transparent) 25%,
+      color-mix(in oklab, var(--card) 90%, transparent) 37%,
+      color-mix(in oklab, var(--muted) 85%, transparent) 63%);
+    background-size: 400% 100%;
+    animation: gs-shimmer 1.4s ease infinite;
+  }
+  @keyframes gs-shimmer { 0% { background-position: 100% 0 } 100% { background-position: 0 0 } }
+  @media (prefers-reduced-motion: reduce) {
+    .gs-enter, .gs-pop, .gs-shimmer { animation: none; }
   }
 }

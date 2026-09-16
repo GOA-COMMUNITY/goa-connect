@@ -105,7 +105,7 @@ function Business() {
         )}
 
         {businesses.map((b) => (
-          <article key={b.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+          <article key={b.id} className="gs-tile overflow-hidden rounded-3xl border border-border bg-card shadow-card">
             <div className="relative h-32 bg-gradient-primary">
               <div className="absolute right-4 top-4 text-5xl opacity-90 drop-shadow-sm">
                 {CATEGORY_EMOJI[b.category ?? "Other"] ?? "🌴"}

@@ -143,7 +143,7 @@ function Explore() {
         />
       )}
       <div className="pb-4">
-        <div className="sticky top-0 z-20 space-y-3 border-b border-border bg-background/95 px-4 pb-3 pt-4">
+        <div className="gs-glass sticky top-0 z-20 space-y-3 border-b border-border px-4 pb-3 pt-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">Goa community</p>
             <h1 className="mt-1 text-2xl font-bold text-foreground">Find your people</h1>
@@ -190,10 +190,12 @@ function Explore() {
         </div>
 
         <div className="space-y-2 p-4">
-          <div className="mb-4 flex items-center gap-3 border-l-4 border-primary bg-card px-4 py-3 shadow-soft">
-            <Users className="h-6 w-6 text-primary" />
+          <div className="gs-tile mb-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-soft">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <Users className="h-5 w-5 text-primary" />
+            </span>
             <div className="flex-1">
-              <p className="text-sm font-bold text-foreground">Goa’s local community</p>
+              <p className="gs-gradient-text text-sm font-bold">Goa’s local community</p>
               <p className="text-xs text-muted-foreground">Meet people by place, interests and vibe</p>
             </div>
           </div>
@@ -223,7 +225,7 @@ function Explore() {
           {profiles.map((p) => {
             const following = followSet.has(p.id);
             return (
-              <article key={p.id} className="border-b border-border bg-card px-1 py-4 first:border-t">
+              <article key={p.id} className="gs-tile mb-3 rounded-3xl border border-border bg-card p-4 shadow-soft">
                 <div className="flex gap-4">
                   <ProfileAvatar url={p.avatar_url} emoji={p.avatar_emoji} name={p.display_name} className="h-16 w-16" fallbackClassName="text-3xl" />
                   <div className="min-w-0 flex-1">
