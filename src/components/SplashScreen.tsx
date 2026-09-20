@@ -24,7 +24,9 @@ export function SplashScreen({
 
   useEffect(() => {
     startedAtRef.current = Date.now();
-    const fadeAt = window.setTimeout(() => setFading(true), Math.max(500, duration - 950));
+    // Slow, wind-like cross-fade: the feed is already mounted underneath and
+    // becomes visible as the splash starts dissolving, so nothing ever pops.
+    const fadeAt = window.setTimeout(() => setFading(true), Math.max(500, duration - 1750));
     const finishAt = window.setTimeout(() => finish(), duration);
     return () => {
       window.clearTimeout(fadeAt);
@@ -56,7 +58,7 @@ export function SplashScreen({
 
   return (
     <>
-      <div style={{ visibility: done ? "visible" : "hidden" }}>{children}</div>
+      <div style={{ visibility: done || fading ? "visible" : "hidden" }}>{children}</div>
       {!done && (
         <button
           type="button"
@@ -208,8 +210,8 @@ export function SplashScreen({
           </div>
 
           <style>{`
-            .gs-splash { background:#02100d; transition: opacity 950ms cubic-bezier(.22,1,.36,1), filter 950ms, transform 950ms cubic-bezier(.22,1,.36,1); }
-            .gs-splash--out { opacity:0; filter: blur(12px) brightness(1.15); transform: translate3d(3%,0,0) scale(1.025); pointer-events:none; }
+            .gs-splash { background:#02100d; transition: opacity 1700ms cubic-bezier(.33,0,.2,1), filter 1700ms cubic-bezier(.33,0,.2,1), transform 1700ms cubic-bezier(.33,0,.2,1); }
+            .gs-splash--out { opacity:0; filter: blur(10px) brightness(1.1); transform: scale(1.03); pointer-events:none; }
             .gs-sky {
               background:
                 radial-gradient(120% 80% at 50% 62%, rgba(255,196,120,.35), transparent 55%),
@@ -267,7 +269,7 @@ export function SplashScreen({
             .gs-wind span { position:absolute; left:-35%; width:70%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); filter:blur(1px); transform:skewX(-18deg); }
             .gs-wind span:nth-child(1){top:28%;animation-delay:0ms}.gs-wind span:nth-child(2){top:44%;animation-delay:100ms}.gs-wind span:nth-child(3){top:61%;animation-delay:40ms}.gs-wind span:nth-child(4){top:76%;animation-delay:160ms}
             .gs-splash--out .gs-wind { opacity:1; }
-            .gs-splash--out .gs-wind span { animation:gsWindOut 850ms cubic-bezier(.22,1,.36,1) both; }
+            .gs-splash--out .gs-wind span { animation:gsWindOut 1500ms cubic-bezier(.22,1,.36,1) both; }
             @keyframes gsWindOut { from{transform:translate3d(0,0,0) skewX(-18deg);opacity:0} 28%{opacity:.85} to{transform:translate3d(210%,0,0) skewX(-18deg);opacity:0} }
 
             .gs-title { animation: gsTitle 1.8s .45s cubic-bezier(.16,1,.3,1) both; text-shadow: 0 22px 60px rgba(0,0,0,.65); }
