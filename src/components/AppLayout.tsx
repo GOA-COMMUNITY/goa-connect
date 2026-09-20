@@ -77,7 +77,7 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
 
       {showEventBanner && <EventBanner />}
 
-      <main key={pathname} className="gs-enter mx-auto max-w-2xl">{children}</main>
+      <main className="mx-auto max-w-2xl">{children}</main>
 
       <nav className="gs-glass fixed bottom-0 left-0 right-0 z-50 border-t border-border pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex max-w-2xl items-center justify-around px-3 py-2 pb-3">
