@@ -1,13 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Compass, CalendarDays, MessageCircle, User, Bell, Search, Shield } from "lucide-react";
+import { Home, Compass, CalendarDays, MessageCircle, User, Search, Shield, Zap } from "lucide-react";
 import { EventBanner } from "./EventBanner";
 import { useAuth } from "@/hooks/use-auth";
 import type { ReactNode } from "react";
-import { toast } from "sonner";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/explore", label: "Explore", icon: Compass },
+  { to: "/now", label: "Now", icon: Zap },
   { to: "/events", label: "Events", icon: CalendarDays },
   { to: "/chats", label: "Chats", icon: MessageCircle },
   { to: "/profile", label: "Profile", icon: User },
@@ -51,15 +51,6 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
             >
               <Search className="h-5 w-5" />
             </Link>
-            <button
-              type="button"
-              onClick={() => toast.info("Notifications are coming soon")}
-              className="relative flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
-            </button>
           </div>
         </div>
       </header>
