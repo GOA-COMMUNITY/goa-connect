@@ -12,9 +12,17 @@
 ## Next
 - [x] Automate event/news ingestion from 10-15 Goan sources
 - [x] Business listing boosts and self-serve ads
+- [x] Add Goa Now daily local pulse with events, places, area filters, and quick actions
 
 ## Launch experience
 - [x] Hold the cinematic opening for six seconds while the first Short preloads
 - [x] Smooth the logo reveal and wind-like transition into the feed
 - [x] Make Goan, Tourist, and Business choices clear for every account path
 - [x] Verify and publish the launch flow to goasocial.in
+
+## Quality pass
+- [x] Make Short likes and comments update immediately with failure recovery
+- [x] Make Explore follows update immediately and roll back on errors
+- [x] Remove the misleading notifications indicator and refine early-access wording
+- [x] Add canonical links to core discovery pages
+- [ ] Verify the preview and publish to the GitHub Pages repository
