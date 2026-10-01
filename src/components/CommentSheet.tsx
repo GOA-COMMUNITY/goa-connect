@@ -44,6 +44,22 @@ export function CommentSheet({
       toast.info("Sign in to join the conversation");
       return;
     }
+    const optimisticId = `optimistic-${Date.now()}`;
+    const optimisticComment: ShortComment = {
+      id: optimisticId,
+      video_id: short.videoId,
+      user_id: user.id,
+      body: text,
+      created_at: new Date().toISOString(),
+      author: {
+        display_name: user.user_metadata?.display_name ?? user.user_metadata?.full_name ?? "You",
+        avatar_url: user.user_metadata?.avatar_url ?? null,
+        avatar_emoji: user.user_metadata?.avatar_emoji ?? null,
+      },
+    };
+    setComments((previous) => [optimisticComment, ...previous]);
+    onCountChange(short.videoId, comments.length + 1);
+    setBody("");
     setSending(true);
     try {
       await addComment(short.videoId, user.id, text);
@@ -51,8 +67,10 @@ export function CommentSheet({
       const rows = await fetchComments(short.videoId);
       setComments(rows);
       onCountChange(short.videoId, rows.length);
-      setBody("");
     } catch {
+      setComments((previous) => previous.filter((comment) => comment.id !== optimisticId));
+      onCountChange(short.videoId, comments.length);
+      setBody(text);
       toast.error("Couldn't post that comment");
     } finally {
       setSending(false);
@@ -94,6 +112,9 @@ export function CommentSheet({
                   {comment.author?.display_name ?? "Goan"}
                 </p>
                 <p className="text-sm text-foreground">{comment.body}</p>
+                {comment.id.startsWith("optimistic-") && (
+                  <span className="text-[10px] text-muted-foreground">Sending…</span>
+                )}
               </div>
             </div>
           ))}
