@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.run_id }}
   # Never cancel a deployment mid-flight — a cancelled Pages deploy can leave
   # goasocial.in serving a half-published build.
   cancel-in-progress: false
