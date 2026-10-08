@@ -32,6 +32,8 @@ export type Short = {
   channelIcon: string;
   /** Present for shorts on Goa Social's own hosting (instant playback). */
   src?: string;
+  /** High-quality variant for fast phones / good networks. */
+  srcHq?: string;
   poster?: string;
   /** "upload" = permanent member upload, "youtube" = rotating daily pool. */
   source?: "youtube" | "upload";
@@ -51,6 +53,12 @@ declare global {
 }
 
 const SHORT_SOUND_KEY = "gs_shorts_sound";
+
+/** Pick the best video source for the current quality tier. Falls back to low. */
+function pickSrc(short: Short, tier: QualityTier): string | undefined {
+  if (short.srcHq && (tier === "high" || tier === "medium")) return short.srcHq;
+  return short.src;
+}
 
 const compact = (value: number) =>
   value >= 1000 ? `${(value / 1000).toFixed(value >= 10_000 ? 0 : 1)}K` : `${value}`;
@@ -581,13 +589,14 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
             />
             {short.src ? (
               <video
+                key={pickSrc(short, tier) ?? short.videoId}
                 ref={(element) => {
                   nativeRefs.current[index] = element;
                   if (element) {
                     readyRef.current.add(index);
                   }
                 }}
-                src={short.src}
+                src={pickSrc(short, tier)}
                 poster={short.poster}
                 className="absolute inset-0 h-full w-full object-cover"
                 playsInline
@@ -647,8 +656,8 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
               <Heart className="gs-burst pointer-events-none absolute left-1/2 top-1/2 z-30 h-24 w-24 -translate-x-1/2 -translate-y-1/2 fill-red-500 text-red-500" />
             )}
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-3 bg-gradient-to-t from-black/90 via-black/35 to-transparent px-4 pb-7 pt-28 text-white">
-              <div className="min-w-0 max-w-[68%]">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 bg-gradient-to-t from-black/90 via-black/35 to-transparent px-4 pb-7 pt-28 text-white">
+              <div className="min-w-0 max-w-[88%]">
                 <div className="inline-flex items-center gap-2 rounded-full bg-black/45 px-2.5 py-1.5 backdrop-blur">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15 text-xs">{short.channelIcon}</span>
                   <span className="truncate text-[11px] font-semibold">{short.channelName}</span>
@@ -659,44 +668,45 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
                 <p className="mt-1 text-[11px] opacity-75">#goa #susegad #locals</p>
               </div>
 
-              <div className="pointer-events-auto flex shrink-0 flex-col items-center gap-4 pb-1">
+              <div className="pointer-events-auto flex items-center gap-3 pb-1">
                 <button
                   type="button"
                   onClick={(event) => { event.stopPropagation(); void toggleLike(short); }}
-                  className="flex flex-col items-center gap-0.5 text-[11px] font-semibold"
+                  className="flex items-center gap-1.5 text-[12px] font-semibold"
                   aria-label={isLiked ? "Unlike short" : "Like short"}
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-black/40 backdrop-blur transition-transform active:scale-90">
-                    <Heart className={`h-6 w-6 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur transition-transform active:scale-90">
+                    <Heart className={`h-5.5 w-5.5 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
                   </span>
                   <span>{compact(likeCounts[short.videoId] ?? 0)}</span>
                 </button>
                 <button
                   type="button"
                   onClick={(event) => { event.stopPropagation(); setOpenComments(short); }}
-                  className="flex flex-col items-center gap-0.5 text-[11px] font-semibold"
+                  className="flex items-center gap-1.5 text-[12px] font-semibold"
                   aria-label="Open Goa Social comments"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-black/40 backdrop-blur transition-transform active:scale-90">
-                    <MessageCircle className="h-6 w-6" />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur transition-transform active:scale-90">
+                    <MessageCircle className="h-5.5 w-5.5" />
                   </span>
                   <span>{compact(commentCounts[short.videoId] ?? 0)}</span>
                 </button>
                 <button
                   type="button"
                   onClick={(event) => { event.stopPropagation(); void shareShort(short); }}
-                  className="flex flex-col items-center gap-0.5 text-[11px] font-semibold"
+                  className="flex items-center gap-1.5 text-[12px] font-semibold"
                   aria-label="Share on Goa Social"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-black/40 backdrop-blur transition-transform active:scale-90">
-                    <Send className="h-6 w-6" />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur transition-transform active:scale-90">
+                    <Send className="h-5.5 w-5.5" />
                   </span>
                   <span>Share</span>
                 </button>
+                <div className="flex-1" />
                 <button
                   type="button"
                   onClick={toggleSound}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-black/40 backdrop-blur"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
                   aria-label={muted ? "Unmute" : "Mute"}
                 >
                   {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
@@ -706,13 +716,13 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
                     <button
                       type="button"
                       onClick={(event) => { event.stopPropagation(); setQualityOpen((open) => !open); }}
-                      className="flex h-7 w-7 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur"
                       aria-label="Video quality"
                     >
-                      <Settings2 className="h-3.5 w-3.5" />
+                      <Settings2 className="h-4 w-4" />
                     </button>
                     {qualityOpen && (
-                      <div className="absolute bottom-9 right-0 z-40 w-40 overflow-hidden rounded-2xl border border-white/15 bg-black/85 text-left backdrop-blur">
+                      <div className="absolute bottom-11 right-0 z-40 w-40 overflow-hidden rounded-2xl border border-white/15 bg-black/85 text-left backdrop-blur">
                         <p className="px-3 pt-2 text-[9px] uppercase tracking-[0.2em] text-white/45">
                           Quality · {tier}
                         </p>
@@ -740,7 +750,6 @@ export function ShortsFeed({ shorts, interleave }: { shorts: Short[]; interleave
                     )}
                   </div>
                 )}
-
               </div>
             </div>
 
