@@ -249,7 +249,7 @@ async function download(videoId) {
       await run(
         "yt-dlp",
         [
-          "-f", "bv*[height<=480][ext=mp4]+ba[ext=m4a]/b[height<=480][ext=mp4]/b[ext=mp4]/b",
+          "-f", "bv*[height<=720][ext=mp4]+ba[ext=m4a]/b[height<=720][ext=mp4]/b[ext=mp4]/b",
           ...ytArgs(attempt),
           "--no-playlist",
           "--max-filesize", "40M",
@@ -266,13 +266,28 @@ async function download(videoId) {
   throw lastError ?? new Error("download failed");
 }
 
-async function compress(input, output) {
+/** Low-quality variant — 360p, aggressively compressed for slow phones/data saver. */
+async function compressLow(input, output) {
   await run("ffmpeg", [
     "-y", "-i", input,
     "-vf", "scale=-2:360",
     "-c:v", "libx264", "-preset", "veryfast", "-crf", "31",
     "-profile:v", "baseline", "-level", "3.0", "-pix_fmt", "yuv420p",
     "-c:a", "aac", "-b:a", "56k", "-ac", "1",
+    "-movflags", "+faststart",
+    "-t", "60",
+    output,
+  ], { maxBuffer: 10 * 1024 * 1024 });
+}
+
+/** High-quality variant — 720p, better bitrate for fast phones on good networks. */
+async function compressHigh(input, output) {
+  await run("ffmpeg", [
+    "-y", "-i", input,
+    "-vf", "scale=-2:720",
+    "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+    "-profile:v", "high", "-level", "4.0", "-pix_fmt", "yuv420p",
+    "-c:a", "aac", "-b:a", "128k", "-ac", "2",
     "-movflags", "+faststart",
     "-t", "60",
     output,
@@ -340,30 +355,36 @@ async function main() {
       if (!item) return;
       if (history.has(item.videoId)) continue;
       history.add(item.videoId); // claim it so parallel workers never duplicate
-      const out = `${NEXT_DIR}/${item.videoId}.mp4`;
+      const outLow = `${NEXT_DIR}/${item.videoId}.mp4`;
+      const outHigh = `${NEXT_DIR}/${item.videoId}.hq.mp4`;
       let raw;
       try {
         raw = await download(item.videoId);
         const files = await readdir(NEXT_DIR);
         const actual = files.find((f) => f.startsWith(`${item.videoId}.src`));
         if (!actual) throw new Error("download completed without a media file");
-        await compress(`${NEXT_DIR}/${actual}`, out);
+        await compressLow(`${NEXT_DIR}/${actual}`, outLow);
+        await compressHigh(`${NEXT_DIR}/${actual}`, outHigh);
         await rm(`${NEXT_DIR}/${actual}`, { force: true });
-        const info = await stat(out);
-        if (info.size > MAX_BYTES) {
-          console.warn(`skipping ${item.videoId} (${Math.round(info.size / 1024)}kb too big)`);
-          await rm(out, { force: true });
+        const infoLow = await stat(outLow);
+        const infoHigh = await stat(outHigh);
+        if (infoLow.size > MAX_BYTES) {
+          console.warn(`skipping ${item.videoId} (low ${Math.round(infoLow.size / 1024)}kb too big)`);
+          await rm(outLow, { force: true });
+          await rm(outHigh, { force: true });
           continue;
         }
         manifest.push({
           videoId: item.videoId,
           src: `/cached/${item.videoId}.mp4`,
+          srcHq: `/cached/${item.videoId}.hq.mp4`,
           poster: `https://i.ytimg.com/vi/${item.videoId}/hq720.jpg`,
           channelName: item.channel.name,
           channelIcon: item.channel.icon ?? "🌴",
-          bytes: info.size,
+          bytes: infoLow.size,
+          bytesHq: infoHigh.size,
         });
-        console.log(`cached ${manifest.length}/${needed} ${item.videoId} (${Math.round(info.size / 1024)}kb) — ${item.channel.name}`);
+        console.log(`cached ${manifest.length}/${needed} ${item.videoId} (lo ${Math.round(infoLow.size / 1024)}kb + hi ${Math.round(infoHigh.size / 1024)}kb) — ${item.channel.name}`);
       } catch (e) {
         console.warn(`failed ${item.videoId}:`, e.message.split("\n")[0]);
         if (raw) await rm(raw, { force: true }).catch(() => {});
@@ -394,6 +415,9 @@ async function main() {
   for (const item of existing) {
     try {
       await copyFile(`public${item.src}`, `${NEXT_DIR}/${item.videoId}.mp4`);
+      if (item.srcHq) {
+        await copyFile(`public${item.srcHq}`, `${NEXT_DIR}/${item.videoId}.hq.mp4`).catch(() => {});
+      }
     } catch {}
   }
   const finalManifest = [...manifest, ...existing].slice(0, MAX_CLIPS);
@@ -403,7 +427,9 @@ async function main() {
   for (const item of finalManifest) {
     try {
       const info = await stat(`${NEXT_DIR}/${item.videoId}.mp4`);
-      if (info.size > 0) verified.push({ ...item, bytes: info.size });
+      let hqBytes;
+      try { hqBytes = (await stat(`${NEXT_DIR}/${item.videoId}.hq.mp4`)).size; } catch {}
+      verified.push({ ...item, bytes: info.size, bytesHq: hqBytes });
     } catch {}
   }
 

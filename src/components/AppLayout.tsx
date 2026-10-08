@@ -21,7 +21,7 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
 
   return (
     <div className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))]">
-      <header className="gs-glass sticky top-0 z-50 border-b border-border">
+      <header className="sticky top-0 z-50 border-b border-border bg-card">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="h-10 w-10 overflow-hidden rounded-xl border border-border shadow-soft">
@@ -70,7 +70,7 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
 
       <main className="mx-auto max-w-2xl">{children}</main>
 
-      <nav className="gs-glass fixed bottom-0 left-0 right-0 z-50 border-t border-border pb-[env(safe-area-inset-bottom)]">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex max-w-2xl items-center justify-around px-3 py-2 pb-3">
           {navItems.map(({ to, label, icon: Icon }) => {
             const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
