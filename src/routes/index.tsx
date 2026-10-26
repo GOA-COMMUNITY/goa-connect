@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Coffee, Music, Palmtree, Shell, Sparkles, Sun, Users, Utensils, Waves } from "lucide-react";
+import { Coffee, Music, Palmtree, Shell, Sparkles, Sun, Users, Utensils, Waves, CalendarDays, ArrowRight } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
@@ -10,6 +10,7 @@ import { rankShorts } from "@/lib/viewer-context";
 import { getShortsSettings } from "@/lib/app-settings";
 import { EventCard } from "@/components/EventCard";
 import { fetchUpcomingEvents, type GoaEvent } from "@/lib/events";
+import { fetchPoolShorts } from "@/lib/shorts-pool";
 
 
 const initialVideos: Short[] = [
@@ -31,239 +32,157 @@ export const Route = createFileRoute("/")({
       { title: "Goa Social — Community of Goa" },
       { name: "description", content: "Connect with Goans, discover local businesses, events, and stories. Goa's own social network." },
       { property: "og:title", content: "Goa Social — Community of Goa" },
-      { property: "og:description", content: "Connect with Goans, discover local businesses, events, and stories." },
+      { property: "og:description", content: "Connect with Goans, discover local businesses, events, and stories. Goa's own social network." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://goasocial.in/" },
-      { property: "og:image", content: "https://goasocial.in/logo.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://goasocial.in/logo.png" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://goasocial.in/" },
-      { rel: "preconnect", href: "https://www.youtube.com" },
-      { rel: "preconnect", href: "https://www.youtube-nocookie.com" },
-      { rel: "preconnect", href: "https://i.ytimg.com" },
-      { rel: "preconnect", href: "https://s.ytimg.com" },
-      { rel: "dns-prefetch", href: "https://www.google.com" },
-      ...initialVideos.slice(0, 1).map((video, index) => ({
-        rel: "preload",
-        as: "image",
-        href: `https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`,
-        fetchPriority: (index === 0 ? "high" : "low") as "high" | "low",
-      })),
     ],
   }),
   component: Home,
 });
 
-const stories = [
-  { name: "Beaches", icon: Shell },
-  { name: "Food", icon: Utensils },
-  { name: "Festivals", icon: Sparkles },
-  { name: "Music", icon: Music },
-  { name: "Surf", icon: Waves },
-  { name: "Cafes", icon: Coffee },
-  { name: "Sunsets", icon: Sun },
-];
-
-const chips = ["For You", "North Goa", "South Goa", "Trending", "Food", "Events", "Music", "Beaches"];
-
 function Home() {
-  const [videos, setVideos] = useState<Short[]>(() => getCachedShorts() ?? initialVideos);
-  const [activeChip, setActiveChip] = useState("For You");
+  const [shorts, setShorts] = useState<Short[]>(initialVideos);
   const [events, setEvents] = useState<GoaEvent[]>([]);
-  const embedsAllowed = useRef(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [embedsEnabled, setEmbedsEnabled] = useState(true);
+  const eventsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sharedShort = new URLSearchParams(window.location.search).get("short");
-    let cached: Short[] = [];
+    void getShortsSettings().then((s) => setEmbedsEnabled(s.embedsEnabled));
+  }, []);
 
-    const merge = (items: Short[]) => {
-      const seen = new Set(cached.map((short) => short.videoId));
-      let combined = [...cached, ...items.filter((short) => !seen.has(short.videoId))];
-      // Admin can switch off YouTube live-frame shorts — then only our own downloads play.
-      if (!embedsAllowed.current) combined = combined.filter((short) => !!short.src);
-      const ranked = rankShorts(combined);
-      if (!sharedShort) return ranked;
-      const match = ranked.find((video) => video.videoId === sharedShort);
-      return match ? [match, ...ranked.filter((video) => video.videoId !== sharedShort)] : ranked;
-    };
+  useEffect(() => {
+    void fetchUpcomingEvents(6).then(setEvents);
+  }, []);
 
-    // Shorts pre-cached on Goa Social's own hosting play instantly — show them first.
-    // `no-cache` still revalidates every load, but a 304 costs far less than a full re-download.
-    void fetch("/cached-shorts.json", { cache: "no-cache" })
-      .then((response) => response.json())
-      .then((items: Short[]) => {
-        if (!Array.isArray(items) || items.length === 0) return;
-        cached = items;
-        setVideos((current) => merge(current));
-      })
-      .catch(() => {});
+  useEffect(() => {
+    const cached = getCachedShorts();
+    if (cached?.length) setShorts(cached);
 
-    setVideos((current) => merge(current));
+    void warmShorts(initialVideos, (items) => setShorts(items));
 
-    // Everything below is non-critical for first paint — run it once the browser is idle
-    // so the first short starts rendering as early as possible.
-    const idle = (fn: () => void) => {
-      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number })
-        .requestIdleCallback;
-      if (ric) ric(fn, { timeout: 800 });
-      else window.setTimeout(fn, 200);
-    };
-
-    idle(() => {
-      void fetchUpcomingEvents(12).then(setEvents);
-      // Member uploads are permanent Goa Social content — always part of the feed.
-      void fetchUploadedShorts(40).then((uploads) => {
-        if (uploads.length > 0) setVideos((current) => merge([...uploads, ...current]));
-      });
-      void getShortsSettings().then((settings) => {
-        embedsAllowed.current = settings.embedsEnabled;
-        setVideos((current) => merge(current));
-      });
-      // Warm YouTube origins + buffer the first streamed shorts while the splash plays.
-      void warmShorts(initialVideos, (items) => setVideos(merge(items)));
+    void Promise.all([
+      fetchPoolShorts().catch(() => [] as Short[]),
+      fetchUploadedShorts(20),
+    ]).then(([pool, uploaded]) => {
+      const combined = [...uploaded, ...pool];
+      if (combined.length) setShorts(combined);
     });
   }, []);
 
+  const ranked = rankShorts(shorts);
+
+  if (showSplash) {
+    return <SplashScreen onDone={() => setShowSplash(false)} />;
+  }
+
   return (
-    <SplashScreen duration={6000}>
-      <AppLayout showEventBanner={false}>
-        {/* One feed instance prevents duplicate observers, players and network listeners. */}
-        <section className="px-2 pt-2 sm:px-3">
-          <ShortsFeed
-            shorts={videos}
-            interleave={(index) => {
-              // Every 4th short, slide in the next upcoming Goa event:
-              // entertainment and information in the same scroll.
-              if (index % 4 !== 3 || events.length === 0) return null;
-              const event = events[Math.floor(index / 4) % events.length];
-              return (
-                <div className="pt-1">
-                  <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-wider text-primary">
-                    Happening in Goa
-                  </p>
-                  <EventCard event={event} compact />
-                </div>
-              );
-            }}
-          />
-        </section>
-
-        {/* Everything under the feed is below the fold — `gs-defer` lets the browser
-            skip its layout/paint work until the user scrolls there. */}
-        <div className="gs-defer">
-          {/* ⚡ Quick actions — the four things people actually came for */}
-          <section className="mx-3 mt-4 grid grid-cols-4 gap-2">
-            {[
-              { to: "/explore", label: "People", icon: Users },
-              { to: "/events", label: "Events", icon: Sparkles },
-              { to: "/business", label: "Places", icon: Coffee },
-              { to: "/chats", label: "Chats", icon: Music },
-            ].map(({ to, label, icon: Icon }) => (
-              <Link
-                key={label}
-                to={to}
-                className="gs-tile flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-2 py-3 shadow-soft"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="text-[11px] font-semibold text-foreground">{label}</span>
-              </Link>
-            ))}
-          </section>
-
-          {/* 📋 Dashboard / welcome hero */}
-          <section className="relative mx-3 mt-4 overflow-hidden rounded-3xl bg-gradient-primary p-6 text-primary-foreground shadow-card">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
-            <div className="pointer-events-none absolute -bottom-16 -left-10 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
-            <span className="relative inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> Live in Goa
-            </span>
-            <h1 className="relative mt-3 flex items-end gap-2 font-display text-3xl font-extrabold leading-tight">
-              <span>Susegad,<br />welcome home</span>
-              <Palmtree className="mb-1 h-7 w-7" />
+    <AppLayout>
+      {!embedsEnabled && shorts.every((s) => !s.src) && (
+        <div className="px-4 py-8">
+          <div className="gs-hero-gradient rounded-3xl p-8 text-center text-white shadow-card gs-fade-in">
+            <Palmtree className="mx-auto h-12 w-12 opacity-90" />
+            <h1 className="mt-4 font-display text-2xl font-extrabold tracking-tight">
+              Welcome to Goa Social
             </h1>
-            <p className="relative mt-2 text-sm opacity-90">Goa's own social network — by Goans, for Goans.</p>
-            <div className="relative mt-5 grid grid-cols-3 gap-3">
-              {[
-                { icon: Users, label: "Only Goans" },
-                { icon: Sparkles, label: "Verified" },
-                { icon: Waves, label: "Local Vibe" },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="gs-tile rounded-2xl border border-white/20 bg-white/15 p-3 text-center">
-                  <Icon className="mx-auto h-6 w-6" />
-                  <p className="mt-1 text-[11px] font-semibold">{label}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* 📖 Stories */}
-          <section className="mt-4 bg-card py-4">
-            <div className="mb-3 flex items-center justify-between px-4">
-              <h2 className="text-base font-semibold text-foreground">Live Stories</h2>
-              <div className="flex items-center gap-3">
-                <Link to="/events" className="text-sm font-medium text-primary">Events</Link>
-                <Link to="/my-feed" className="text-sm font-medium text-muted-foreground">Your feed</Link>
-                <Link to="/explore" className="text-sm font-medium text-primary">See all</Link>
-              </div>
-            </div>
-            <div className="scrollbar-hide flex gap-4 overflow-x-auto px-4">
-              {stories.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <Link to="/explore" key={s.name} className="shrink-0 text-center">
-                    <div className="mx-auto rounded-full bg-gradient-primary p-[3px]">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-card text-primary">
-                        <Icon className="h-7 w-7" />
-                      </div>
-                    </div>
-                    <p className="mt-1.5 text-[11px] text-muted-foreground">{s.name}</p>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* 🏷️ Category chips */}
-          <section className="bg-card pb-3 pt-1">
-            <div className="scrollbar-hide flex gap-2 overflow-x-auto px-4">
-              {chips.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setActiveChip(c)}
-                  className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                    activeChip === c
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-secondary text-foreground"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* 📢 Ad / business slot */}
-          <section className="mx-3 mt-4 mb-6 overflow-hidden rounded-3xl border-2 border-dashed border-primary/40 bg-gradient-to-br from-primary/5 via-background to-primary/10 p-5 text-center">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-primary/70">Sponsored</p>
-            <h3 className="mt-1 text-lg font-bold text-foreground">Grow your Goan business 🌴</h3>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Reach thousands of locals &amp; tourists. Your ad here.
+            <p className="mt-2 text-sm opacity-90">
+              Goa's own community network. Connect with locals, discover events, explore businesses, and share your story.
             </p>
-            <Link
-              to="/business"
-              className="mt-3 inline-block rounded-full bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow"
-            >
-              Advertise with us
-            </Link>
-          </section>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/explore"
+                className="inline-flex items-center gap-2 rounded-full bg-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm transition-colors hover:bg-white/30"
+              >
+                <Users className="h-4 w-4" /> Meet Goans
+              </Link>
+              <Link
+                to="/events"
+                className="inline-flex items-center gap-2 rounded-full bg-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm transition-colors hover:bg-white/30"
+              >
+                <CalendarDays className="h-4 w-4" /> Events
+              </Link>
+              <Link
+                to="/business"
+                className="inline-flex items-center gap-2 rounded-full bg-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm transition-colors hover:bg-white/30"
+              >
+                <Store className="h-4 w-4" /> Businesses
+              </Link>
+            </div>
+          </div>
         </div>
+      )}
 
-      </AppLayout>
-    </SplashScreen>
+      <ShortsFeed shorts={ranked} />
+
+      {events.length > 0 && (
+        <div ref={eventsRef} className="px-3 py-6">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="font-display text-lg font-bold tracking-tight">This Week in Goa</h2>
+              <p className="text-xs text-muted-foreground">Curated events from the Goa Social team</p>
+            </div>
+            <Link
+              to="/events"
+              className="flex items-center gap-1 text-xs font-semibold text-primary transition-opacity hover:opacity-70"
+            >
+              All events <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {events.slice(0, 4).map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="px-3 pb-8 pt-4">
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            to="/explore"
+            className="gs-card-hover group rounded-2xl border border-border bg-card p-5 shadow-soft"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Users className="h-5 w-5" />
+            </div>
+            <h3 className="mt-3 font-display text-sm font-bold">Discover Goans</h3>
+            <p className="mt-1 text-xs text-muted-foreground">Connect with locals and travellers across Goa</p>
+          </Link>
+
+          <Link
+            to="/business"
+            className="gs-card-hover group rounded-2xl border border-border bg-card p-5 shadow-soft"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent">
+              <Utensils className="h-5 w-5" />
+            </div>
+            <h3 className="mt-3 font-display text-sm font-bold">Local Businesses</h3>
+            <p className="mt-1 text-xs text-muted-foreground">Cafes, shacks, surf schools &amp; more</p>
+          </Link>
+
+          <Link
+            to="/events"
+            className="gs-card-hover group rounded-2xl border border-border bg-card p-5 shadow-soft"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/15 text-chart-3">
+              <Music className="h-5 w-5" />
+            </div>
+            <h3 className="mt-3 font-display text-sm font-bold">Events &amp; Parties</h3>
+            <p className="mt-1 text-xs text-muted-foreground">Markets, gigs, feasts &amp; community meets</p>
+          </Link>
+
+          <Link
+            to="/chats"
+            className="gs-card-hover group rounded-2xl border border-border bg-card p-5 shadow-soft"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-4/15 text-chart-4">
+              <MessageCircle className="h-5 w-5" />
+            </div>
+            <h3 className="mt-3 font-display text-sm font-bold">Community Chat</h3>
+            <p className="mt-1 text-xs text-muted-foreground">Join conversations across North &amp; South Goa</p>
+          </Link>
+        </div>
+      </div>
+    </AppLayout>
   );
 }
-
