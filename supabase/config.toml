@@ -1,3 +1,5 @@
 project_id = "kmwwbjedvsxqobfcgsfx"
 [functions.ai-reply]
 verify_jwt = true
+[functions.refresh-shorts]
+verify_jwt = true
