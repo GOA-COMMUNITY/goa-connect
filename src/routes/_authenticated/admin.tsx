@@ -1,26 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { getChannelInfo, type ChannelInfo } from "@/lib/youtube.functions";
+import { getChannelInfo, type ChannelInfo } from "@lib/youtube.functions";
 import { toast } from "sonner";
-import { eventCategories, type GoaEvent } from "@/lib/events";
-import { importEventsNow } from "@/lib/automation.functions";
+import { eventCategories, type GoaEvent } from "@lib/events";
+import { importEventsNow } from "@lib/automation.functions";
 import {
-  Shield, Users, Store, MessageCircle, Bot, Settings, Trash2,
-  ToggleLeft, ToggleRight, ArrowLeft, Search, Youtube, Plus,
+  fetchChannels, addChannel, updateChannel, removeChannel,
+  clearChannelPool, refreshAllChannels, fetchShortsAnalytics,
+  type YTChannel,
+} from "@/lib/shorts-pool";
+import { getShortsSettings, defaultShortsSettings, type ShortsSettings } from "@/lib/app-settings";
+import {
+  Shield, Users, Store, Bot, Trash2, ArrowLeft, Youtube, Plus,
   BarChart3, Eye, Heart, Share2, Timer, CalendarDays, Pencil, Rss,
+  TrendingUp, RefreshCw, Settings2, ToggleLeft, ToggleRight, Loader2,
+  Video, Activity, Zap, Search,
 } from "lucide-react";
-
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Admin — Goa Social" },
-      { name: "description", content: "Goa Social admin controls for profiles, bots, businesses, and content." },
+      { name: "description", content: "Goa Social admin controls." },
       { property: "og:title", content: "Admin — Goa Social" },
-      { property: "og:description", content: "Goa Social admin controls for profiles, bots, businesses, and content." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -28,7 +32,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminDashboard,
 });
 
-type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels" | "events" | "sources";
+type Tab = "overview" | "channels" | "algorithm" | "analytics" | "users" | "bots" | "businesses" | "events" | "settings";
 
 type Profile = {
   id: string;
@@ -40,9 +44,6 @@ type Profile = {
   is_active: boolean;
   origin_city: string | null;
   personality: string | null;
-  language_style: string | null;
-  backstory: string | null;
-  reply_delay_pattern: string | null;
   avatar_emoji: string | null;
 };
 
@@ -51,1237 +52,652 @@ function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center text-muted-foreground">Loading…</div>;
+    return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
-  if (!user || !isAdmin) {
+
+  if (!isAdmin) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 p-6 text-center">
-        <Shield className="h-12 w-12 text-destructive" />
-        <h1 className="text-xl font-bold">Admin only</h1>
-        <p className="text-sm text-muted-foreground">
-          You're signed in as {user?.email ?? "guest"} but you don't have admin access.
-        </p>
-        <Link to="/" className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-          Back home
-        </Link>
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="max-w-md text-center">
+          <Shield className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h1 className="mt-4 font-display text-xl font-bold">Admin only</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            You're signed in as {user?.email ?? "guest"} but you don't have admin access.
+          </p>
+          <Link to="/" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+            <ArrowLeft className="h-4 w-4" /> Go home
+          </Link>
+        </div>
       </div>
     );
   }
 
+  const tabs: { id: Tab; label: string; icon: typeof Shield }[] = [
+    { id: "overview", label: "Overview", icon: BarChart3 },
+    { id: "channels", label: "Channels", icon: Youtube },
+    { id: "algorithm", label: "Algorithm", icon: Zap },
+    { id: "analytics", label: "Analytics", icon: Activity },
+    { id: "users", label: "Users", icon: Users },
+    { id: "bots", label: "Bots", icon: Bot },
+    { id: "businesses", label: "Businesses", icon: Store },
+    { id: "events", label: "Events", icon: CalendarDays },
+    { id: "settings", label: "Settings", icon: Settings2 },
+  ];
+
   return (
-    <div className="min-h-screen bg-secondary/40">
-      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 gs-glass border-b border-border/60">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <Link to="/" className="rounded-full p-2 hover:bg-secondary">
-              <ArrowLeft className="h-5 w-5" />
+            <Link to="/" className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary transition-colors hover:bg-secondary/70">
+              <ArrowLeft className="h-4 w-4" />
             </Link>
-            <Shield className="h-6 w-6 text-primary" />
             <div>
-              <h1 className="text-lg font-bold">Admin Console</h1>
+              <h1 className="font-display text-lg font-bold leading-none">Admin Console</h1>
               <p className="text-[11px] text-muted-foreground">Goa Social control room</p>
             </div>
           </div>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-            {user.email}
-          </span>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Shield className="h-5 w-5" />
+          </div>
         </div>
-        <nav className="scrollbar-hide mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 pb-2">
-          {([
-            ["overview", "Overview", Settings],
-            ["algorithm", "Algorithm", BarChart3],
-            ["users", "Real Users", Users],
-            ["bots", "Demo Profiles", Bot],
-            ["businesses", "Businesses", Store],
-            ["events", "Events", CalendarDays],
-            ["sources", "Auto Sources", Rss],
-            ["channels", "YouTube", Youtube],
-            ["content", "Site Content", MessageCircle],
-          ] as const).map(([k, label, Icon]) => (
-            <button
-              key={k}
-              onClick={() => setTab(k)}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                tab === k ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-              }`}
-            >
-              <Icon className="h-3.5 w-3.5" /> {label}
-            </button>
-          ))}
-        </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-6">
-        {tab === "overview" && <OverviewPanel />}
-        {tab === "algorithm" && <AlgorithmPanel />}
-        {tab === "users" && <ProfilesPanel onlyFake={false} />}
-        {tab === "bots" && <ProfilesPanel onlyFake={true} />}
-        {tab === "businesses" && <BusinessesPanel />}
-        {tab === "events" && <EventsPanel />}
-        {tab === "sources" && <SourcesPanel />}
-        {tab === "channels" && <ChannelsPanel />}
-        {tab === "content" && <ContentPanel />}
-      </main>
+      <div className="mx-auto max-w-4xl px-4 py-4">
+        <div className="scrollbar-hide mb-5 flex gap-2 overflow-x-auto">
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                tab === id
+                  ? "bg-primary text-primary-foreground shadow-soft"
+                  : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
+              }`}
+            >
+              <Icon className="h-4 w-4" /> {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="gs-fade-in" key={tab}>
+          {tab === "overview" && <OverviewTab />}
+          {tab === "channels" && <ChannelsTab />}
+          {tab === "algorithm" && <AlgorithmTab />}
+          {tab === "analytics" && <AnalyticsTab />}
+          {tab === "users" && <UsersTab />}
+          {tab === "bots" && <BotsTab />}
+          {tab === "businesses" && <BusinessesTab />}
+          {tab === "events" && <EventsTab />}
+          {tab === "settings" && <SettingsTab />}
+        </div>
+      </div>
     </div>
   );
 }
 
-function StatCard({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
-  return (
-    <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-2 text-3xl font-extrabold text-foreground">{value}</p>
-      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
-    </div>
-  );
-}
+/* ── Overview ── */
 
-type EventRow = {
-  video_id: string;
-  source: string;
-  kind: string;
-  watch_ms: number;
-  user_id: string | null;
-  created_at: string;
-};
-
-function AlgorithmPanel() {
-  const [rows, setRows] = useState<EventRow[]>([]);
-  const [loading, setLoading] = useState(true);
+function OverviewTab() {
+  const [analytics, setAnalytics] = useState<Awaited<ReturnType<typeof fetchShortsAnalytics>> | null>(null);
+  const [channels, setChannels] = useState<YTChannel[]>([]);
+  const [userCount, setUserCount] = useState(0);
 
   useEffect(() => {
-    supabase
-      .from("short_events")
-      .select("video_id,source,kind,watch_ms,user_id,created_at")
-      .order("created_at", { ascending: false })
-      .limit(5000)
-      .then(({ data, error }) => {
-        if (error) toast.error(error.message);
-        setRows((data as EventRow[]) ?? []);
-        setLoading(false);
-      });
+    void fetchShortsAnalytics().then(setAnalytics);
+    void fetchChannels().then(setChannels);
+    void supabase.from("profiles").select("*", { count: "exact", head: true }).then(({ count }) => setUserCount(count ?? 0));
   }, []);
 
-  const summarize = (source: "youtube" | "upload") => {
-    const events = rows.filter((row) => row.source === source);
-    const count = (kind: string) => events.filter((row) => row.kind === kind).length;
-    const watched = events.filter((row) => row.kind === "watch" || row.kind === "complete");
-    const watchMs = watched.reduce((sum, row) => sum + row.watch_ms, 0);
-    const viewers = new Set(events.map((row) => row.user_id).filter(Boolean)).size;
-    const engagement = count("like") + count("comment") + count("share") + count("complete");
-    const views = count("view");
-    return {
-      events,
-      views,
-      likes: count("like"),
-      shares: count("share"),
-      viewers,
-      avgWatch: watched.length ? Math.round(watchMs / watched.length / 1000) : 0,
-      engagementRate: views ? Math.round((engagement / views) * 100) : 0,
-    };
+  const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : `${n}`;
+  const fmtTime = (ms: number) => {
+    const mins = Math.floor(ms / 60000);
+    if (mins >= 60) return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+    return `${mins}m`;
   };
 
-  if (loading) return <div className="flex justify-center py-16"><span className="text-sm text-muted-foreground">Loading algorithm signals…</span></div>;
-
-  const sources = [
-    { key: "youtube" as const, title: "Daily downloaded pool", hint: "Rotating YouTube downloads" },
-    { key: "upload" as const, title: "Goa Social originals", hint: "Permanent member uploads" },
+  const stats = [
+    { label: "Total Users", value: fmt(userCount), icon: Users, hint: "Registered profiles" },
+    { label: "YT Channels", value: `${channels.length}`, icon: Youtube, hint: `${channels.filter(c => c.is_active).length} active` },
+    { label: "Total Views", value: fmt(analytics?.totalViews ?? 0), icon: Eye, hint: "Shorts playbacks" },
+    { label: "Total Likes", value: fmt(analytics?.totalLikes ?? 0), icon: Heart, hint: "Like taps" },
+    { label: "Shares", value: fmt(analytics?.totalShares ?? 0), icon: Share2, hint: "Share clicks" },
+    { label: "Watch Time", value: fmtTime(analytics?.totalWatchMs ?? 0), icon: Timer, hint: "Cumulative" },
   ];
 
   return (
     <div className="space-y-5">
-      <div>
-        <h2 className="text-xl font-bold text-foreground">Algorithm Engine</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Latest 5,000 real playback and engagement signals, separated by content source.</p>
-      </div>
-      {sources.map((source) => {
-        const stats = summarize(source.key);
-        return (
-          <section key={source.key} className="space-y-3">
-            <div>
-              <h3 className="font-semibold text-foreground">{source.title}</h3>
-              <p className="text-xs text-muted-foreground">{source.hint}</p>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {stats.map((s) => (
+          <div key={s.label} className="rounded-2xl border border-border bg-card p-4 shadow-soft gs-card-hover">
+            <div className="flex items-center justify-between">
+              <s.icon className="h-5 w-5 text-primary" />
+              <span className="font-display text-2xl font-extrabold tracking-tight">{s.value}</span>
             </div>
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-              <Metric icon={Eye} label="Views" value={stats.views} />
-              <Metric icon={Heart} label="Likes" value={stats.likes} />
-              <Metric icon={Share2} label="Shares" value={stats.shares} />
-              <Metric icon={Timer} label="Avg. watch" value={`${stats.avgWatch}s`} />
-              <Metric icon={BarChart3} label="Engagement" value={`${stats.engagementRate}%`} hint={`${stats.viewers} signed-in viewers`} />
-            </div>
-          </section>
-        );
-      })}
-      {rows.length === 0 && <div className="rounded-2xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">Signals will appear as people watch and interact with Shorts.</div>}
-    </div>
-  );
-}
-
-function Metric({ icon: Icon, label, value, hint }: { icon: typeof Eye; label: string; value: string | number; hint?: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-      <Icon className="h-4 w-4 text-primary" />
-      <p className="mt-3 text-2xl font-bold text-foreground">{value}</p>
-      <p className="text-xs font-semibold text-muted-foreground">{label}</p>
-      {hint && <p className="mt-1 text-[10px] text-muted-foreground">{hint}</p>}
-    </div>
-  );
-}
-
-function OverviewPanel() {
-  const [stats, setStats] = useState({ real: 0, fake: 0, goan: 0, tourist: 0, biz: 0, convs: 0 });
-  useEffect(() => {
-    (async () => {
-      const [real, fake, goan, tourist, biz, convs] = await Promise.all([
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_fake", false),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_fake", true),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_goan", true),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_tourist", true),
-        supabase.from("businesses").select("id", { count: "exact", head: true }),
-        supabase.from("conversations").select("id", { count: "exact", head: true }),
-      ]);
-      setStats({
-        real: real.count ?? 0,
-        fake: fake.count ?? 0,
-        goan: goan.count ?? 0,
-        tourist: tourist.count ?? 0,
-        biz: biz.count ?? 0,
-        convs: convs.count ?? 0,
-      });
-    })();
-  }, []);
-  return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-      <StatCard label="Real users" value={stats.real} />
-      <StatCard label="Demo profiles" value={stats.fake} hint="Seeded community" />
-      <StatCard label="Goans" value={stats.goan} />
-      <StatCard label="Tourists" value={stats.tourist} />
-      <StatCard label="Businesses" value={stats.biz} />
-      <StatCard label="Conversations" value={stats.convs} />
-    </div>
-  );
-}
-
-function ProfilesPanel({ onlyFake }: { onlyFake: boolean }) {
-  const [rows, setRows] = useState<Profile[]>([]);
-  const [q, setQ] = useState("");
-  const [editing, setEditing] = useState<Profile | null>(null);
-
-  async function reload() {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("is_fake", onlyFake)
-      .order("created_at", { ascending: false })
-      .limit(500);
-    setRows((data as Profile[]) ?? []);
-  }
-  useEffect(() => { reload(); }, [onlyFake]);
-
-  const filtered = rows.filter(
-    (r) =>
-      !q ||
-      r.display_name?.toLowerCase().includes(q.toLowerCase()) ||
-      r.area?.toLowerCase().includes(q.toLowerCase()) ||
-      r.origin_city?.toLowerCase().includes(q.toLowerCase())
-  );
-
-  async function toggleActive(p: Profile) {
-    const { error } = await supabase.from("profiles").update({ is_active: !p.is_active }).eq("id", p.id);
-    if (error) return toast.error(error.message);
-    toast.success(p.is_active ? "Deactivated" : "Activated");
-    reload();
-  }
-
-  async function remove(p: Profile) {
-    if (!confirm(`Delete ${p.display_name}?`)) return;
-    const { error } = await supabase.from("profiles").delete().eq("id", p.id);
-    if (error) return toast.error(error.message);
-    toast.success("Deleted");
-    reload();
-  }
-
-  return (
-    <div>
-      <div className="mb-3 flex items-center gap-2">
-        <div className="flex flex-1 items-center gap-2 rounded-full border border-border bg-card px-3 py-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search name, area, city…"
-            className="w-full bg-transparent text-sm outline-none"
-          />
-        </div>
-        <span className="rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-          {filtered.length} of {rows.length}
-        </span>
+            <p className="mt-1 text-sm font-semibold">{s.label}</p>
+            <p className="text-[11px] text-muted-foreground">{s.hint}</p>
+          </div>
+        ))}
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary text-xs uppercase text-muted-foreground">
-            <tr>
-              <th className="p-3 text-left">Profile</th>
-              <th className="p-3 text-left">Type</th>
-              <th className="p-3 text-left">From</th>
-              <th className="p-3 text-left">Personality</th>
-              <th className="p-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((p) => (
-              <tr key={p.id} className="border-t border-border">
-                <td className="p-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{p.avatar_emoji ?? "👤"}</span>
-                    <div>
-                      <p className="font-semibold">{p.display_name}</p>
-                      <p className="text-[11px] text-muted-foreground">{p.area}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="p-3">
-                  {p.is_goan && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">Goan</span>}
-                  {p.is_tourist && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">Tourist</span>}
-                  {p.is_fake && <span className="ml-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">🤖 Demo</span>}
-                </td>
-                <td className="p-3 text-muted-foreground">{p.origin_city ?? "—"}</td>
-                <td className="p-3 max-w-[280px] truncate text-muted-foreground" title={p.personality ?? ""}>
-                  {p.personality ?? "—"}
-                </td>
-                <td className="p-3">
-                  <div className="flex items-center justify-end gap-1">
-                    <button onClick={() => setEditing(p)} className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold">Edit</button>
-                    <button onClick={() => toggleActive(p)} className="rounded-full p-1.5 hover:bg-secondary" title="Toggle active">
-                      {p.is_active ? <ToggleRight className="h-5 w-5 text-primary" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
-                    </button>
-                    <button onClick={() => remove(p)} className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+      {analytics && analytics.byVideo.length > 0 && (
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+          <h2 className="mb-4 flex items-center gap-2 font-display text-base font-bold">
+            <TrendingUp className="h-4 w-4 text-primary" /> Top Shorts by Views
+          </h2>
+          <div className="space-y-2">
+            {[...analytics.byVideo].sort((a, b) => b.views - a.views).slice(0, 8).map((v) => (
+              <div key={v.video_id} className="flex items-center gap-3 rounded-xl bg-secondary/50 px-3 py-2.5">
+                <Video className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <span className="shrink-0 font-mono text-xs font-semibold">{v.video_id}</span>
+                <div className="ml-auto flex items-center gap-3 text-xs">
+                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {v.views}</span>
+                  <span className="flex items-center gap-1"><Heart className="h-3 w-3" /> {v.likes}</span>
+                  <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> {v.shares}</span>
+                </div>
+              </div>
             ))}
-            {filtered.length === 0 && (
-              <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No profiles</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {editing && (
-        <EditProfileModal
-          profile={editing}
-          onClose={() => setEditing(null)}
-          onSaved={() => { setEditing(null); reload(); }}
-        />
+          </div>
+        </div>
       )}
     </div>
   );
 }
 
-function EditProfileModal({
-  profile, onClose, onSaved,
-}: { profile: Profile; onClose: () => void; onSaved: () => void }) {
-  const [p, setP] = useState(profile);
-  const [busy, setBusy] = useState(false);
-  async function save() {
-    setBusy(true);
-    const { error } = await supabase.from("profiles").update({
-      display_name: p.display_name, area: p.area, origin_city: p.origin_city,
-      is_goan: p.is_goan, is_tourist: p.is_tourist, is_active: p.is_active,
-      personality: p.personality, language_style: p.language_style,
-      backstory: p.backstory, reply_delay_pattern: p.reply_delay_pattern,
-      avatar_emoji: p.avatar_emoji,
-    }).eq("id", p.id);
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success("Saved");
-    onSaved();
-  }
-  const field = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-3 md:items-center">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-card p-5 shadow-2xl">
-        <h2 className="mb-3 text-lg font-bold">Edit profile</h2>
-        <div className="space-y-2">
-          <label className="text-xs font-semibold">Name</label>
-          <input className={field} value={p.display_name ?? ""} onChange={(e) => setP({ ...p, display_name: e.target.value })} />
-          <div className="grid grid-cols-2 gap-2">
-            <div><label className="text-xs font-semibold">Area</label><input className={field} value={p.area ?? ""} onChange={(e) => setP({ ...p, area: e.target.value })} /></div>
-            <div><label className="text-xs font-semibold">Origin city</label><input className={field} value={p.origin_city ?? ""} onChange={(e) => setP({ ...p, origin_city: e.target.value })} /></div>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div><label className="text-xs font-semibold">Emoji</label><input className={field} value={p.avatar_emoji ?? ""} onChange={(e) => setP({ ...p, avatar_emoji: e.target.value })} /></div>
-            <div><label className="text-xs font-semibold">Reply delay</label><input className={field} value={p.reply_delay_pattern ?? ""} onChange={(e) => setP({ ...p, reply_delay_pattern: e.target.value })} /></div>
-          </div>
-          <label className="text-xs font-semibold">Personality</label>
-          <textarea className={field} rows={2} value={p.personality ?? ""} onChange={(e) => setP({ ...p, personality: e.target.value })} />
-          <label className="text-xs font-semibold">Language style</label>
-          <textarea className={field} rows={2} value={p.language_style ?? ""} onChange={(e) => setP({ ...p, language_style: e.target.value })} />
-          <label className="text-xs font-semibold">Backstory</label>
-          <textarea className={field} rows={3} value={p.backstory ?? ""} onChange={(e) => setP({ ...p, backstory: e.target.value })} />
-          <div className="flex gap-3 pt-2">
-            <label className="flex items-center gap-1 text-xs"><input type="checkbox" checked={p.is_goan} onChange={(e) => setP({ ...p, is_goan: e.target.checked })} /> Goan</label>
-            <label className="flex items-center gap-1 text-xs"><input type="checkbox" checked={p.is_tourist} onChange={(e) => setP({ ...p, is_tourist: e.target.checked })} /> Tourist</label>
-            <label className="flex items-center gap-1 text-xs"><input type="checkbox" checked={p.is_active} onChange={(e) => setP({ ...p, is_active: e.target.checked })} /> Active</label>
-          </div>
-        </div>
-        <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-full bg-secondary px-4 py-2 text-sm font-semibold">Cancel</button>
-          <button onClick={save} disabled={busy} className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50">
-            {busy ? "Saving…" : "Save"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+/* ── Channels Tab ── */
 
-type BizRow = {
-  id: string; name: string; category: string | null; area: string | null;
-  rating: number | null; is_verified: boolean; boost_until: string | null;
-};
+function ChannelsTab() {
+  const [channels, setChannels] = useState<YTChannel[]>([]);
+  const [url, setUrl] = useState("");
+  const [name, setName] = useState("");
+  const [weight, setWeight] = useState(1);
+  const [maxShorts, setMaxShorts] = useState(10);
+  const [adding, setAdding] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [preview, setPreview] = useState<ChannelInfo | null>(null);
+  const [previewing, setPreviewing] = useState(false);
 
-function BusinessesPanel() {
-  const [rows, setRows] = useState<BizRow[]>([]);
-  useEffect(() => {
-    supabase.from("businesses").select("id,name,category,area,rating,is_verified,boost_until")
-      .order("created_at", { ascending: false }).limit(200)
-      .then(({ data }) => setRows((data ?? []) as BizRow[]));
-  }, []);
-  async function patch(id: string, changes: Partial<BizRow>) {
-    const { error } = await supabase.from("businesses").update(changes as never).eq("id", id);
-    if (error) return toast.error(error.message);
-    setRows((r) => r.map((x) => (x.id === id ? { ...x, ...changes } : x)));
-    toast.success("Updated");
-  }
-  async function boost(id: string, days: number) {
-    const until = days === 0 ? null : new Date(Date.now() + days * 86400000).toISOString();
-    await patch(id, { boost_until: until });
-  }
-  async function remove(id: string) {
-    if (!confirm("Delete this business?")) return;
-    const { error } = await supabase.from("businesses").delete().eq("id", id);
-    if (error) return toast.error(error.message);
-    setRows((r) => r.filter((x) => x.id !== id));
-    toast.success("Deleted");
-  }
-  const boosted = (b: BizRow) => !!b.boost_until && new Date(b.boost_until) > new Date();
-  return (
-    <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
-      <table className="w-full text-sm">
-        <thead className="bg-secondary text-xs uppercase text-muted-foreground">
-          <tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Category</th><th className="p-3 text-left">Area</th><th className="p-3 text-left">Verified</th><th className="p-3 text-left">Featured</th><th /></tr>
-        </thead>
-        <tbody>
-          {rows.map((b) => (
-            <tr key={b.id} className="border-t border-border">
-              <td className="p-3 font-semibold">{b.name}</td>
-              <td className="p-3 text-muted-foreground">{b.category ?? "—"}</td>
-              <td className="p-3 text-muted-foreground">{b.area ?? "—"}</td>
-              <td className="p-3">
-                <button onClick={() => patch(b.id, { is_verified: !b.is_verified })} className="text-primary">
-                  {b.is_verified ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
-                </button>
-              </td>
-              <td className="p-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-muted-foreground">
-                    {boosted(b) ? `until ${new Date(b.boost_until!).toLocaleDateString("en-IN")}` : "off"}
-                  </span>
-                  <button onClick={() => boost(b.id, 7)} className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold">7d</button>
-                  <button onClick={() => boost(b.id, 30)} className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold">30d</button>
-                  {boosted(b) && <button onClick={() => boost(b.id, 0)} className="rounded-full px-2 py-0.5 text-[11px] font-semibold text-destructive">stop</button>}
-                </div>
-              </td>
-              <td className="p-3 text-right">
-                <button onClick={() => remove(b.id)} className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </td>
-            </tr>
-          ))}
-          {rows.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No businesses yet</td></tr>}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+  const load = useCallback(() => { void fetchChannels().then(setChannels); }, []);
+  useEffect(() => { load(); }, [load]);
 
-type SourceRow = {
-  id: string; name: string; url: string; kind: string; area: string | null;
-  category: string; auto_publish: boolean; is_enabled: boolean;
-  last_run_at: string | null; last_status: string | null; last_count: number | null;
-};
-
-function SourcesPanel() {
-  const [rows, setRows] = useState<SourceRow[]>([]);
-  const [bulk, setBulk] = useState("");
-  const [busy, setBusy] = useState(false);
-  const runImport = useServerFn(importEventsNow);
-
-  async function load() {
-    const { data } = await supabase.from("event_sources").select("*").order("created_at", { ascending: false });
-    setRows((data ?? []) as SourceRow[]);
-  }
-  useEffect(() => { load(); }, []);
-
-  async function addBulk() {
-    const lines = bulk.split(/[\n,]/).map((l) => l.trim()).filter((l) => /^https?:\/\//i.test(l));
-    if (!lines.length) return toast.error("Paste one or more feed links (RSS, Atom or calendar)");
-    const payload = lines.map((url) => ({
-      name: (() => { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url.slice(0, 40); } })(),
-      url,
-      kind: /\.ics(\?|$)/i.test(url) ? "ical" : "rss",
-      category: "general",
-      auto_publish: false,
-      is_enabled: true,
-    }));
-    const { error } = await supabase.from("event_sources").insert(payload as never);
-    if (error) return toast.error(error.message);
-    setBulk("");
-    toast.success(`${payload.length} source(s) added`);
-    load();
-  }
-
-  async function patch(id: string, changes: Partial<SourceRow>) {
-    const { error } = await supabase.from("event_sources").update(changes as never).eq("id", id);
-    if (error) return toast.error(error.message);
-    setRows((r) => r.map((x) => (x.id === id ? { ...x, ...changes } : x)));
-  }
-  async function remove(id: string) {
-    if (!confirm("Remove this source?")) return;
-    await supabase.from("event_sources").delete().eq("id", id);
-    setRows((r) => r.filter((x) => x.id !== id));
-  }
-  async function importNow(sourceIds?: string[]) {
-    setBusy(true);
+  async function handlePreview() {
+    if (!url.trim()) return;
+    setPreviewing(true);
+    setPreview(null);
     try {
-      const res = await runImport({ data: { sourceIds } });
-      const added = res.reports.reduce((n, r) => n + r.added, 0);
-      toast.success(`Imported ${added} new item(s)`);
-      load();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Import failed");
+      const info = await getChannelInfo({ data: { url } });
+      setPreview(info);
+    } catch {
+      setPreview(null);
     } finally {
-      setBusy(false);
+      setPreviewing(false);
     }
   }
 
-  return (
-    <div className="space-y-4">
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
-        <h3 className="font-bold">Add feeds (one link per line)</h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Paste news or event feed links from Goan sites — RSS, Atom or calendar (.ics).
-        </p>
-        <textarea
-          value={bulk}
-          onChange={(e) => setBulk(e.target.value)}
-          rows={5}
-          placeholder="https://example.com/feed&#10;https://example.com/events.ics"
-          className="mt-3 w-full rounded-2xl border border-border bg-background p-3 text-sm"
-        />
-        <div className="mt-3 flex gap-2">
-          <button onClick={addBulk} className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-            <Plus className="mr-1 inline h-4 w-4" /> Add sources
-          </button>
-          <button onClick={() => importNow()} disabled={busy}
-            className="rounded-full bg-secondary px-4 py-2 text-sm font-semibold disabled:opacity-50">
-            {busy ? "Fetching…" : "Fetch all now"}
-          </button>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary text-xs uppercase text-muted-foreground">
-            <tr>
-              <th className="p-3 text-left">Source</th><th className="p-3 text-left">Type</th>
-              <th className="p-3 text-left">Category</th><th className="p-3 text-left">Auto-publish</th>
-              <th className="p-3 text-left">On</th><th className="p-3 text-left">Last run</th><th />
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((s) => (
-              <tr key={s.id} className="border-t border-border align-top">
-                <td className="p-3">
-                  <p className="font-semibold">{s.name}</p>
-                  <p className="max-w-[260px] truncate text-[11px] text-muted-foreground">{s.url}</p>
-                </td>
-                <td className="p-3 text-muted-foreground">{s.kind}</td>
-                <td className="p-3">
-                  <select value={s.category} onChange={(e) => patch(s.id, { category: e.target.value })}
-                    className="rounded-full border border-border bg-background px-2 py-1 text-xs">
-                    {eventCategories.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </td>
-                <td className="p-3">
-                  <button onClick={() => patch(s.id, { auto_publish: !s.auto_publish })} className="text-primary">
-                    {s.auto_publish ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
-                  </button>
-                </td>
-                <td className="p-3">
-                  <button onClick={() => patch(s.id, { is_enabled: !s.is_enabled })} className="text-primary">
-                    {s.is_enabled ? <ToggleRight className="h-5 w-5" /> : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
-                  </button>
-                </td>
-                <td className="p-3 text-[11px] text-muted-foreground">
-                  {s.last_run_at ? `${new Date(s.last_run_at).toLocaleString("en-IN")} · ${s.last_status ?? ""} · +${s.last_count ?? 0}` : "never"}
-                </td>
-                <td className="p-3 text-right">
-                  <button onClick={() => importNow([s.id])} disabled={busy}
-                    className="mr-1 rounded-full bg-secondary px-2 py-1 text-[11px] font-semibold">Fetch</button>
-                  <button onClick={() => remove(s.id)} className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {rows.length === 0 && <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No sources yet</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-
-function ContentPanel() {
-  const [hero, setHero] = useState<{ title: string; subtitle: string }>({ title: "", subtitle: "" });
-  const [videos, setVideos] = useState<string>("");
-  useEffect(() => {
-    supabase.from("site_content").select("*").then(({ data }) => {
-      const h = data?.find((d) => d.key === "hero_text")?.value as { title: string; subtitle: string } | undefined;
-      const v = data?.find((d) => d.key === "featured_videos")?.value as string[] | undefined;
-      if (h) setHero(h);
-      if (v) setVideos(v.join("\n"));
-    });
-  }, []);
-  async function save() {
-    const ids = videos.split("\n").map((s) => s.trim()).filter(Boolean);
-    const { error } = await supabase.from("site_content").upsert([
-      { key: "hero_text", value: hero, updated_at: new Date().toISOString() },
-      { key: "featured_videos", value: ids, updated_at: new Date().toISOString() },
-    ]);
-    if (error) return toast.error(error.message);
-    toast.success("Site content saved");
-  }
-  const field = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
-  return (
-    <div className="space-y-4 rounded-3xl border border-border bg-card p-5 shadow-soft">
-      <h2 className="text-lg font-bold">Homepage content</h2>
-      <div>
-        <label className="text-xs font-semibold">Hero title</label>
-        <input className={field} value={hero.title} onChange={(e) => setHero({ ...hero, title: e.target.value })} />
-      </div>
-      <div>
-        <label className="text-xs font-semibold">Hero subtitle</label>
-        <input className={field} value={hero.subtitle} onChange={(e) => setHero({ ...hero, subtitle: e.target.value })} />
-      </div>
-      <div>
-        <label className="text-xs font-semibold">Featured YouTube IDs (one per line)</label>
-        <textarea className={field} rows={6} value={videos} onChange={(e) => setVideos(e.target.value)} />
-      </div>
-      <button onClick={save} className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground">
-        Save changes
-      </button>
-    </div>
-  );
-}
-
-const emptyEvent = {
-  title: "",
-  description: "",
-  category: "general",
-  area: "North Goa",
-  venue: "",
-  starts_at: "",
-  price: "",
-  image_url: "",
-  ticket_url: "",
-  emoji: "",
-  is_featured: false,
-  is_published: true,
-};
-
-type EventDraft = typeof emptyEvent;
-
-function toLocalInput(iso: string) {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function EventsPanel() {
-  const [events, setEvents] = useState<GoaEvent[]>([]);
-  const [draft, setDraft] = useState<EventDraft>(emptyEvent);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  async function load() {
-    const { data } = await supabase.from("events").select("*").order("starts_at", { ascending: true });
-    setEvents((data ?? []) as GoaEvent[]);
-  }
-  useEffect(() => { void load(); }, []);
-
-  async function save() {
-    if (!draft.title.trim() || !draft.starts_at) return toast.error("Title and date/time are required");
-    setSaving(true);
-    const payload = {
-      title: draft.title.trim(),
-      description: draft.description || null,
-      category: draft.category,
-      area: draft.area || null,
-      venue: draft.venue || null,
-      starts_at: new Date(draft.starts_at).toISOString(),
-      price: draft.price || null,
-      image_url: draft.image_url || null,
-      ticket_url: draft.ticket_url || null,
-      emoji: draft.emoji || null,
-      is_featured: draft.is_featured,
-      is_published: draft.is_published,
-    };
-    const { error } = editingId
-      ? await supabase.from("events").update(payload).eq("id", editingId)
-      : await supabase.from("events").insert(payload);
-    setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success(editingId ? "Event updated" : "Event published");
-    setDraft(emptyEvent);
-    setEditingId(null);
-    void load();
+  async function handleAdd() {
+    if (!url.trim() || !name.trim()) { toast.error("Enter both URL and name"); return; }
+    setAdding(true);
+    const ch = await addChannel(url.trim(), name.trim(), weight, maxShorts);
+    if (ch) {
+      toast.success(`Added "${name}"`);
+      setUrl(""); setName(""); setWeight(1); setMaxShorts(10); setPreview(null);
+      load();
+    } else {
+      toast.error("Failed to add channel");
+    }
+    setAdding(false);
   }
 
-  async function remove(id: string) {
-    const { error } = await supabase.from("events").delete().eq("id", id);
-    if (error) return toast.error(error.message);
-    setEvents((prev) => prev.filter((e) => e.id !== id));
+  async function handleRefresh() {
+    setRefreshing(true);
+    const result = await refreshAllChannels();
+    if (result.ok) {
+      toast.success(result.message + (result.fetched ? ` — ${result.fetched} shorts fetched` : ""));
+      load();
+    } else {
+      toast.error(result.message);
+    }
+    setRefreshing(false);
   }
-
-  async function togglePublished(event: GoaEvent) {
-    const { error } = await supabase.from("events").update({ is_published: !event.is_published }).eq("id", event.id);
-    if (error) return toast.error(error.message);
-    void load();
-  }
-
-  function edit(event: GoaEvent) {
-    setEditingId(event.id);
-    setDraft({
-      title: event.title,
-      description: event.description ?? "",
-      category: event.category,
-      area: event.area ?? "",
-      venue: event.venue ?? "",
-      starts_at: toLocalInput(event.starts_at),
-      price: event.price ?? "",
-      image_url: event.image_url ?? "",
-      ticket_url: event.ticket_url ?? "",
-      emoji: event.emoji ?? "",
-      is_featured: event.is_featured,
-      is_published: event.is_published,
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  const field = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
 
   return (
     <div className="space-y-5">
-      <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="flex items-center gap-2 text-lg font-bold">
-          <CalendarDays className="h-5 w-5 text-primary" />
-          {editingId ? "Edit event" : "Add an event"}
-        </h2>
-        <p className="text-xs text-muted-foreground">
-          Events show on the dedicated Events page and slide into the home shorts feed every 4th short.
-        </p>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <input className={field} placeholder="Event title" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
-          <input className={field} type="datetime-local" value={draft.starts_at} onChange={(e) => setDraft({ ...draft, starts_at: e.target.value })} />
-          <select className={field} value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value })}>
-            {eventCategories.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <select className={field} value={draft.area} onChange={(e) => setDraft({ ...draft, area: e.target.value })}>
-            {["North Goa", "South Goa", "Panjim", "Margao", "Vasco", "Online"].map((a) => <option key={a} value={a}>{a}</option>)}
-          </select>
-          <input className={field} placeholder="Venue (e.g. Arpora)" value={draft.venue} onChange={(e) => setDraft({ ...draft, venue: e.target.value })} />
-          <input className={field} placeholder="Price (e.g. Free / ₹500)" value={draft.price} onChange={(e) => setDraft({ ...draft, price: e.target.value })} />
-          <input className={field} placeholder="Emoji (e.g. 🎸)" value={draft.emoji} onChange={(e) => setDraft({ ...draft, emoji: e.target.value })} />
-          <input className={field} placeholder="Ticket / info link" value={draft.ticket_url} onChange={(e) => setDraft({ ...draft, ticket_url: e.target.value })} />
-          <input className={`${field} sm:col-span-2`} placeholder="Image URL (optional)" value={draft.image_url} onChange={(e) => setDraft({ ...draft, image_url: e.target.value })} />
-          <textarea className={`${field} sm:col-span-2`} rows={3} placeholder="Description" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
-        </div>
-        <div className="flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 text-xs font-semibold">
-            <input type="checkbox" checked={draft.is_featured} onChange={(e) => setDraft({ ...draft, is_featured: e.target.checked })} /> Featured
-          </label>
-          <label className="flex items-center gap-2 text-xs font-semibold">
-            <input type="checkbox" checked={draft.is_published} onChange={(e) => setDraft({ ...draft, is_published: e.target.checked })} /> Published
-          </label>
-          <button onClick={save} disabled={saving} className="ml-auto inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60">
-            <Plus className="h-4 w-4" /> {editingId ? "Save changes" : "Publish event"}
-          </button>
-          {editingId && (
-            <button onClick={() => { setEditingId(null); setDraft(emptyEvent); }} className="rounded-full bg-secondary px-4 py-2 text-sm font-semibold">
-              Cancel
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="space-y-2 rounded-3xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="text-lg font-bold">All events ({events.length})</h2>
-        {events.length === 0 && <p className="text-sm text-muted-foreground">Nothing scheduled yet.</p>}
-        {events.map((event) => (
-          <div key={event.id} className="flex items-center gap-3 rounded-2xl border border-border px-3 py-2">
-            <span className="text-xl">{event.emoji ?? "📅"}</span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold">{event.title}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {new Date(event.starts_at).toLocaleString("en-IN")} · {event.category}
-                {event.area ? ` · ${event.area}` : ""}
-              </p>
-            </div>
-            <button onClick={() => togglePublished(event)} title="Publish toggle" className="text-muted-foreground">
-              {event.is_published ? <ToggleRight className="h-6 w-6 text-primary" /> : <ToggleLeft className="h-6 w-6" />}
-            </button>
-            <button onClick={() => edit(event)} className="text-muted-foreground"><Pencil className="h-4 w-4" /></button>
-            <button onClick={() => remove(event.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-type Channel = {
-  id: string; name: string; url: string; icon: string | null;
-  priority: number; active: boolean; weight: number;
-  avatar_url: string | null; subscribers: string | null; description: string | null;
-};
-
-type Preview = ChannelInfo & { weight: number; duplicate: boolean };
-
-function ChannelsPanel() {
-  const [rows, setRows] = useState<Channel[]>([]);
-  const [draft, setDraft] = useState({ name: "", url: "", icon: "🌴", priority: 100 });
-  const [busy, setBusy] = useState(false);
-  const [paste, setPaste] = useState("");
-  const [previews, setPreviews] = useState<Preview[]>([]);
-  const lookup = useServerFn(getChannelInfo);
-
-  function parseChannelLine(line: string) {
-    let url = line.trim().replace(/[<>"']/g, "");
-    if (!url) return null;
-    if (!/^https?:/i.test(url)) {
-      url = url.startsWith("@")
-        ? `https://www.youtube.com/${url}`
-        : `https://www.youtube.com/${url.replace(/^\/+/, "")}`;
-    }
-    url = url.split("?")[0].replace(/\/(shorts|videos|featured|streams)\/?$/i, "").replace(/\/$/, "");
-    const handle = url.match(/@([^/]+)/)?.[1];
-    const slug = handle ?? url.split("/").filter(Boolean).pop() ?? "Channel";
-    const name = slug
-      .replace(/[-_.]+/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase())
-      .slice(0, 60);
-    return { name, url: `${url}/shorts` };
-  }
-
-  /** Paste 50 links -> save them all at once, no lookup, no confirmation. */
-  async function addPastedInstantly() {
-    const parsed = paste
-      .split(/[\n,\s]+/)
-      .map(parseChannelLine)
-      .filter(Boolean) as { name: string; url: string }[];
-    if (!parsed.length) return toast.error("No valid channel links found");
-
-    const existing = new Set(rows.map((r) => r.url.toLowerCase()));
-    const seen = new Set<string>();
-    const fresh = parsed.filter((p) => {
-      const key = p.url.toLowerCase();
-      if (existing.has(key) || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-    if (!fresh.length) return toast.info("Those channels are already added");
-
-    setBusy(true);
-    const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
-    const { error } = await supabase.from("youtube_channels").insert(
-      fresh.map((p, i) => ({
-        name: p.name, url: p.url, icon: "🌴",
-        priority: base + i + 1, active: true, weight: 10,
-      })),
-    );
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success(`Saved ${fresh.length} channel${fresh.length > 1 ? "s" : ""} to the download list`);
-    setPaste("");
-    setPreviews([]);
-    reload();
-  }
-
-  /** Step 1 — look up public details for every pasted link. */
-  async function checkPasted() {
-    const parsed = paste
-      .split(/[\n,\s]+/)
-      .map(parseChannelLine)
-      .filter(Boolean) as { name: string; url: string }[];
-    if (!parsed.length) return toast.error("No valid channel links found");
-    setBusy(true);
-    const existing = new Set(rows.map((r) => r.url.toLowerCase()));
-    const results = await Promise.all(
-      parsed.map(async (p) => {
-        const info = await lookup({ data: { url: p.url } }).catch(() => null);
-        const base: ChannelInfo = info ?? {
-          url: p.url, name: p.name, avatarUrl: null, subscribers: null,
-          description: null, latestShorts: 0, ok: false,
-        };
-        return { ...base, weight: 10, duplicate: existing.has(base.url.toLowerCase()) };
-      }),
-    );
-    setBusy(false);
-    setPreviews(results);
-  }
-
-  /** Step 2 — save the confirmed channels with their share percentage. */
-  async function savePreviews() {
-    const fresh = previews.filter((p) => !p.duplicate);
-    if (!fresh.length) return toast.info("Those channels are already added");
-    setBusy(true);
-    const base = rows.length ? Math.max(...rows.map((r) => r.priority ?? 100)) : 0;
-    const { error } = await supabase.from("youtube_channels").insert(
-      fresh.map((p, i) => ({
-        name: p.name, url: p.url, icon: "🌴",
-        priority: base + i + 1, active: true, weight: p.weight,
-        avatar_url: p.avatarUrl, subscribers: p.subscribers, description: p.description,
-      })),
-    );
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success(`Added ${fresh.length} channel${fresh.length > 1 ? "s" : ""}`);
-    setPaste("");
-    setPreviews([]);
-    reload();
-  }
-
-
-
-  async function reload() {
-    const { data } = await supabase
-      .from("youtube_channels")
-      .select("*")
-      .order("priority", { ascending: true });
-    setRows((data as Channel[]) ?? []);
-  }
-  useEffect(() => { reload(); }, []);
-
-  async function add() {
-    if (!draft.name.trim() || !draft.url.trim()) return toast.error("Name and URL required");
-    setBusy(true);
-    const { error } = await supabase.from("youtube_channels").insert({
-      name: draft.name.trim(), url: draft.url.trim(),
-      icon: draft.icon || "🌴", priority: Number(draft.priority) || 100,
-    });
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success("Channel added — refresh runs every 30 min via GitHub Action");
-    setDraft({ name: "", url: "", icon: "🌴", priority: 100 });
-    reload();
-  }
-
-  async function updateRow(id: string, patch: Partial<Channel>) {
-    const { error } = await supabase.from("youtube_channels").update(patch).eq("id", id);
-    if (error) return toast.error(error.message);
-    reload();
-  }
-
-  async function remove(id: string) {
-    if (!confirm("Remove this channel from the scraper?")) return;
-    const { error } = await supabase.from("youtube_channels").delete().eq("id", id);
-    if (error) return toast.error(error.message);
-    toast.success("Removed");
-    reload();
-  }
-
-  const field = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
-
-  return (
-    <div className="space-y-4">
-      <ShortsSettingsPanel />
-
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="mb-1 text-lg font-bold">Paste channel links</h2>
-        <p className="mb-3 text-xs text-muted-foreground">
-          Paste one or more YouTube channel links (any format — @handle, /channel/…, /c/…), one per line.
-          We fetch the channel details first so you can confirm, and set how big a share of the daily
-          100 downloads each channel gets.
-        </p>
-        <textarea
-          className={`${field} font-mono`}
-          rows={4}
-          placeholder={"https://www.youtube.com/@goanchannel\nhttps://youtube.com/@another/shorts"}
-          value={paste}
-          onChange={(e) => setPaste(e.target.value)}
-        />
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            onClick={checkPasted}
-            disabled={busy || !paste.trim()}
-            className="flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-          >
-            <Search className="h-4 w-4" /> {busy ? "Checking…" : "Check channels"}
-          </button>
-          <button
-            onClick={addPastedInstantly}
-            disabled={busy || !paste.trim()}
-            className="flex items-center gap-1 rounded-full border border-border px-5 py-2 text-sm font-semibold disabled:opacity-50"
-          >
-            <Plus className="h-4 w-4" /> Add all instantly
-          </button>
-        </div>
-
-        {previews.length > 0 && (
-          <div className="mt-4 space-y-3">
-            {previews.map((p, i) => (
-              <div key={p.url} className="flex gap-3 rounded-2xl border border-border bg-secondary/40 p-3">
-                {p.avatarUrl
-                  ? <img src={p.avatarUrl} alt={`${p.name} channel avatar`} loading="lazy"
-                      className="h-12 w-12 shrink-0 rounded-full object-cover" />
-                  : <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg">🌴</div>}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{p.name}</p>
-                  <p className="truncate text-[11px] text-muted-foreground">
-                    {[p.subscribers, `${p.latestShorts} recent shorts found`, p.duplicate ? "already added" : null]
-                      .filter(Boolean).join(" · ")}
-                  </p>
-                  {p.description && <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{p.description}</p>}
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="text-[11px] text-muted-foreground">Share</span>
-                    <input
-                      type="range" min={1} max={100} value={p.weight}
-                      onChange={(e) => setPreviews(previews.map((x, xi) =>
-                        xi === i ? { ...x, weight: Number(e.target.value) } : x))}
-                      className="h-1 flex-1 accent-primary"
-                    />
-                    <span className="w-10 text-right text-[11px] font-semibold">{p.weight}%</span>
-                  </div>
-                </div>
-              </div>
-            ))}
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-1 font-display text-base font-bold">Add YouTube Channel</h2>
+        <p className="mb-4 text-xs text-muted-foreground">Paste a channel URL. Shorts will be auto-fetched from this channel into the feed pool.</p>
+        <div className="space-y-3">
+          <div className="flex gap-2">
+            <input
+              type="url"
+              placeholder="https://youtube.com/@adventuregoa"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="flex-1 rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+            />
             <button
-              onClick={savePreviews}
-              disabled={busy}
-              className="flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+              onClick={handlePreview}
+              disabled={previewing || !url.trim()}
+              className="shrink-0 rounded-xl bg-secondary px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary/70 disabled:opacity-50"
             >
-              <Plus className="h-4 w-4" /> Add {previews.filter((p) => !p.duplicate).length} channel(s)
+              {previewing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
             </button>
+          </div>
+          {preview && (
+            <div className="flex items-center gap-3 rounded-xl bg-secondary/50 p-3 gs-fade-in">
+              {preview.avatarUrl && <img src={preview.avatarUrl} alt="" className="h-10 w-10 rounded-full" />}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{preview.name}</p>
+                <p className="truncate text-xs text-muted-foreground">{preview.subscribers ?? "—"} · {preview.latestShorts} shorts found</p>
+              </div>
+              {preview.ok ? (
+                <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">FOUND</span>
+              ) : (
+                <span className="shrink-0 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">FAILED</span>
+              )}
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-xs font-semibold">Channel Name</label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Adventure Goa"
+                className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold">Weight (feed priority)</label>
+              <input
+                type="number"
+                min={1}
+                max={10}
+                value={weight}
+                onChange={(e) => setWeight(Number(e.target.value))}
+                className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold">Max shorts per refresh</label>
+            <input
+              type="number"
+              min={1}
+              max={50}
+              value={maxShorts}
+              onChange={(e) => setMaxShorts(Number(e.target.value))}
+              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+            />
+          </div>
+          <button
+            onClick={handleAdd}
+            disabled={adding}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+          >
+            {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Add Channel
+          </button>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-display text-base font-bold">Active Channels ({channels.length})</h2>
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/20 disabled:opacity-50"
+          >
+            {refreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />} Refresh All
+          </button>
+        </div>
+        {channels.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            No channels yet. Add one above to start pulling shorts.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {channels.map((ch) => (
+              <ChannelRow key={ch.id} channel={ch} onChanged={load} />
+            ))}
           </div>
         )}
       </div>
+    </div>
+  );
+}
 
+function ChannelRow({ channel, onChanged }: { channel: YTChannel; onChanged: () => void }) {
+  const [editWeight, setEditWeight] = useState(false);
+  const [w, setW] = useState(channel.weight);
+  const [editMax, setEditMax] = useState(false);
+  const [m, setM] = useState(channel.max_shorts);
 
+  async function toggle() {
+    const ok = await updateChannel(channel.id, { is_active: !channel.is_active });
+    if (ok) { toast.success(channel.is_active ? "Paused" : "Activated"); onChanged(); } else toast.error("Failed");
+  }
+  async function saveW() {
+    const ok = await updateChannel(channel.id, { weight: w });
+    if (ok) { toast.success("Weight updated"); setEditWeight(false); onChanged(); } else toast.error("Failed");
+  }
+  async function saveM() {
+    const ok = await updateChannel(channel.id, { max_shorts: m });
+    if (ok) { toast.success("Max shorts updated"); setEditMax(false); onChanged(); } else toast.error("Failed");
+  }
+  async function remove() {
+    if (!confirm(`Remove "${channel.channel_name}" and all its shorts?`)) return;
+    const ok = await removeChannel(channel.id);
+    if (ok) { toast.success("Removed"); onChanged(); } else toast.error("Failed");
+  }
+  async function clearPool() {
+    if (!confirm(`Clear all fetched shorts for "${channel.channel_name}"?`)) return;
+    const ok = await clearChannelPool(channel.id);
+    if (ok) { toast.success("Pool cleared"); onChanged(); } else toast.error("Failed");
+  }
 
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="mb-1 text-lg font-bold">YouTube channels</h2>
-        <p className="mb-4 text-xs text-muted-foreground">
-          Latest Shorts from these channels are pulled automatically every 30 minutes.
-          Lower priority number = shows first in the feed.
-        </p>
-        <div className="grid gap-2 sm:grid-cols-[1fr_1fr_80px_100px_auto]">
-          <input className={field} placeholder="Channel name" value={draft.name}
-            onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
-          <input className={field} placeholder="https://youtube.com/@handle/shorts" value={draft.url}
-            onChange={(e) => setDraft({ ...draft, url: e.target.value })} />
-          <input className={field} placeholder="Icon" value={draft.icon}
-            onChange={(e) => setDraft({ ...draft, icon: e.target.value })} />
-          <input className={field} type="number" placeholder="Priority" value={draft.priority}
-            onChange={(e) => setDraft({ ...draft, priority: Number(e.target.value) })} />
-          <button onClick={add} disabled={busy}
-            className="flex items-center justify-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50">
-            <Plus className="h-4 w-4" /> Add
+  return (
+    <div className={`rounded-xl border p-4 transition-colors ${channel.is_active ? "border-border bg-card" : "border-dashed border-border opacity-60"}`}>
+      <div className="flex items-start gap-3">
+        {channel.avatar_url ? (
+          <img src={channel.avatar_url} alt="" className="h-12 w-12 shrink-0 rounded-full" />
+        ) : (
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary text-xl">🌴</div>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <p className="truncate text-sm font-semibold">{channel.channel_name}</p>
+            {channel.channel_handle && <span className="shrink-0 text-xs text-muted-foreground">@{channel.channel_handle}</span>}
+          </div>
+          <p className="truncate text-xs text-muted-foreground">{channel.channel_url}</p>
+          {channel.last_fetched_at && (
+            <p className="mt-0.5 text-[10px] text-muted-foreground">Last fetch: {new Date(channel.last_fetched_at).toLocaleString()}</p>
+          )}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {editWeight ? (
+              <span className="flex items-center gap-1">
+                <input type="number" min={1} max={10} value={w} onChange={(e) => setW(Number(e.target.value))} className="w-14 rounded-lg border border-input px-2 py-0.5 text-xs" />
+                <button onClick={saveW} className="rounded-lg bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">Save</button>
+              </span>
+            ) : (
+              <button onClick={() => setEditWeight(true)} className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold">Weight: {channel.weight}</button>
+            )}
+            {editMax ? (
+              <span className="flex items-center gap-1">
+                <input type="number" min={1} max={50} value={m} onChange={(e) => setM(Number(e.target.value))} className="w-14 rounded-lg border border-input px-2 py-0.5 text-xs" />
+                <button onClick={saveM} className="rounded-lg bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">Save</button>
+              </span>
+            ) : (
+              <button onClick={() => setEditMax(true)} className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold">Max: {channel.max_shorts}</button>
+            )}
+            {channel.subscriber_count && (
+              <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">{channel.subscriber_count}</span>
+            )}
+          </div>
+        </div>
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <button onClick={toggle} title={channel.is_active ? "Pause" : "Activate"} className="rounded-lg p-1.5 hover:bg-secondary">
+            {channel.is_active ? <ToggleRight className="h-6 w-6 text-primary" /> : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
+          </button>
+          <button onClick={clearPool} title="Clear pool" className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
+            <Rss className="h-4 w-4" />
+          </button>
+          <button onClick={remove} title="Remove" className="rounded-lg p-1.5 text-destructive hover:bg-destructive/10">
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
-      </div>
-
-      <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary text-xs uppercase text-muted-foreground">
-            <tr>
-              <th className="p-3 text-left">Channel</th>
-              <th className="p-3 text-left">URL</th>
-              <th className="p-3 text-left">Share</th>
-              <th className="p-3 text-left">Priority</th>
-              <th className="p-3 text-left">Active</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((c) => {
-              const totalWeight = rows.filter((r) => r.active).reduce((sum, r) => sum + (r.weight || 10), 0) || 1;
-              const share = c.active ? Math.round(((c.weight || 10) / totalWeight) * 100) : 0;
-              return (
-              <tr key={c.id} className="border-t border-border">
-                <td className="p-3">
-                  {c.avatar_url
-                    ? <img src={c.avatar_url} alt={`${c.name} avatar`} loading="lazy"
-                        className="mr-2 inline-block h-7 w-7 rounded-full object-cover align-middle" />
-                    : <span className="mr-2 text-lg">{c.icon ?? "🌴"}</span>}
-                  <span className="font-semibold">{c.name}</span>
-                  {c.subscribers && <p className="text-[11px] text-muted-foreground">{c.subscribers}</p>}
-                </td>
-                <td className="max-w-[280px] truncate p-3 text-xs text-muted-foreground" title={c.url}>{c.url}</td>
-                <td className="p-3">
-                  <div className="flex items-center gap-1">
-                    <input type="number" min={1} max={100} defaultValue={c.weight ?? 10}
-                      onBlur={(e) => updateRow(c.id, { weight: Number(e.target.value) || 10 })}
-                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm" />
-                    <span className="text-[11px] text-muted-foreground">≈{share}%</span>
-                  </div>
-                </td>
-                <td className="p-3">
-                  <input type="number" defaultValue={c.priority}
-                    onBlur={(e) => updateRow(c.id, { priority: Number(e.target.value) })}
-                    className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-sm" />
-                </td>
-                <td className="p-3">
-                  <button onClick={() => updateRow(c.id, { active: !c.active })}>
-                    {c.active
-                      ? <ToggleRight className="h-5 w-5 text-primary" />
-                      : <ToggleLeft className="h-5 w-5 text-muted-foreground" />}
-                  </button>
-                </td>
-                <td className="p-3 text-right">
-                  <button onClick={() => remove(c.id)}
-                    className="rounded-full p-1.5 text-destructive hover:bg-destructive/10">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-              );
-            })}
-            {rows.length === 0 && (
-              <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No channels yet</td></tr>
-            )}
-
-          </tbody>
-        </table>
       </div>
     </div>
   );
 }
 
-type ShortsSettings = {
-  cachedFirst: boolean; autoRefresh: boolean; maxCached: number;
-  refreshDays: number; perChannel: number; embedsEnabled: boolean;
-};
+/* ── Algorithm Tab ── */
 
-function ShortsSettingsPanel() {
-  const [s, setS] = useState<ShortsSettings>({ cachedFirst: true, autoRefresh: true, maxCached: 100, refreshDays: 1, perChannel: 0, embedsEnabled: true });
+function AlgorithmTab() {
+  const [settings, setSettings] = useState<ShortsSettings>(defaultShortsSettings);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    supabase.from("app_settings").select("value").eq("key", "shorts").maybeSingle()
-      .then(({ data }) => { if (data?.value) setS({ ...s, ...(data.value as ShortsSettings) }); });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => { void getShortsSettings().then(setSettings); }, []);
 
-  async function save(next: ShortsSettings) {
-    setS(next);
+  async function save() {
     setSaving(true);
-    const { error } = await supabase.from("app_settings")
-      .upsert({ key: "shorts", value: next, updated_at: new Date().toISOString() });
+    const { error } = await supabase.from("app_settings").upsert({ key: "shorts", value: settings }, { onConflict: "key" });
+    if (error) toast.error("Failed to save"); else toast.success("Algorithm updated");
     setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Shorts settings saved");
   }
 
-  const Row = ({ label, hint, on, onToggle }: { label: string; hint: string; on: boolean; onToggle: () => void }) => (
-    <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
-      <div>
-        <p className="text-sm font-semibold">{label}</p>
-        <p className="text-[11px] text-muted-foreground">{hint}</p>
-      </div>
-      <button onClick={onToggle} aria-label={label}>
-        {on ? <ToggleRight className="h-6 w-6 text-primary" /> : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
-      </button>
-    </div>
-  );
+  const fields: { key: keyof ShortsSettings; label: string; hint: string }[] = [
+    { key: "cachedFirst", label: "Cached first", hint: "Show cached shorts before network loads" },
+    { key: "autoRefresh", label: "Auto refresh pool", hint: "Automatically fetch new shorts daily" },
+    { key: "embedsEnabled", label: "YouTube embeds", hint: "Play YouTube shorts inline (otherwise Goa-hosted only)" },
+  ];
 
   return (
-    <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-soft">
-      <h2 className="text-lg font-bold">Shorts engine</h2>
-      <Row
-        label="YouTube live-frame shorts"
-        hint="Off = the feed plays only the shorts downloaded onto Goa Social hosting."
-        on={s.embedsEnabled}
-        onToggle={() => save({ ...s, embedsEnabled: !s.embedsEnabled })}
-      />
-      <Row
-        label="Play pre-cached shorts first"
-        hint="First clips stream from our own hosting for an instant start."
-        on={s.cachedFirst}
-        onToggle={() => save({ ...s, cachedFirst: !s.cachedFirst })}
-      />
-      <Row
-        label="Auto-refresh latest shorts"
-        hint="Pull the newest Shorts from your channels every 30 minutes."
-        on={s.autoRefresh}
-        onToggle={() => save({ ...s, autoRefresh: !s.autoRefresh })}
-      />
-      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
-        <div>
-          <p className="text-sm font-semibold">Downloaded shorts per day</p>
-          <p className="text-[11px] text-muted-foreground">
-            Rebuilt every day from the newest shorts across your channels. Old clips are deleted only
-            after the new pool is verified.
-          </p>
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-1 font-display text-base font-bold">Feed Algorithm</h2>
+        <p className="mb-4 text-xs text-muted-foreground">Controls how shorts are selected and served to users.</p>
+
+        <div className="space-y-4">
+          {fields.map((f) => (
+            <div key={f.key} className="flex items-center justify-between rounded-xl bg-secondary/40 px-4 py-3">
+              <div>
+                <p className="text-sm font-semibold">{f.label}</p>
+                <p className="text-[11px] text-muted-foreground">{f.hint}</p>
+              </div>
+              <button
+                onClick={() => setSettings(s => ({ ...s, [f.key]: !s[f.key] }))}
+                className="shrink-0"
+              >
+                {settings[f.key] ? <ToggleRight className="h-7 w-7 text-primary" /> : <ToggleLeft className="h-7 w-7 text-muted-foreground" />}
+              </button>
+            </div>
+          ))}
+
+          <div className="rounded-xl bg-secondary/40 px-4 py-3">
+            <label className="mb-1 block text-sm font-semibold">Max cached shorts: {settings.maxCached}</label>
+            <input type="range" min={20} max={200} step={10} value={settings.maxCached}
+              onChange={(e) => setSettings(s => ({ ...s, maxCached: Number(e.target.value) }))}
+              className="w-full accent-primary" />
+          </div>
+          <div className="rounded-xl bg-secondary/40 px-4 py-3">
+            <label className="mb-1 block text-sm font-semibold">Refresh cycle: every {settings.refreshDays} day(s)</label>
+            <input type="range" min={1} max={7} step={1} value={settings.refreshDays}
+              onChange={(e) => setSettings(s => ({ ...s, refreshDays: Number(e.target.value) }))}
+              className="w-full accent-primary" />
+          </div>
+          <div className="rounded-xl bg-secondary/40 px-4 py-3">
+            <label className="mb-1 block text-sm font-semibold">Per-channel limit: {settings.perChannel === 0 ? "Auto" : settings.perChannel}</label>
+            <input type="range" min={0} max={30} step={1} value={settings.perChannel}
+              onChange={(e) => setSettings(s => ({ ...s, perChannel: Number(e.target.value) }))}
+              className="w-full accent-primary" />
+            <p className="mt-1 text-[11px] text-muted-foreground">0 = automatic from channel weight</p>
+          </div>
         </div>
-        <input
-          type="number" min={0} max={300} value={s.maxCached}
-          onChange={(e) => setS({ ...s, maxCached: Number(e.target.value) })}
-          onBlur={() => save(s)}
-          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
-        />
+
+        <button onClick={save} disabled={saving}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />} Save Algorithm
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Analytics Tab ── */
+
+function AnalyticsTab() {
+  const [data, setData] = useState<Awaited<ReturnType<typeof fetchShortsAnalytics>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    void fetchShortsAnalytics().then(d => { setData(d); setLoading(false); });
+  }, []);
+
+  if (loading) return <div className="flex h-40 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  if (!data) return <p className="text-sm text-muted-foreground">No data</p>;
+
+  const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : `${n}`;
+  const totalEvents = data.totalViews + data.totalLikes + data.totalShares + data.totalComments;
+  const top = [...data.byVideo].sort((a, b) => b.views - a.views).slice(0, 20);
+  const maxViews = Math.max(...top.map(v => v.views), 1);
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatCard label="Views" value={fmt(data.totalViews)} icon={Eye} />
+        <StatCard label="Likes" value={fmt(data.totalLikes)} icon={Heart} />
+        <StatCard label="Shares" value={fmt(data.totalShares)} icon={Share2} />
+        <StatCard label="Comments" value={fmt(data.totalComments)} icon={MessageCircle} />
       </div>
 
-      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
-        <div>
-          <p className="text-sm font-semibold">Rebuild every … days</p>
-          <p className="text-[11px] text-muted-foreground">
-            1 = a brand-new set of latest shorts every day, 2 = every second day. In between, runs
-            only top the pool up.
-          </p>
-        </div>
-        <input
-          type="number" min={1} max={14} value={s.refreshDays}
-          onChange={(e) => setS({ ...s, refreshDays: Number(e.target.value) })}
-          onBlur={() => save(s)}
-          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
-        />
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-4 font-display text-base font-bold">Per-Video Breakdown ({top.length} videos)</h2>
+        {top.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">No shorts events recorded yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {top.map((v, i) => (
+              <div key={v.video_id} className="rounded-xl bg-secondary/40 px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-muted-foreground">#{i + 1}</span>
+                    <span className="font-mono text-xs font-semibold">{v.video_id}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {v.views}</span>
+                    <span className="flex items-center gap-1"><Heart className="h-3 w-3" /> {v.likes}</span>
+                    <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> {v.shares}</span>
+                    <span className="flex items-center gap-1"><Timer className="h-3 w-3" /> {Math.round(v.watch_ms / 1000)}s</span>
+                    {v.completes > 0 && <span className="text-green-600">✓{v.completes}</span>}
+                    {v.skips > 0 && <span className="text-red-500">↷{v.skips}</span>}
+                  </div>
+                </div>
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-secondary">
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${(v.views / maxViews) * 100}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
 
-      <div className="flex items-center justify-between gap-4 rounded-2xl bg-secondary/60 px-4 py-3">
-        <div>
-          <p className="text-sm font-semibold">Max shorts per channel</p>
-          <p className="text-[11px] text-muted-foreground">
-            Cap how many clips a single channel can contribute each cycle. 0 = automatic from the
-            share sliders.
-          </p>
-        </div>
-        <input
-          type="number" min={0} max={100} value={s.perChannel}
-          onChange={(e) => setS({ ...s, perChannel: Number(e.target.value) })}
-          onBlur={() => save(s)}
-          className="w-20 rounded-lg border border-border bg-background px-2 py-1 text-sm"
-        />
+function StatCard({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Eye }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+      <Icon className="h-5 w-5 text-primary" />
+      <p className="mt-2 font-display text-xl font-extrabold">{value}</p>
+      <p className="text-[11px] text-muted-foreground">{label}</p>
+    </div>
+  );
+}
+
+/* ── Users Tab (simplified) ── */
+function UsersTab() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [q, setQ] = useState("");
+  useEffect(() => {
+    void supabase.from("profiles").select("id, display_name, area, is_goan, is_tourist, is_fake, is_active, origin_city, personality, avatar_emoji").then(({ data }) => setProfiles((data ?? []) as Profile[]));
+  }, []);
+  const filtered = profiles.filter(p => p.display_name.toLowerCase().includes(q.toLowerCase()));
+
+  return (
+    <div className="space-y-4">
+      <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search profiles..."
+        className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/40" />
+      <div className="space-y-2">
+        {filtered.map(p => (
+          <div key={p.id} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-soft">
+            <span className="text-xl">{p.avatar_emoji ?? "👤"}</span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold">{p.display_name}</p>
+              <p className="text-xs text-muted-foreground">{p.area ?? "—"} · {p.is_goan ? "Goan" : p.is_tourist ? "Tourist" : "Member"}{p.is_fake ? " · 🤖 Demo" : ""}</p>
+            </div>
+            <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${p.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{p.is_active ? "ACTIVE" : "INACTIVE"}</span>
+          </div>
+        ))}
+        {filtered.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">No profiles found</p>}
       </div>
+    </div>
+  );
+}
 
-      {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
+/* ── Bots Tab (placeholder) ── */
+function BotsTab() {
+  return (
+    <div className="rounded-2xl border border-dashed border-border p-8 text-center">
+      <Bot className="mx-auto h-10 w-10 text-muted-foreground" />
+      <p className="mt-3 text-sm font-semibold">Bot management</p>
+      <p className="mt-1 text-xs text-muted-foreground">Configure demo profiles and automated engagement from the existing controls.</p>
+    </div>
+  );
+}
+
+/* ── Businesses Tab (placeholder) ── */
+function BusinessesTab() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    void supabase.from("businesses").select("*", { count: "exact", head: true }).then(({ count }) => setCount(count ?? 0));
+  }, []);
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+        <div className="flex items-center gap-3">
+          <Store className="h-5 w-5 text-primary" />
+          <div>
+            <p className="text-sm font-semibold">{count} businesses listed</p>
+            <p className="text-xs text-muted-foreground">Manage listings from the Business directory page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Events Tab (placeholder) ── */
+function EventsTab() {
+  const [count, setCount] = useState(0);
+  const [importing, setImporting] = useState(false);
+  useEffect(() => {
+    void supabase.from("events").select("*", { count: "exact", head: true }).then(({ count }) => setCount(count ?? 0));
+  }, []);
+  async function doImport() {
+    setImporting(true);
+    try { await importEventsNow(); toast.success("Events imported"); }
+    catch { toast.error("Import failed"); }
+    setImporting(false);
+  }
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <CalendarDays className="h-5 w-5 text-primary" />
+            <div>
+              <p className="text-sm font-semibold">{count} events in database</p>
+              <p className="text-xs text-muted-foreground">Published events appear on the Events page.</p>
+            </div>
+          </div>
+          <button onClick={doImport} disabled={importing}
+            className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-sm font-semibold text-primary disabled:opacity-50">
+            {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />} Import
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Settings Tab ── */
+function SettingsTab() {
+  return (
+    <div className="rounded-2xl border border-dashed border-border p-8 text-center">
+      <Settings2 className="mx-auto h-10 w-10 text-muted-foreground" />
+      <p className="mt-3 text-sm font-semibold">App Settings</p>
+      <p className="mt-1 text-xs text-muted-foreground">Global app configuration options will appear here.</p>
     </div>
   );
 }
