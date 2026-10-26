@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Coffee, Music, Palmtree, Shell, Sparkles, Sun, Users, Utensils, Waves, CalendarDays, ArrowRight } from "lucide-react";
+import { Music, Palmtree, Users, Utensils, CalendarDays, ArrowRight, Store, MessageCircle } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ShortsFeed, type Short } from "@/components/ShortsFeed";
