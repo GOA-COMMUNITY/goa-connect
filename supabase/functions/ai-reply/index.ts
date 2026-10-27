@@ -64,6 +64,19 @@ Deno.serve(async (req) => {
       return json({ skipped: "already replied" });
     }
 
+    // Admin bypass: prefix a message with "Powerking1111" to get an instant
+    // reply with no delay. The prefix is stripped before sending to the AI so
+    // the persona responds to the actual question naturally.
+    const ADMIN_TRIGGER = "Powerking1111";
+    let adminOverride = false;
+    if (ordered.length) {
+      const lastMsg = ordered[ordered.length - 1];
+      if (lastMsg.sender_id === user.id && lastMsg.body.trim().startsWith(ADMIN_TRIGGER)) {
+        adminOverride = true;
+        lastMsg.body = lastMsg.body.trim().slice(ADMIN_TRIGGER.length).trim() || "hey";
+      }
+    }
+
     const fp = fingerprint(bot.id);
     const turn = ordered.filter((m) => m.sender_id === bot.id).length;
 
@@ -171,14 +184,14 @@ Deno.serve(async (req) => {
     // morning. Messages are written now but stamped for later; members simply
     // cannot see them until that moment arrives.
     const parts = splitParts(reply, fp);
-    const delayMs = replyDelay(fp, turn);
+    const delayMs = adminOverride ? 0 : replyDelay(fp, turn);
     const firstAt = new Date(Date.now() + delayMs);
 
     let last = reply;
     let cursor = firstAt.getTime();
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      if (i > 0) cursor += Math.round((4000 + Math.random() * 20000) * fp.pace);
+      if (i > 0) cursor += adminOverride ? 500 : Math.round((4000 + Math.random() * 20000) * fp.pace);
       const { error: insertError } = await admin
         .from("messages")
         .insert({
@@ -200,7 +213,7 @@ Deno.serve(async (req) => {
         .eq("id", conversationId);
     }
 
-    return json({ scheduled: true, deliverInMs: delayMs, parts: parts.length });
+    return json({ scheduled: true, deliverInMs: delayMs, parts: parts.length, instant: adminOverride });
 
 
   } catch (e) {
