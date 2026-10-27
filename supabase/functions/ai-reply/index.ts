@@ -92,7 +92,12 @@ Deno.serve(async (req) => {
       })),
     ];
 
-    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    let geminiKey = Deno.env.get("GEMINI_API_KEY");
+    if (!geminiKey) {
+      const { data: geminiSetting } = await admin
+        .from("app_settings").select("value").eq("key", "gemini_api_key").maybeSingle();
+      geminiKey = geminiSetting?.value?.key ?? "";
+    }
     const lovableKey = Deno.env.get("LOVABLE_API_KEY");
 
     let reply = "";
