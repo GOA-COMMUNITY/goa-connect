@@ -1,5 +1,10 @@
 project_id = "snyutypvftvtbtthirja"
+
 [functions.ai-reply]
 verify_jwt = true
+
 [functions.refresh-shorts]
 verify_jwt = true
+
+[functions.download-shorts]
+verify_jwt = false
