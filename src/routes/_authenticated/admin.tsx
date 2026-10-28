@@ -9,14 +9,16 @@ import { importEventsNow } from "@lib/automation.functions";
 import {
   fetchChannels, addChannel, updateChannel, removeChannel,
   clearChannelPool, refreshAllChannels, fetchShortsAnalytics,
-  type YTChannel,
+  triggerDownload, getDownloadSettings, saveDownloadSettings,
+  deleteDownloadedShort,
+  type YTChannel, type DownloadSettings, defaultDownloadSettings,
 } from "@/lib/shorts-pool";
 import { getShortsSettings, defaultShortsSettings, type ShortsSettings } from "@/lib/app-settings";
 import {
   Shield, Users, Store, Bot, Trash2, ArrowLeft, Youtube, Plus,
   BarChart3, Eye, Heart, Share2, Timer, CalendarDays, Pencil, Rss,
   TrendingUp, RefreshCw, Settings2, ToggleLeft, ToggleRight, Loader2,
-  Video, Activity, Zap, Search,
+  Video, Activity, Zap, Search, Download, HardDrive,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -214,10 +216,18 @@ function ChannelsTab() {
   const [maxShorts, setMaxShorts] = useState(10);
   const [adding, setAdding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [dlSettings, setDlSettings] = useState<DownloadSettings>(defaultDownloadSettings);
+  const [savingDl, setSavingDl] = useState(false);
+  const [downloadedCount, setDownloadedCount] = useState(0);
   const [preview, setPreview] = useState<ChannelInfo | null>(null);
   const [previewing, setPreviewing] = useState(false);
 
-  const load = useCallback(() => { void fetchChannels().then(setChannels); }, []);
+  const load = useCallback(() => {
+    void fetchChannels().then(setChannels);
+    void getDownloadSettings().then(setDlSettings);
+    void supabase.from("yt_downloaded_shorts").select("*", { count: "exact", head: true }).then(({ count }) => setDownloadedCount(count ?? 0));
+  }, []);
   useEffect(() => { load(); }, [load]);
 
   async function handlePreview() {
@@ -258,6 +268,28 @@ function ChannelsTab() {
       toast.error(result.message);
     }
     setRefreshing(false);
+  }
+
+  async function handleDownload() {
+    setDownloading(true);
+    const result = await triggerDownload();
+    if (result.ok) {
+      const msg = result.downloaded != null
+        ? `Downloaded ${result.downloaded} shorts${result.failed ? `, ${result.failed} failed` : ""}${result.deletedOld ? `, deleted ${result.deletedOld} old` : ""}`
+        : result.message;
+      toast.success(msg);
+      load();
+    } else {
+      toast.error(result.message);
+    }
+    setDownloading(false);
+  }
+
+  async function saveDlSettings() {
+    setSavingDl(true);
+    const ok = await saveDownloadSettings(dlSettings);
+    if (ok) toast.success("Download settings saved"); else toast.error("Failed to save");
+    setSavingDl(false);
   }
 
   return (
@@ -335,6 +367,64 @@ function ChannelsTab() {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Add Channel
+          </button>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-1 font-display text-base font-bold">Shorts Download Settings</h2>
+        <p className="mb-4 text-xs text-muted-foreground">Download shorts from YouTube channels to Goa Social hosting. Old shorts are auto-deleted after the retention period.</p>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between rounded-xl bg-secondary/40 px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold">Auto-download enabled</p>
+              <p className="text-[11px] text-muted-foreground">Download shorts automatically every {dlSettings.refreshIntervalDays} days via GitHub Actions</p>
+            </div>
+            <button onClick={() => setDlSettings(s => ({ ...s, enabled: !s.enabled }))} className="shrink-0">
+              {dlSettings.enabled ? <ToggleRight className="h-7 w-7 text-primary" /> : <ToggleLeft className="h-7 w-7 text-muted-foreground" />}
+            </button>
+          </div>
+
+          <div className="rounded-xl bg-secondary/40 px-4 py-3">
+            <label className="mb-1 block text-sm font-semibold">Refresh interval: every {dlSettings.refreshIntervalDays} day(s)</label>
+            <input type="range" min={1} max={14} step={1} value={dlSettings.refreshIntervalDays}
+              onChange={(e) => setDlSettings(s => ({ ...s, refreshIntervalDays: Number(e.target.value) }))}
+              className="w-full accent-primary" />
+          </div>
+
+          <div className="rounded-xl bg-secondary/40 px-4 py-3">
+            <label className="mb-1 block text-sm font-semibold">Max shorts per channel: {dlSettings.maxPerChannel}</label>
+            <input type="range" min={1} max={30} step={1} value={dlSettings.maxPerChannel}
+              onChange={(e) => setDlSettings(s => ({ ...s, maxPerChannel: Number(e.target.value) }))}
+              className="w-full accent-primary" />
+          </div>
+
+          <div className="rounded-xl bg-secondary/40 px-4 py-3">
+            <label className="mb-1 block text-sm font-semibold">Delete old shorts after: {dlSettings.deleteOldAfterDays} days</label>
+            <input type="range" min={7} max={90} step={1} value={dlSettings.deleteOldAfterDays}
+              onChange={(e) => setDlSettings(s => ({ ...s, deleteOldAfterDays: Number(e.target.value) }))}
+              className="w-full accent-primary" />
+            <p className="mt-1 text-[11px] text-muted-foreground">Downloaded shorts older than this are automatically removed from storage</p>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl bg-primary/5 px-4 py-3">
+            <HardDrive className="h-5 w-5 text-primary" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold">{downloadedCount} shorts currently downloaded</p>
+              <p className="text-[11px] text-muted-foreground">These play from Goa Social hosting instead of YouTube embeds</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 flex gap-3">
+          <button onClick={saveDlSettings} disabled={savingDl}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3 text-sm font-bold transition-colors hover:bg-secondary/70 disabled:opacity-50">
+            {savingDl ? <Loader2 className="h-4 w-4 animate-spin" /> : <Settings2 className="h-4 w-4" />} Save Settings
+          </button>
+          <button onClick={handleDownload} disabled={downloading}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50">
+            {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />} Download Now
           </button>
         </div>
       </div>
