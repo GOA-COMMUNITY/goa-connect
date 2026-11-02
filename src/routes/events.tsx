@@ -45,11 +45,12 @@ function EventsPage() {
   return (
     <AppLayout>
       <div className="px-3 py-4">
-        <header className="mb-4 overflow-hidden rounded-3xl bg-gradient-primary p-6 text-primary-foreground shadow-card">
-          <h1 className="flex items-center gap-2 text-2xl font-bold">
+        <header className="mb-5 overflow-hidden rounded-[1.6rem] bg-gradient-primary p-6 text-primary-foreground shadow-card">
+          <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+          <h1 className="flex items-center gap-2 font-display text-2xl font-extrabold">
             <CalendarDays className="h-6 w-6" /> What's on in Goa
           </h1>
-          <p className="mt-1 text-sm opacity-90">
+          <p className="mt-1.5 text-sm font-medium opacity-90">
             Markets, gigs, feasts and community meets — updated by the Goa Social team.
           </p>
         </header>
@@ -60,10 +61,10 @@ function EventsPage() {
               <button
                 key={area}
                 onClick={() => setFilter(area)}
-                className={`shrink-0 rounded-full border px-4 py-1.5 text-sm font-medium ${
+                className={`shrink-0 rounded-full border px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
                   filter === area
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-secondary text-foreground"
+                    ? "border-primary bg-primary text-primary-foreground shadow-soft"
+                    : "border-border bg-card text-foreground"
                 }`}
               >
                 {area}
@@ -75,15 +76,18 @@ function EventsPage() {
         {events === null ? (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="gs-shimmer h-28 rounded-[1.4rem] bg-secondary" />
+              <div key={i} className="gs-shimmer h-32 rounded-[1.4rem] bg-secondary" />
             ))}
           </div>
         ) : visible.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-            No events listed yet — check back soon.
-          </p>
+          <div className="rounded-3xl border border-dashed border-border bg-card p-8 text-center shadow-soft">
+            <CalendarDays className="mx-auto h-10 w-10 text-muted-foreground/40" />
+            <p className="mt-3 text-sm text-muted-foreground">
+              No events listed yet — check back soon.
+            </p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="gs-stagger space-y-3">
             {visible.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}

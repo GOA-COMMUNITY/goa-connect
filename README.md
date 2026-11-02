@@ -27,9 +27,9 @@ bun run build   # static output in dist/client
 ## Environment variables (`.env`)
 
 ```
-VITE_SUPABASE_URL=https://snyutypvftvtbtthirja.supabase.co
+VITE_SUPABASE_URL=https://kmwwbjedvsxqobfcgsfx.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=<anon/publishable key>
-VITE_SUPABASE_PROJECT_ID=snyutypvftvtbtthirja
+VITE_SUPABASE_PROJECT_ID=kmwwbjedvsxqobfcgsfx
 ```
 
 The publishable key is safe in the client; every table is protected by

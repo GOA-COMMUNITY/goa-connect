@@ -4,10 +4,12 @@ export type ShortsSettings = {
   cachedFirst: boolean;
   autoRefresh: boolean;
   maxCached: number;
-  /** Rebuild the pool every N days (1 = daily, 2 = every second day). */
+  /** Download pass runs once every N days (1 = daily, 2 = every second day). */
   refreshDays: number;
-  /** Max shorts pulled per channel per cycle. 0 = automatic from weights. */
+  /** Only a channel's N latest shorts are ever considered. 0 = automatic. */
   perChannel: number;
+  /** Clips older than this many days (from their download day) are deleted. */
+  retentionDays: number;
   /** When false, only shorts downloaded onto Goa Social hosting are played. */
   embedsEnabled: boolean;
 };
@@ -15,9 +17,10 @@ export type ShortsSettings = {
 export const defaultShortsSettings: ShortsSettings = {
   cachedFirst: true,
   autoRefresh: true,
-  maxCached: 100,
-  refreshDays: 1,
-  perChannel: 0,
+  maxCached: 50,
+  refreshDays: 2,
+  perChannel: 5,
+  retentionDays: 30,
   // Off by default: only shorts downloaded onto Goa Social hosting play.
   embedsEnabled: false,
 };
@@ -35,10 +38,20 @@ export function getShortsSettings(): Promise<ShortsSettings> {
           .select("value")
           .eq("key", "shorts")
           .maybeSingle();
+        const saved = (data?.value as Partial<ShortsSettings> | null) ?? {};
+        // A row saved before the new engine has no retentionDays — keep its
+        // toggles but use the new numeric defaults.
+        const merged = saved.retentionDays !== undefined || saved.refreshDays !== undefined
+          ? saved
+          : {
+              cachedFirst: saved.cachedFirst,
+              autoRefresh: saved.autoRefresh,
+              embedsEnabled: saved.embedsEnabled,
+            };
         return {
           ...defaultShortsSettings,
-          ...((data?.value as Partial<ShortsSettings> | null) ?? {}),
-        };
+          ...Object.fromEntries(Object.entries(merged).filter(([, v]) => v !== undefined)),
+        } as ShortsSettings;
       } catch {
         return defaultShortsSettings;
       }

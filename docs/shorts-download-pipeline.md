@@ -32,7 +32,8 @@ REST API with the publishable key. If the DB is unreachable it falls back to a h
 
 ### Step B — read the admin settings
 The `app_settings` row with key `shorts` can disable caching entirely (`cachedFirst: false`)
-or change the daily target (`maxCached`). Default target is **100 clips/day**.
+or change any number below. Defaults: **50 clips max**, one download pass every **2 days**,
+at most the **5 latest** shorts per channel, auto-delete after **30 days**.
 
 ### Step C — work out how many clips each channel owes
 Every active channel is guaranteed at least its single latest Short. The remaining slots are
@@ -199,12 +200,14 @@ async function worker() {
 await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 ```
 
-### Step I — daily reset, never the same short twice in a day
-`public/cached-history.json` stores `{ date: "YYYY-MM-DD", ids: [...] }`.
-- If the stored date is today, the existing clips are kept and the run only *tops up* to 100.
-- If it's a new UTC day, history is empty → full rebuild from the newest Shorts.
-- A video ID already in today's history is never downloaded again that day. Tomorrow it's
-  fair game again, so a channel that didn't upload anything new still contributes.
+### Step I — persistent history: never the same short twice
+`public/cached-history.json` stores `{ version: 2, lastRun, downloads: { "<videoId>": "YYYY-MM-DD" } }`.
+- A video that was downloaded once is **never downloaded again** — the history is permanent,
+  not reset daily. Only genuinely new shorts are pulled.
+- A download pass runs once every `refreshDays` (default 2) days; every other run only tidies
+  the pool.
+- Retention: a clip is deleted when it is older than `retentionDays` (default 30) days,
+  counted from the day it was downloaded.
 
 ### Step J — atomic swap, old files deleted only after verification
 Everything is built into `public/cached-next/`. Clips still valid from earlier today are copied
@@ -296,10 +299,10 @@ has embeds enabled) does it fall back to a YouTube player.
 
 - **Downloading instead of embedding** — an iframe needs several YouTube round-trips before
   the first frame; a 700 KB local MP4 starts in milliseconds.
-- **360p / CRF 31 / 60s cap** — keeps 100 clips around 70–100 MB total, which stays inside
+- **360p / CRF 31 / 60s cap** — keeps 50 clips around 35–50 MB total, which stays inside
   static-hosting limits and loads fast on Goan mobile networks.
-- **Rotating clients and user-agents** — a single signature gets rate-limited after ~10
-  downloads; rotating four keeps a 100-clip run alive.
+- **Permanent download history** — a short is downloaded once, never again; the pool only
+  ever grows with genuinely new uploads, and clips age out after 30 days.
 - **Claim-before-download** — the only safe way to run 4 parallel workers off one queue.
 - **Build-to-temp then atomic swap** — a failed run can never leave the live site with a
   broken or empty video folder.
