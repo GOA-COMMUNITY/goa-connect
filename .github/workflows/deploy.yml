@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-${{ github.run_id }}
+  group: pages
   # Never cancel a deployment mid-flight — a cancelled Pages deploy can leave
   # goasocial.in serving a half-published build.
   cancel-in-progress: false
@@ -52,9 +52,10 @@ jobs:
         id: day
         run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
 
-      # Cache key rolls over every day -> the 100 shorts reset daily,
-      # while the 30-minute runs within a day just top the pool up.
-      - name: Restore today's shorts pool
+      # The pool is restored from ANY previous day (restore-keys has no date):
+      # with a multi-day refresh cycle the download pass must still see the
+      # clips and history saved by the previous pass.
+      - name: Restore the shorts pool
         if: github.event_name != 'push'
         uses: actions/cache@v4
         with:
@@ -64,7 +65,7 @@ jobs:
             public/cached-history.json
           key: shorts-pool-${{ steps.day.outputs.date }}-${{ github.run_id }}
           restore-keys: |
-            shorts-pool-${{ steps.day.outputs.date }}-
+            shorts-pool-
 
       - name: Refresh latest YouTube Shorts list
         if: github.event_name != 'push'
