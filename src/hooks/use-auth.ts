@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,16 +13,16 @@ export function useAuth() {
 
     async function loadRole(u: User | null) {
       if (!u) {
-        if (mounted) setIsAdmin(false);
+        if (mounted) { setIsAdmin(false); setIsStaff(false); }
         return;
       }
       const { data } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", u.id)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (mounted) setIsAdmin(!!data);
+        .in("role", ["admin", "moderator"]);
+      const roles = (data ?? []).map((r) => r.role);
+      if (mounted) { setIsAdmin(roles.includes("admin")); setIsStaff(roles.includes("admin") || roles.includes("moderator")); }
     }
 
     supabase.auth.getUser().then(async ({ data }) => {
@@ -45,5 +46,5 @@ export function useAuth() {
     };
   }, []);
 
-  return { user, isAdmin, loading };
+  return { user, isAdmin, isStaff, loading };
 }

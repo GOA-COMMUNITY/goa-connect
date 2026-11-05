@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { getChannelInfo, type ChannelInfo } from "@/lib/youtube.functions";
 import { toast } from "sonner";
+import { TeamPanel } from "@/components/TeamPanel";
 import { eventCategories, type GoaEvent } from "@/lib/events";
 import { importEventsNow } from "@/lib/automation.functions";
 import {
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminDashboard,
 });
 
-type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels" | "events" | "sources";
+type Tab = "overview" | "algorithm" | "users" | "bots" | "businesses" | "content" | "channels" | "events" | "sources" | "team";
 
 type Profile = {
   id: string;
@@ -47,13 +48,14 @@ type Profile = {
 };
 
 function AdminDashboard() {
-  const { user, isAdmin, loading } = useAuth();
-  const [tab, setTab] = useState<Tab>("overview");
+  const { user, isAdmin, isStaff, loading } = useAuth();
+  const [tab, setTab] = useState<Tab>("events");
+  const workerTabs: Tab[] = ["users", "businesses", "events", "sources", "channels"];
 
   if (loading) {
     return <div className="flex h-screen items-center justify-center text-muted-foreground">Loading…</div>;
   }
-  if (!user || !isAdmin) {
+  if (!user || !isStaff) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 p-6 text-center">
         <Shield className="h-12 w-12 text-destructive" />
@@ -78,7 +80,7 @@ function AdminDashboard() {
             </Link>
             <Shield className="h-6 w-6 text-primary" />
             <div>
-              <h1 className="text-lg font-bold">Admin Console</h1>
+              <h1 className="text-lg font-bold">{isAdmin ? "Admin Console" : "Worker Dashboard"}</h1>
               <p className="text-[11px] text-muted-foreground">Goa Social control room</p>
             </div>
           </div>
@@ -97,7 +99,8 @@ function AdminDashboard() {
             ["sources", "Auto Sources", Rss],
             ["channels", "YouTube", Youtube],
             ["content", "Site Content", MessageCircle],
-          ] as const).map(([k, label, Icon]) => (
+            ["team", "Team & Dating", Shield],
+          ] as const).filter(([k]) => isAdmin || workerTabs.includes(k)).map(([k, label, Icon]) => (
             <button
               key={k}
               onClick={() => setTab(k)}
@@ -112,6 +115,7 @@ function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-6">
+        {!isAdmin && !workerTabs.includes(tab) ? null : <>
         {tab === "overview" && <OverviewPanel />}
         {tab === "algorithm" && <AlgorithmPanel />}
         {tab === "users" && <ProfilesPanel onlyFake={false} />}
@@ -121,6 +125,8 @@ function AdminDashboard() {
         {tab === "sources" && <SourcesPanel />}
         {tab === "channels" && <ChannelsPanel />}
         {tab === "content" && <ContentPanel />}
+        {tab === "team" && isAdmin && <TeamPanel />}
+        </>}
       </main>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Compass, CalendarDays, MessageCircle, User, Search, Shield } from "lucide-react";
+import { Home, Compass, CalendarDays, MessageCircle, User, Search, Shield, Heart } from "lucide-react";
 import { EventBanner } from "./EventBanner";
 import { useAuth } from "@/hooks/use-auth";
 import type { ReactNode } from "react";
@@ -8,6 +8,7 @@ const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/explore", label: "Explore", icon: Compass },
   { to: "/events", label: "Events", icon: CalendarDays },
+  { to: "/dating", label: "Dating", icon: Heart },
   { to: "/chats", label: "Chats", icon: MessageCircle },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
@@ -15,7 +16,7 @@ const navItems = [
 
 export function AppLayout({ children, showEventBanner = true }: { children: ReactNode; showEventBanner?: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { isAdmin, user } = useAuth();
+  const { isStaff, user } = useAuth();
   const isGuest = !!user?.email?.endsWith("@goa.social") && !/^\d{10}@goa\.social$/.test(user.email);
 
   return (
@@ -38,7 +39,7 @@ export function AppLayout({ children, showEventBanner = true }: { children: Reac
           </Link>
 
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            {isAdmin && (
+            {isStaff && (
               <Link
                 to="/admin"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary transition-all active:scale-90"
