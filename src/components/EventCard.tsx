@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, MapPin, Ticket } from "lucide-react";
+import { CalendarDays, MapPin, Share2, Ticket } from "lucide-react";
+import { whatsappShareUrl } from "@/lib/event-filters";
 import { eventWhen, type GoaEvent } from "@/lib/events";
 
 export function EventCard({ event, compact = false }: { event: GoaEvent; compact?: boolean }) {
@@ -40,6 +41,14 @@ export function EventCard({ event, compact = false }: { event: GoaEvent; compact
           )}
           <div className="mt-3 flex items-center gap-3">
             {event.price && <span className="text-xs font-bold text-foreground">{event.price}</span>}
+            <a
+              href={whatsappShareUrl(event, eventWhen(event))}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-bold text-accent-foreground transition-all active:scale-95"
+            >
+              <Share2 className="h-3.5 w-3.5" /> Plan on WhatsApp
+            </a>
             {event.ticket_url ? (
               <a
                 href={event.ticket_url}

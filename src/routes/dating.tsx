@@ -138,6 +138,9 @@ function DatingPage() {
                       </div>
                     </div>
                     {p.bio && <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{p.bio}</p>}
+                    <p className="mt-3 rounded-xl bg-secondary px-3 py-2 text-xs font-medium text-foreground">
+                      💬 Ask: {ICEBREAKERS[[...p.id].reduce((a, c) => a + c.charCodeAt(0), 0) % ICEBREAKERS.length]}
+                    </p>
                     <button onClick={() => sayHi(p.id)} className="mt-3 flex w-full items-center justify-center gap-1 rounded-full bg-primary py-2 text-sm font-semibold text-primary-foreground">
                       <MessageCircle className="h-4 w-4" /> Say hi
                     </button>
@@ -151,3 +154,13 @@ function DatingPage() {
     </AppLayout>
   );
 }
+
+const ICEBREAKERS = [
+  "Best fish thali spot in Goa?",
+  "North Goa or South Goa?",
+  "Favourite sunset viewpoint?",
+  "Feni, Kings or chai?",
+  "Best beach shack you have found?",
+  "Go-to monsoon hangout?",
+  "Sorpotel or xacuti?",
+];

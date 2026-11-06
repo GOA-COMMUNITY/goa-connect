@@ -4,6 +4,7 @@ import { CalendarDays } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { EventCard } from "@/components/EventCard";
 import { fetchUpcomingEvents, type GoaEvent } from "@/lib/events";
+import { matchesWhen, regionOf, type Region, type When } from "@/lib/event-filters";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -40,7 +41,18 @@ function EventsPage() {
     return ["All", ...Array.from(areas)];
   }, [events]);
 
-  const visible = (events ?? []).filter((event) => filter === "All" || event.area === filter);
+  const [when, setWhen] = useState<When>("All");
+  const [region, setRegion] = useState<Region>("All");
+  const visible = (events ?? []).filter(
+    (event) =>
+      (filter === "All" || event.area === filter) &&
+      matchesWhen(event, when) &&
+      (region === "All" || regionOf(event) === region),
+  );
+  const chip = (active: boolean) =>
+    `shrink-0 rounded-full border px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
+      active ? "border-primary bg-primary text-primary-foreground shadow-soft" : "border-border bg-card text-foreground"
+    }`;
 
   return (
     <AppLayout>
@@ -54,6 +66,21 @@ function EventsPage() {
             Markets, gigs, feasts and community meets — updated by the Goa Social team.
           </p>
         </header>
+
+        <div className="scrollbar-hide mb-2 flex gap-2 overflow-x-auto">
+          {(["All", "Tonight", "Weekend"] as When[]).map((w) => (
+            <button key={w} onClick={() => setWhen(w)} className={chip(when === w)}>
+              {w === "Tonight" ? "🌙 Tonight in Goa" : w === "Weekend" ? "🎉 This weekend" : "Any day"}
+            </button>
+          ))}
+        </div>
+        <div className="scrollbar-hide mb-4 flex gap-2 overflow-x-auto">
+          {(["All", "North", "South"] as Region[]).map((r) => (
+            <button key={r} onClick={() => setRegion(r)} className={chip(region === r)}>
+              {r === "All" ? "All Goa" : `${r} Goa`}
+            </button>
+          ))}
+        </div>
 
         {filters.length > 2 && (
           <div className="scrollbar-hide mb-4 flex gap-2 overflow-x-auto">
