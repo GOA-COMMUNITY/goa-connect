@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getLocalUser, localSignIn, localSignUp } from "@/lib/local-auth";
 import { toast } from "sonner";
 import { BriefcaseBusiness, Eye, EyeOff, Loader2, MapPin, Palmtree, Sparkles } from "lucide-react";
 
@@ -55,7 +56,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/" });
+      if (data.session || getLocalUser()) navigate({ to: "/" });
     });
   }, [navigate]);
 
@@ -66,7 +67,15 @@ function AuthPage() {
     setBusy(true);
     try {
       const raw = identifier.trim();
-      const email = isPhone(raw) ? phoneToEmail(raw) : raw.toLowerCase();
+      const email = isPhone(raw)
+        ? phoneToEmail(raw)
+        : raw.includes("@")
+          ? raw.toLowerCase()
+          : `${raw.toLowerCase().replace(/[^a-z0-9._-]/g, "")}@user.goa.social`;
+      if (password.length < 6) {
+        toast.error("Password needs at least 6 characters.");
+        return;
+      }
 
       if (mode === "signup") {
         if (accountType === "personal" && isTourist === null) {
@@ -92,7 +101,34 @@ function AuthPage() {
           },
         });
 
+        const meta = {
+          full_name:
+            (accountType === "business" ? bizName.trim() : "") ||
+            name.trim() ||
+            (isPhone(raw) ? `Goan ${raw.slice(-4)}` : email.split("@")[0]),
+          account_type: accountType,
+          business_name: accountType === "business" ? bizName.trim() : "",
+          business_category: accountType === "business" ? bizCategory : "",
+          is_goan: accountType === "personal" && isTourist !== true,
+          is_tourist: accountType === "personal" && isTourist === true,
+          origin_city: accountType === "personal" && isTourist ? originCity.trim() : "",
+        };
+        const goLocal = async () => {
+          await localSignUp(email, password, meta);
+          toast.success("Welcome to Goa Social! Your account is saved on this device.");
+          navigate({ to: "/" });
+        };
+
         if (error) {
+          if (await localSignIn(email, password)) {
+            toast.success("Welcome back!");
+            navigate({ to: "/" });
+            return;
+          }
+          if (!/already/i.test(error.message)) {
+            await goLocal();
+            return;
+          }
           // Common: "User already registered" -> guide them to sign in
           if (/already/i.test(error.message)) {
             toast.error("Account exists — try signing in instead.");
@@ -108,8 +144,7 @@ function AuthPage() {
           await supabase.auth.signInWithPassword({ email, password });
 
         if (signInErr || !signInData.session) {
-          toast.success("Account created! Please check your email to confirm, then sign in.");
-          setMode("signin");
+          await goLocal();
           return;
         }
 
@@ -134,6 +169,11 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
+          if (await localSignIn(email, password)) {
+            toast.success("Welcome back!");
+            navigate({ to: "/" });
+            return;
+          }
           toast.error(error.message === "Invalid login credentials"
             ? "Wrong email/phone or password."
             : error.message);
@@ -184,8 +224,22 @@ function AuthPage() {
         },
       });
 
+const guestMeta = {
+        full_name: name.trim() || `Goan ${id.slice(-4)}`,
+        account_type: accountType,
+        business_name: accountType === "business" ? bizName.trim() : "",
+        business_category: accountType === "business" ? bizCategory : "",
+        is_goan: accountType === "personal" && isTourist !== true,
+        is_tourist: accountType === "personal" && isTourist === true,
+        origin_city: accountType === "personal" && isTourist ? originCity.trim() : "",
+      };
+      const guestLocal = async () => {
+        await localSignUp(`${id}@goa.social`, pass, guestMeta);
+        toast.success("You're in! Your account is saved on this device.");
+        navigate({ to: "/" });
+      };
       if (error) {
-        toast.error(error.message);
+        await guestLocal();
         return;
       }
       const { data: signedIn } = await supabase.auth.signInWithPassword({
@@ -193,7 +247,7 @@ function AuthPage() {
         password: pass,
       });
       if (!signedIn.session) {
-        toast.error("Could not start your session — try again.");
+        await guestLocal();
         return;
       }
       try {
@@ -331,7 +385,7 @@ function AuthPage() {
           <input
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
-            placeholder="Phone (10 digits) or email"
+            placeholder="Mobile number, username or email"
             inputMode="email"
             className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
             required

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { getLocalUser, onLocalAuthChange } from "@/lib/local-auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -12,7 +13,7 @@ export function useAuth() {
     let mounted = true;
 
     async function loadRole(u: User | null) {
-      if (!u) {
+      if (!u || u.app_metadata?.provider === "local") {
         if (mounted) { setIsAdmin(false); setIsStaff(false); }
         return;
       }
@@ -27,21 +28,28 @@ export function useAuth() {
 
     supabase.auth.getUser().then(async ({ data }) => {
       if (!mounted) return;
-      const u = data.user ?? null;
+      const u = data.user ?? getLocalUser();
       setUser(u);
       await loadRole(u);
       if (mounted) setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange(async (_e, session) => {
-      const u = session?.user ?? null;
+      const u = session?.user ?? getLocalUser();
       if (!mounted) return;
       setUser(u);
       await loadRole(u);
     });
 
+    const offLocal = onLocalAuthChange(() => {
+      if (!mounted) return;
+      setUser((cur) => (cur && cur.app_metadata?.provider !== "local" ? cur : getLocalUser()));
+      setLoading(false);
+    });
+
     return () => {
       mounted = false;
+      offLocal();
       sub.subscription.unsubscribe();
     };
   }, []);
