@@ -221,7 +221,9 @@ export function ChatRoom({ conversationId, onClose }: { conversationId: string; 
       if (data?.error) throw new Error(data.error);
 
       const deliverInMs = typeof data?.deliverInMs === "number" ? data.deliverInMs : 0;
-      if (deliverInMs > 0 && deliverInMs < 45_000) {
+      if (deliverInMs === 0 && data?.scheduled) {
+        void queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+      } else if (deliverInMs > 0 && deliverInMs < 45_000) {
         setTyping(true);
         poll = window.setInterval(() => {
           void queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });

@@ -120,10 +120,13 @@ function Profile() {
   }
 
   async function signOut() {
-    await qc.cancelQueries();
-    qc.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    try { await qc.cancelQueries(); qc.clear(); } catch {}
+    try { localStorage.removeItem("gs_local_current"); } catch {}
+    try { await supabase.auth.signOut({ scope: "local" }); } catch {}
+    try {
+      Object.keys(localStorage).filter((k) => k.startsWith("sb-") && k.endsWith("-auth-token")).forEach((k) => localStorage.removeItem(k));
+    } catch {}
+    window.location.replace("/auth");
   }
 
   const stats = [

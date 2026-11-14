@@ -129,32 +129,8 @@ function Home() {
   return (
     <SplashScreen duration={6000}>
       <AppLayout showEventBanner={false}>
-        {/* One feed instance prevents duplicate observers, players and network listeners. */}
-        <section className="px-2 pt-2 sm:px-3">
-          <ShortsFeed
-            shorts={videos}
-            interleave={(index) => {
-              // Every 4th short, slide in the next upcoming Goa event:
-              // entertainment and information in the same scroll.
-              if (index % 4 !== 3 || events.length === 0) return null;
-              const event = events[Math.floor(index / 4) % events.length];
-              return (
-                <div className="pt-1">
-                  <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-wider text-primary">
-                    Happening in Goa
-                  </p>
-                  <EventCard event={event} compact />
-                </div>
-              );
-            }}
-          />
-        </section>
-
-        {/* Everything under the feed is below the fold — `gs-defer` lets the browser
-            skip its layout/paint work until the user scrolls there. */}
-        <div className="gs-defer">
           {/* ⚡ Quick actions — the four things people actually came for */}
-          <section className="mx-3 mt-4 grid grid-cols-4 gap-2">
+          <section className="mx-3 mt-3 grid grid-cols-4 gap-2">
             {[
               { to: "/explore", label: "People", icon: Users },
               { to: "/events", label: "Events", icon: Sparkles },
@@ -200,6 +176,30 @@ function Home() {
             </div>
           </section>
 
+        {/* One feed instance prevents duplicate observers, players and network listeners. */}
+        <section className="px-2 pt-2 sm:px-3">
+          <ShortsFeed
+            shorts={videos}
+            interleave={(index) => {
+              // Every 4th short, slide in the next upcoming Goa event:
+              // entertainment and information in the same scroll.
+              if (index % 4 !== 3 || events.length === 0) return null;
+              const event = events[Math.floor(index / 4) % events.length];
+              return (
+                <div className="pt-1">
+                  <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+                    Happening in Goa
+                  </p>
+                  <EventCard event={event} compact />
+                </div>
+              );
+            }}
+          />
+        </section>
+
+        {/* Everything under the feed is below the fold — `gs-defer` lets the browser
+            skip its layout/paint work until the user scrolls there. */}
+        <div className="gs-defer">
           {/* 📖 Stories */}
           <section className="mt-4 bg-card py-4">
             <div className="mb-3 flex items-center justify-between px-4">

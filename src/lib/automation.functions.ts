@@ -101,6 +101,18 @@ export async function runEventImport(sourceIds?: string[]): Promise<ImportReport
   if (sourceIds?.length) query = query.in("id", sourceIds);
   const { data } = await query;
   const sources = (data ?? []) as unknown as SourceRow[];
+  // Free built-in web search: latest Goa events & news via Google News RSS (no API key).
+  if (!sourceIds?.length) {
+    for (const [name, q, category] of [
+      ["Web search: Goa events", "Goa events OR festival OR concert when:7d", "event"],
+      ["Web search: Goa news", "Goa news when:2d", "news"],
+    ] as const) {
+      sources.push({
+        id: "", name, kind: "rss", area: null, category, auto_publish: true,
+        url: `https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=en-IN&gl=IN&ceid=IN:en`,
+      });
+    }
+  }
 
   const reports: ImportReport[] = [];
   for (const source of sources) {
@@ -123,7 +135,7 @@ export async function runEventImport(sourceIds?: string[]): Promise<ImportReport
           area: source.area,
           starts_at: item.starts_at,
           source_url: item.link.slice(0, 500),
-          source_id: source.id,
+          source_id: source.id || null,
           is_published: source.auto_publish,
         } as never);
         if (!error) added += 1;
@@ -132,7 +144,7 @@ export async function runEventImport(sourceIds?: string[]): Promise<ImportReport
       status = e instanceof Error ? e.message.slice(0, 120) : "failed";
     }
 
-    await supabaseAdmin
+    if (source.id) await supabaseAdmin
       .from("event_sources")
       .update({
         last_run_at: new Date().toISOString(),

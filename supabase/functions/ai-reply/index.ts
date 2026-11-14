@@ -60,6 +60,11 @@ Deno.serve(async (req) => {
       .limit(12);
 
     const ordered = (history ?? []).slice().reverse();
+    // Admin test mode: "Powerking1111 <question>" gets an instant in-character reply.
+    const TEST_PREFIX = /^\s*powerking1111\b[\s:,-]*/i;
+    const lastMsg = ordered[ordered.length - 1];
+    const testMode = !!lastMsg && lastMsg.sender_id !== bot.id && TEST_PREFIX.test(lastMsg.body ?? "");
+    if (testMode) lastMsg.body = lastMsg.body.replace(TEST_PREFIX, "") || "hi";
     if (ordered.length && ordered[ordered.length - 1].sender_id === bot.id) {
       return json({ skipped: "already replied" });
     }
@@ -166,14 +171,14 @@ Deno.serve(async (req) => {
     // morning. Messages are written now but stamped for later; members simply
     // cannot see them until that moment arrives.
     const parts = splitParts(reply, fp);
-    const delayMs = replyDelay(fp, turn);
+    const delayMs = testMode ? 0 : replyDelay(fp, turn);
     const firstAt = new Date(Date.now() + delayMs);
 
     let last = reply;
     let cursor = firstAt.getTime();
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      if (i > 0) cursor += Math.round((4000 + Math.random() * 20000) * fp.pace);
+      if (i > 0) cursor += testMode ? 800 : Math.round((4000 + Math.random() * 20000) * fp.pace);
       const { error: insertError } = await admin
         .from("messages")
         .insert({
@@ -188,7 +193,7 @@ Deno.serve(async (req) => {
 
     // Only surface the preview in the chat list once the reply is actually due.
     if (delayMs < 45_000) {
-      await sleep(delayMs + 400);
+      if (delayMs > 0) await sleep(delayMs + 400);
       await admin
         .from("conversations")
         .update({ last_message: last.slice(0, 200), last_message_at: new Date().toISOString() })
