@@ -1,0 +1,17 @@
+# Cloudflare Pages build settings.
+# In the Pages project set:
+#   Framework preset:  Vite
+#   Build command:     npm run build   (or: bun run build)
+#   Build output:      dist/client
+#   Root directory:    (leave blank)
+#
+# The SPA fallback matters more than on GitHub Pages: Cloudflare serves its
+# own 404 page for unknown paths unless this file exists, which breaks
+# deep links like /chats/<id> on hard refresh.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Keep the real files that exist working first; the SPA fallback above only
+# fires for paths with no matching asset.
